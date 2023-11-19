@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\PersonController;//追記
 use App\Http\Controllers\PhotoController;//追記
 use App\Http\Controllers\TemperatureController;
+use App\Http\Controllers\BloodpressureController;
 use App\Http\Controllers\FoodController;
 use App\Http\Controllers\ToiletController;
 use App\Http\Controllers\CarController;
@@ -16,6 +17,7 @@ use App\Http\Controllers\RecordController;
 use App\Http\Controllers\SpreadsheetController; // Qiitaの記事
 use App\Http\Controllers\UploadController;
 use App\Http\Controllers\ChartController;
+use App\Http\Controllers\DompdfController;
 
 
 // use Google\Cloud\Speech\V1p1beta1\StreamingRecognitionConfig;
@@ -89,6 +91,12 @@ Route::get('temperatures/{people_id}', [TemperatureController::class, 'show'])->
 // Route::get('temperatures/{people_id}', [PersonController::class, 'index'])->name('temperatures.show');
 Route::get('temperature/{people_id}/edit', [TemperatureController::class, 'edit'])->name('temperature.edit');
 
+
+Route::post('bloodpressures/{people_id}', [BloodpressureController::class, 'store'])->name('bloodpressures.store');
+Route::get('bloodpressure/{people_id}', [BloodpressureController::class, 'show'])->name('bloodpressures.show');
+Route::get('bloodpressure/{people_id}/edit', [BloodpressureController::class, 'edit'])->name('bloodpressure.edit');
+
+
 Route::get('foods/{id}', 'FoodController@show')->name('foods.show');
 // Route::get('foods/{id}', 'FoodController@showAmountFood')->name('foods.show');
 // Route::get('people/{id}', 'FoodController@show')->name('people.show');
@@ -154,6 +162,10 @@ Route::get('chart/{id}/edit', [ChartController::class, 'show'])->name('chart.edi
 Route::get('/chartjs', function () {
     return view('chartjs');
 });
+
+// PDFでダウンロードする↓
+Route::get('record/{id}/edit', [DompdfController::class, 'generatePDF'])->name('outputPDF.edit');
+// Route::get('record/{id}/edit', [RecordController::class, 'show'])->name('record.edit');
 
 // Qiitaの記事↓
 // Route::get('/index', [SpreadsheetController::class, 'index']);
