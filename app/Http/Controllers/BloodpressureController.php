@@ -53,10 +53,11 @@ class BloodpressureController extends Controller
          
     ]);
     
-   $people = Person::all();
-    // return redirect()->route('speech.edit', ['people_id' => $person->id]);
-    // return view('people', ['people' => Person::all()]);
+  $people = Person::all();
+//   $person = Person::findOrFail($request->people_id);
+//     return redirect()->route('bloodpressure.edit', ['people_id' => $person->id]); 
     return view('people', compact('bloodpressure', 'people'));
+    
     }
 
     /**
@@ -71,9 +72,11 @@ class BloodpressureController extends Controller
 
     
     // $person = Person::findOrFail($id);
-    $bloodpressures = $person->bloodpressures;
-
-    return view('people', compact('bloodpressures'));
+    // $bloodpressures = $person->bloodpressures;
+    $bloodpressure = $person->bloodpressures;
+    // @dd($bloodpressures);
+    return view('people', compact('bloodpressure'));
+    
     
     // $temperature = Temperature::findOrFail($id);
 

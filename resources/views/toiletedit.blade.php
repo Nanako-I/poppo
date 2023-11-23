@@ -46,6 +46,11 @@
           text-decoration: underline;
         }
         </style>
+        
+<div style="display: flex; flex-direction: column; align-items: center; my-2;">
+    <input type="datetime-local" name="created_at">
+</div>
+                                                
  <div style="display: flex; flex-direction: column; align-items: center;">
   <h3>尿</h3>
  </div>

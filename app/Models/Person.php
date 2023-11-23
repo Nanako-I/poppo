@@ -16,6 +16,12 @@ class Person extends Model
         return $this->hasMany(Temperature::class,'people_id');
         //  return $this->hasMany(Temperature::class);
     }
+    
+    public function bloodpressures()
+    {
+        return $this->hasMany(Bloodpressure::class,'people_id');
+        //  return $this->hasMany(Temperature::class);
+    }
 
 public function foods()
     {

@@ -141,20 +141,18 @@
                                         @php
                                            $lastFood = $person->foods->last();
                                         @endphp
-                                            @if ($lastFood->created_at->diffInHours(now()) >= 6)
-                                                
-                                                 <p class="text-red-500 font-bold text-xl">登録して<br>ください</p>
+                                            @if ($lastFood && $lastFood->created_at->diffInHours(now()) >= 6)
+                                                <p class="text-red-500 font-bold text-xl">登録して<br>ください</p>
                                                  <a href="{{ url('food/'.$person->id.'/edit') }}" class="relative  ml-2">
                                                      @csrf
                                                  <i class="material-icons md-90 ml-auto">add</i>
                                                  </a>
-                                              
                                             @else
                                                 <!-- 直近の検温結果表示 -->
                                                 <div class="flex justify-evenly">
                                                         <a href="{{ route('foods.show', $lastFood->id) }}" class="font-bold text-xl">
                                                             <div>
-                                                                <p class="text-gray-900 font-bold text-sm">主食:</p>
+                                                                <p class="text-gray-900 font-bold text-sm">摂取量:</p>
                                                                 <p class="text-gray-900 font-bold text-xl">{{ $lastFood->staple_food }}</p>
                                                             </div>
                                                         </a>
@@ -166,7 +164,7 @@
                                                          </a>
                                                     </div>
                                             @endif
-                                            @else
+                                        @else
                                             
                                             <p class="text-red-500 font-bold text-xl">登録して<br>ください</p>
                                                  <a href="{{ url('food/'.$person->id.'/edit') }}" class="relative  ml-2">
@@ -204,40 +202,40 @@
                                         @endphp
                                             @if ($lastTemperature->created_at->diffInHours(now()) >= 6)
                                                 <!-- 検温フォーム -->
-                                                
-                                                    <details>
-                                                        <summary class="text-red-500 font-bold text-xl">検温してください</summary>
-                                                        <form action="{{ route('temperatures.store', $person->id) }}" method="POST">
-                                                    @csrf
+                                                <details>
+                                                    <summary class="text-red-500 font-bold text-xl">検温してください</summary>
+                                                    <form action="{{ route('temperatures.store', $person->id) }}" method="POST">
+                                                        @csrf
                                                         <input type="hidden" name="people_id" value="{{ $person->id }}">
                                                         <input name="temperature" id="text-box" class="appearance-none block w-1/2 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white font-bold" type="text" placeholder="">
                                                         <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
                                                             送信
                                                         </button>
-                                                    </details>
-                                                </form>
+                                                    </form>
+                                                </details>
                                             @else
                                                 <!-- 直近の検温結果表示 -->
                                                 <a href="{{ route('temperatures.show', $lastTemperature->id) }}" class="font-bold text-xl">{{ $lastTemperature->temperature }}℃</a>
                                             @endif
-                                             @else
-                                             <details>
-                                                        <summary class="text-red-500 font-bold text-xl">検温してください</summary>
-                                                        <form action="{{ route('temperatures.store', $person->id) }}" method="POST">
+                                        @else
+                                            <details>
+                                                <summary class="text-red-500 font-bold text-xl">検温してください</summary>
+                                                <form action="{{ route('temperatures.store', $person->id) }}" method="POST">
                                                     @csrf
-                                                        <input type="hidden" name="people_id" value="{{ $person->id }}">
-                                                        <input name="temperature" id="text-box" class="appearance-none block w-1/2 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white font-bold" type="text" placeholder="">
-                                                        <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
-                                                            送信
-                                                        </button>
-                                                    </details>
+                                                    <input type="hidden" name="people_id" value="{{ $person->id }}">
+                                                    <input name="temperature" id="text-box" class="appearance-none block w-1/2 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white font-bold" type="text" placeholder="">
+                                                    <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+                                                        送信
+                                                    </button>
                                                 </form>
+                                            </details>
+                                                
                                         @endif
                                     </div>
                                 </div>
                                 
                                 <!-- 血圧登録↓ -->
-                        　    　　  <div class="border-2 p-2 rounded-lg bg-white m-2">
+                        　    　 <div class="border-2 p-2 rounded-lg bg-white m-2">
                                     <div class="flex justify-start items-center">
                                         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
                                         <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
@@ -246,17 +244,18 @@
                                     </div>
                                     
                                     <!-- people.blade.php -->
-                                   <div class="flex items-center justify-center p-4">
-                                       @if ($person && $person->bloodpressures && count($person->bloodpressures) > 0)
-                                        @php
-                                           $lastBloodpressures = $person->bloodpressures->last();
-                                        @endphp
-                                            @if ($lastBloodpressures && $lastBloodpressures->created_at->diffInHours(now()) >= 6)
+                                    <div class="flex items-center justify-center p-4">
+                                        @if (!is_null($person) && count($person->bloodpressures) > 0)
+                                        
+                                            @php
+                                               $lastBloodpressures = $person->bloodpressures->last();
+                                            @endphp
+                                            @if ($lastBloodpressures->created_at->diffInHours(now()) >= 6)
                                                 <!-- 血圧フォーム -->
-                                                    <details>
-                                                        <summary class="text-red-500 font-bold text-xl">記録してください</summary>
-                                                        <form action="{{ route('bloodpressures.store', $person->id) }}" method="POST">
-                                                    @csrf
+                                                <details>
+                                                    <summary class="text-red-500 font-bold text-xl">記録してください</summary>
+                                                    <form action="{{ route('bloodpressures.store', $person->id) }}" method="POST">
+                                                        @csrf
                                                         <input type="hidden" name="people_id" value="{{ $person->id }}">
                                                         <p>血圧（上）</p>
                                                         <input name="max_blood" id="text-box" class="appearance-none block w-1/2 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white font-bold" type="text" placeholder="">
@@ -265,29 +264,35 @@
                                                         <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
                                                             送信
                                                         </button>
-                                                    </details>
-                                                </form>
+                                                    </form>
+                                                </details>
                                             @else
                                                 <!-- 直近の検温結果表示 -->
-                                                　
-                                                        <p class="text-gray-900 font-bold text-sm">血圧（上）</p>
-                                                        <a href="{{ route('bloodpressures.show', $lastBloodpressures->id) }}" class="text-gray-900 font-bold text-xl">{{ $lastBloodpressures->max_blood }}</a>
-                                                        @endif
-                                                 @else
-                                             <details>
-                                                        <summary class="text-red-500 font-bold text-xl">登録してください</summary>
-                                                        <form action="{{ route('bloodpressures.store', $person->id) }}" method="POST">
-                                                    @csrf
-                                                        <input type="hidden" name="people_id" value="{{ $person->id }}">
-                                                        <p>血圧（上）</p>
-                                                        <input name="max_blood" id="text-box" class="appearance-none block w-1/2 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white font-bold" type="text" placeholder="">
-                                                        <p>血圧（下）</p>
-                                                        <input name="min_blood" id="text-box" class="appearance-none block w-1/2 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white font-bold" type="text" placeholder="">
-                                                        <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
-                                                            送信
-                                                        </button>
-                                                    </details>
+                                                <a href="{{ route('bloodpressures.show', $lastBloodpressures->id) }}" class="text-gray-900 font-bold text-xl">
+                                        　　　　    @csrf
+                                            　　　　<div class="flex justify-evenly">
+                                                        <p class="text-gray-900 font-bold text-sm">上</p>
+                                                        <p class="text-gray-900 font-bold text-xl">{{ $lastBloodpressures->max_blood }}</p>
+                                                        <p class="text-gray-900 font-bold text-sm">下</p>
+                                                        <p class="text-gray-900 font-bold text-xl">{{ $lastBloodpressures->min_blood }}</p>
+                                                    </div>
+                                                </a>
+                                            @endif
+                                        @else
+                                            <details>
+                                                <summary class="text-red-500 font-bold text-xl">登録してください</summary>
+                                                <form action="{{ route('bloodpressures.store', $person->id) }}" method="POST">
+                                                @csrf
+                                                    <input type="hidden" name="people_id" value="{{ $person->id }}">
+                                                    <p>血圧（上）</p>
+                                                    <input name="max_blood" id="text-box" class="appearance-none block w-1/2 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white font-bold" type="text" placeholder="">
+                                                    <p>血圧（下）</p>
+                                                    <input name="min_blood" id="text-box" class="appearance-none block w-1/2 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white font-bold" type="text" placeholder="">
+                                                    <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+                                                        送信
+                                                    </button>
                                                 </form>
+                                            </details>
                                         @endif
                                     </div>
                                 </div>
@@ -304,290 +309,45 @@
                                         </div>
                                     <div class="flex items-center justify-center p-4">
                                    
-                                          @if (!is_null($person) && count($person->toilets) > 0)
+                                        @if (!is_null($person) && count($person->toilets) > 0)
 
                                             @php
                                             $lastToilets = $person->toilets->last();
                                             @endphp
                                         
                                             @if ($lastToilets === null || $lastToilets->created_at->diffInHours(now()) >= 6)
-                                            
-                                            
-                                            <details>
-                                                
-                                              <summary class="text-red-500 font-bold text-xl">誘導してください
-                                              <p class="text-red-500 font-bold text-xl">未排便{{ $lastToilets ? $lastToilets->created_at->diffInDays(now()) : 0 }}日目</p>
-
-                                              </summary>
-                                              <form action="{{ route('toilet.store', $person->id) }}" method="POST">
-                                                @csrf
-                                                <input type="hidden" name="people_id" value="{{ $person->id }}">
-                                                <div style="display: flex; flex-direction: column; align-items: center;">
-                                                  <h3>尿</h3>
-                                                  
-                                                  <div style="max-width: 300px;">
-                                                    <div class="checkbox-container">
-                                                      <input type="checkbox" name="urine_one" id="urine_one" value="トイレ"> トイレ
-                                                    </div>
-                                                    
-                                                    <div class="checkbox-container">
-                                                      <input type="checkbox" name="urine_two" id="urine_two" value="おむつ"> おむつ
-                                                    </div>
-                                                    
-                                                    <div class="checkbox-container">
-                                                      <input type="checkbox" name="urine_three" id="urine_three" value="尿漏れ"> 尿漏れ
-                                                    </div>
-                                                  </div>
-                                                </div>
-                                                
-                                                  <style>
-                                                  .checkbox-container {
-                                                    display: flex;
-                                                    align-items: center;
-                                                  }
-                                                  input[type="checkbox"] {
-                                                    margin-right: 8px;
-                                                  }
-                                                </style>
-                                            
-                                                <div style="display: flex; flex-direction: column; align-items: center;">
-                                                    <h3>尿の色</h3>
-                                                        <div style="display: flex; justify-content: center; align-items: center;">
-                                                        </div>
-                                                        <div style="display: flex; justify-content: center; align-items: center; margin-top: 10px;">
-                                                            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
-                                                            <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
-                                                            <i class="fa-solid fa-droplet text-yellow-200" id="urine_color_1" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>
-                                                            <input type="checkbox" name="urine_color_1" id="urine_color_1" value="うすい"> うすい
-                                                            
-                                                            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
-                                                            <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
-                                                            <i class="fa-solid fa-droplet text-yellow-300"  id="urine_color_2" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>
-                                                            <input type="checkbox" name="urine_color_2" id="urine_color_2" value="普通"> 普通
-                                                            
-                                                            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
-                                                            <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
-                                                            <i class="fa-solid fa-droplet text-yellow-500"  id="urine_color_3" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>
-                                                            <input type="checkbox" name="urine_color_3" id="urine_color_3" value="濃い"> 濃い
-                                                        </div>
-                                                 </div>
-                                            
-                                            <div style="display: flex; flex-direction: column; align-items: center;">
-                                              <h3>便</h3>
-                                                <!--<div style="max-width: 300px;">-->
-                                                <!--    <div class="checkbox-container">-->
-                                                <!--        <input type="checkbox" name="ben_one" id="ben_one" value="トイレ">トイレ-->
-                                                <!--  　</div>-->
-                                                <!--    <div class="checkbox-container">-->
-                                                <!--        <input type="checkbox" name="ben_two" id="ben_two" value="おむつ"> おむつ-->
-                                                <!--    </div>-->
-                                                <!--    <div class="checkbox-container">-->
-                                                <!--        <input type="checkbox" name="ben_three" id="ben_three" value="付着あり"> 付着あり-->
-                                                <!--     </div>-->
-                                                <!--</div>-->
-                                                <div style="display: flex; flex-direction: column; align-items: center; my-2;">
-                                                    <p class="text-lg">便の状態</p>
-                                                      <select name="ben_condition" class="w-3/5 mx-1">
-                                                        <option value="selected">選択</option>
-                                                        <option value="硬便">硬便</option>
-                                                        <option value="普通便">普通便</option>
-                                                        <option value="軟便">軟便</option>
-                                                        <option value="泥状便">泥状便</option>
-                                                        <option value="水様便">水様便</option>
-                                                      </select>
-                                                </div>
-                                             </div>
-                                                <style>
-                                                  .checkbox-container {
-                                                    display: flex;
-                                                    align-items: center;
-                                                  }
-                                                  input[type="checkbox"] {
-                                                    margin-right: 8px;
-                                                  }
-                                                </style>
-                                            
-                                             
-                                              　<div style="display: flex; flex-direction: column; align-items: center; my-2;">
-                                                    <p class="text-lg">便の量</p>
-                                                      <select name="ben_amount" class="w-3/5 mx-1">
-                                                        <option value="selected">選択</option>
-                                                        <option value="many">多</option>
-                                                        <option value="normal">普通</option>
-                                                        <option value="less">少</option>
-                                                      </select>
-                                                </div>
-                                                
-                                                <div style="display: flex; flex-direction: column; align-items: center; my-2;">
-                                                    <p class="text-lg">行った便通処置</p>
-                                                      <select name="bentsuu" class="w-3/5 mx-1">
-                                                        <option value="selected">選択</option>
-                                                        <option value="kanchou">浣腸</option>
-                                                        <option value="gezai">下剤</option>
-                                                        <option value="tekiben">摘便</option>
-                                                      </select>
-                                                </div>
-                                                
-                                                <div style="display: flex; flex-direction: column; align-items: center; my-2;">
-                                                    <input type="datetime-local" name="created_at">
-                                                </div>
-                                                
-                                            　　<div style="display: flex; flex-direction: column; align-items: center;">
-                                            　　<button type="submit" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-lg text-lg mr-4">
-                                                   送信
-                                                 </button>
-                                                </div>
-                                              </form>
-                                            </details>
-                                              @else
-                                              @if($lastToilets->urine_one || $lastToilets->urine_two || $lastToilets->urine_three)
-                                               <div class="mx-1.5">
-                                                <p class="text-gray-900 font-bold text-sm">尿</p>
-                                                  @if($lastToilets->urine_one)
-                                                  <a href="{{ route('toilets.show', $lastToilets->id) }}" class="text-gray-900 font-bold text-xl">{{ $lastToilets->urine_one }}</a>
-                                                  @endif
-                                                  @if($lastToilets->urine_two)
-                                                  <a href="{{ route('toilets.show', $lastToilets->id) }}" class="text-gray-900 font-bold text-xl">{{ $lastToilets->urine_two }}</a>
-                                                  @endif
-                                                  @if($lastToilets->urine_three)
-                                                  <a href="{{ route('toilets.show', $lastToilets->id) }}" class="text-gray-900 font-bold text-xl">{{ $lastToilets->urine_three }}</a>
-                                                  @endif
-                                                </div>
-                                                @endif
-                                                  @if($lastToilets->ben_condition)
-                                                   <div class="mx-1.5">
-                                                    <p class="text-gray-900 font-bold text-sm">便</p>
-                                                    @if($lastToilets->ben_condition)
-                                                    <a href="{{ route('toilets.show', $lastToilets->id) }}" class="text-gray-900 font-bold text-xl">{{ $lastToilets->ben_condition }}</a>
-                                                    @endif
-                                                    
-                                                   </div>
-                                                　@endif
-                                            　@endif
+                                            　　<summary class="text-red-500 font-bold text-xl">誘導してください
+                                            　　<p class="text-red-500 font-bold text-xl">未排便{{ $lastToilets ? $lastToilets->created_at->diffInDays(now()) : 0 }}日目</p>
+                                            　　</summary>
+                                                 <a href="{{ url('toilet/'.$person->id.'/edit') }}" class="relative  ml-2">
+                                                 
+                                                     @csrf
+                                                 <i class="material-icons md-90 ml-auto">add</i>
+                                                 </form>
                                             @else
-                                            
-                                            <details>
-                                              <summary class="text-red-500 font-bold text-xl">誘導してください</summary>
-                                              <form action="{{ route('toilet.store', $person->id) }}" method="POST">
-                                                @csrf
-                                                <input type="hidden" name="people_id" value="{{ $person->id }}">
-                                                <div style="display: flex; flex-direction: column; align-items: center;">
-                                                  <h3>尿</h3>
-                                                  
-                                                  <div style="max-width: 300px;">
-                                                    <div class="checkbox-container">
-                                                      <input type="checkbox" name="urine_one" id="urine_one" value="トイレ"> トイレ
+                                           　<div class="flex justify-evenly">
+                                                        <a href="{{ route('toilets.show', $lastToilets->id) }}" class="font-bold text-xl">
+                                                            <div>
+                                                                <p class="text-gray-900 font-bold text-sm">尿:</p>
+                                                                <p class="text-gray-900 font-bold text-xl">{{ $lastToilets->urine_amount }}</p>
+                                                            </div>
+                                                        </a>
+                                                        <a href="{{ route('toilets.show', $lastToilets->id) }}" class="font-bold text-xl">
+                                                            <div>
+                                                                <p class="text-gray-900 font-bold text-sm">便:</p>
+                                                                <p class="text-gray-900 font-bold text-xl">{{ $lastToilets->ben_amount }}</p>
+                                                                <p class="text-gray-900 font-bold text-xl">{{ $lastToilets->ben_condition }}</p>
+                                                            </div>
+                                                         </a>
                                                     </div>
-                                                    
-                                                    <div class="checkbox-container">
-                                                      <input type="checkbox" name="urine_two" id="urine_two" value="おむつ"> おむつ
-                                                    </div>
-                                                    
-                                                    <div class="checkbox-container">
-                                                      <input type="checkbox" name="urine_three" id="urine_three" value="尿漏れ"> 尿漏れ
-                                                    </div>
-                                                  </div>
-                                                </div>
-                                                
-                                                  <style>
-                                                  .checkbox-container {
-                                                    display: flex;
-                                                    align-items: center;
-                                                  }
-                                                  input[type="checkbox"] {
-                                                    margin-right: 8px;
-                                                  }
-                                                </style>
-                                            
-                                                <div style="display: flex; flex-direction: column; align-items: center;">
-                                                    <h3>尿の色</h3>
-                                                        <div style="display: flex; justify-content: center; align-items: center;">
-                                                        </div>
-                                                        <div style="display: flex; justify-content: center; align-items: center; margin-top: 10px;">
-                                                            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
-                                                            <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
-                                                            <i class="fa-solid fa-droplet text-yellow-200" id="urine_color_1" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>
-                                                            <input type="checkbox" name="urine_color_1" id="urine_color_1" value="うすい"> うすい
-                                                            
-                                                            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
-                                                            <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
-                                                            <i class="fa-solid fa-droplet text-yellow-300"  id="urine_color_2" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>
-                                                            <input type="checkbox" name="urine_color_2" id="urine_color_2" value="普通"> 普通
-                                                            
-                                                            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
-                                                            <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
-                                                            <i class="fa-solid fa-droplet text-yellow-500"  id="urine_color_3" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>
-                                                            <input type="checkbox" name="urine_color_3" id="urine_color_3" value="濃い"> 濃い
-                                                        </div>
-                                                 </div>
-                                            
-                                            <div style="display: flex; flex-direction: column; align-items: center;">
-                                              <h3>便</h3>
-                                                <!--<div style="max-width: 300px;">-->
-                                                <!--    <div class="checkbox-container">-->
-                                                <!--        <input type="checkbox" name="ben_one" id="ben_one" value="トイレ">トイレ-->
-                                                <!--  　</div>-->
-                                                <!--    <div class="checkbox-container">-->
-                                                <!--        <input type="checkbox" name="ben_two" id="ben_two" value="おむつ"> おむつ-->
-                                                <!--    </div>-->
-                                                <!--    <div class="checkbox-container">-->
-                                                <!--        <input type="checkbox" name="ben_three" id="ben_three" value="付着あり"> 付着あり-->
-                                                <!--     </div>-->
-                                                <!--</div>-->
-                                                <div style="display: flex; flex-direction: column; align-items: center; my-2;">
-                                                    <p class="text-lg">便の状態</p>
-                                                      <select name="ben_condition" class="w-3/5 mx-1">
-                                                        <option value="selected">選択</option>
-                                                        <option value="硬便">硬便</option>
-                                                        <option value="普通便">普通便</option>
-                                                        <option value="軟便">軟便</option>
-                                                        <option value="泥状便">泥状便</option>
-                                                        <option value="水様便">水様便</option>
-                                                      </select>
-                                                </div>
-                                             </div>
-                                                <style>
-                                                  .checkbox-container {
-                                                    display: flex;
-                                                    align-items: center;
-                                                  }
-                                                  input[type="checkbox"] {
-                                                    margin-right: 8px;
-                                                  }
-                                                </style>
-                                            
-                                             
-                                              　<div style="display: flex; flex-direction: column; align-items: center; my-2;">
-                                                    <p class="text-lg">便の量</p>
-                                                      <select name="ben_amount" class="w-3/5 mx-1">
-                                                        <option value="selected">選択</option>
-                                                        <option value="many">多</option>
-                                                        <option value="normal">普通</option>
-                                                        <option value="less">少</option>
-                                                      </select>
-                                                </div>
-                                                
-                                                <div style="display: flex; flex-direction: column; align-items: center; my-2;">
-                                                    <p class="text-lg">行った便通処置</p>
-                                                      <select name="bentsuu" class="w-3/5 mx-1">
-                                                        <option value="selected">選択</option>
-                                                        <option value="kanchou">浣腸</option>
-                                                        <option value="gezai">下剤</option>
-                                                        <option value="tekiben">摘便</option>
-                                                      </select>
-                                                </div>
-                                                
-                                                <div style="display: flex; flex-direction: column; align-items: center; my-2;">
-                                                    <input type="datetime-local" name="created_at">
-                                                </div>
-                                                
-                                            　　<div style="display: flex; flex-direction: column; align-items: center;">
-                                            　　<button type="submit" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-lg text-lg mr-4">
-                                                   送信
-                                                 </button>
-                                                </div>
-                                              </form>
-                                            </details>
+                                              　
+                                            @endif
+                                        @else
+                                            <p class="text-red-500 font-bold text-xl">登録して<br>ください</p>
+                                                 <a href="{{ url('toilet/'.$person->id.'/edit') }}" class="relative  ml-2">
+                                                     @csrf
+                                                 <i class="material-icons md-90 ml-auto">add</i>
+                                                 </a>
                                         @endif  
                                     </div>
                                   </div>

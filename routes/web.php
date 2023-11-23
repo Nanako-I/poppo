@@ -93,9 +93,9 @@ Route::get('temperature/{people_id}/edit', [TemperatureController::class, 'edit'
 
 
 Route::post('bloodpressures/{people_id}', [BloodpressureController::class, 'store'])->name('bloodpressures.store');
-Route::get('bloodpressure/{people_id}', [BloodpressureController::class, 'show'])->name('bloodpressures.show');
-Route::get('bloodpressure/{people_id}/edit', [BloodpressureController::class, 'edit'])->name('bloodpressure.edit');
-
+Route::get('bloodpressures/{people_id}', [BloodpressureController::class, 'show'])->name('bloodpressures.show');
+// Route::get('bloodpressure/{people_id}/edit', [BloodpressureController::class, 'edit'])->name('bloodpressure.edit');
+Route::get('bloodpressure/{people_id}', [BloodpressureController::class, 'edit'])->name('bloodpressure.edit');
 
 Route::get('foods/{id}', 'FoodController@show')->name('foods.show');
 // Route::get('foods/{id}', 'FoodController@showAmountFood')->name('foods.show');
@@ -107,10 +107,10 @@ Route::post('food/{people_id}/edit', [FoodController::class,'store'])->name('foo
 
 Route::get('toilets/{id}', 'ToiletController@show')->name('toilets.show');
 Route::get('toilet/{people_id}/edit', [ToiletController::class, 'edit'])->name('toilet.edit');
-// Route::post('toilet/{people_id}/edit', [ToiletController::class,'store'])->name('toilet.post');
+Route::post('toilet/{people_id}/edit', [ToiletController::class,'store'])->name('toilet.post');
 
 // プルダウンで登録させるバージョン↓
-Route::post('toilets/{people_id}', [ToiletController::class,'store'])->name('toilet.store');
+// Route::post('toilets/{people_id}', [ToiletController::class,'store'])->name('toilet.store');
 
 Route::post('cars/{people_id}', [CarController::class, 'store'])->name('cars.store');
 Route::get('cars/{people_id}', [CarController::class, 'show'])->name('cars.show');
