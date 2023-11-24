@@ -151,13 +151,13 @@
                                                 <!-- 直近の検温結果表示 -->
                                                 <div class="flex justify-evenly">
                                                         <a href="{{ route('foods.show', $lastFood->id) }}" class="font-bold text-xl">
-                                                            <div>
+                                                            <div class="px-1.5">
                                                                 <p class="text-gray-900 font-bold text-sm">摂取量:</p>
                                                                 <p class="text-gray-900 font-bold text-xl">{{ $lastFood->staple_food }}</p>
                                                             </div>
                                                         </a>
                                                         <a href="{{ route('foods.show', $lastFood->id) }}" class="font-bold text-xl">
-                                                            <div>
+                                                            <div class="px-1.5">
                                                                 <p class="text-gray-900 font-bold text-sm">服用:</p>
                                                                 <p class="text-gray-900 font-bold text-xl">{{ $lastFood->medicine == 'yes' ? 'あり' : 'なし' }}</p>
                                                             </div>
@@ -299,58 +299,54 @@
 
                                 
                                        
-                                        <!-- トイレ登録↓ -->
-                        　    　 　  <div class="border-2 p-2 rounded-lg bg-white m-2">
-                                        <div class="flex justify-start items-center">
-                                            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
-                                            <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
-                                            <i class="fa-solid fa-toilet-paper text-blue-700" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>
-                                            <p class="text-blue-700 font-bold text-xl ml-2">トイレ</p>
-                                        </div>
-                                    <div class="flex items-center justify-center p-4">
-                                   
-                                        @if (!is_null($person) && count($person->toilets) > 0)
-
-                                            @php
+                                <!-- トイレ登録↓ -->
+                        　    　<div class="border-2 p-2 rounded-lg bg-white m-2">
+                                <div class="flex justify-start items-center">
+                                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+                                    <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
+                                    <i class="fa-solid fa-toilet-paper text-blue-700" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>
+                                    <p class="text-blue-700 font-bold text-xl ml-2">トイレ</p>
+                                </div>
+                                <div class="flex items-center justify-center p-4">
+                                    @if (!is_null($person) && count($person->toilets) > 0)
+                                        @php
                                             $lastToilets = $person->toilets->last();
-                                            @endphp
-                                        
-                                            @if ($lastToilets === null || $lastToilets->created_at->diffInHours(now()) >= 6)
-                                            　　<summary class="text-red-500 font-bold text-xl">誘導してください
-                                            　　<p class="text-red-500 font-bold text-xl">未排便{{ $lastToilets ? $lastToilets->created_at->diffInDays(now()) : 0 }}日目</p>
-                                            　　</summary>
-                                                 <a href="{{ url('toilet/'.$person->id.'/edit') }}" class="relative  ml-2">
-                                                 
-                                                     @csrf
-                                                 <i class="material-icons md-90 ml-auto">add</i>
-                                                 </form>
-                                            @else
-                                           　<div class="flex justify-evenly">
-                                                        <a href="{{ route('toilets.show', $lastToilets->id) }}" class="font-bold text-xl">
-                                                            <div>
-                                                                <p class="text-gray-900 font-bold text-sm">尿:</p>
-                                                                <p class="text-gray-900 font-bold text-xl">{{ $lastToilets->urine_amount }}</p>
-                                                            </div>
-                                                        </a>
-                                                        <a href="{{ route('toilets.show', $lastToilets->id) }}" class="font-bold text-xl">
-                                                            <div>
-                                                                <p class="text-gray-900 font-bold text-sm">便:</p>
-                                                                <p class="text-gray-900 font-bold text-xl">{{ $lastToilets->ben_amount }}</p>
-                                                                <p class="text-gray-900 font-bold text-xl">{{ $lastToilets->ben_condition }}</p>
-                                                            </div>
-                                                         </a>
-                                                    </div>
-                                              　
-                                            @endif
+                                        @endphp
+                                        @if ($lastToilets === null || $lastToilets->created_at->diffInHours(now()) >= 1)
+                                            <summary class="text-red-500 font-bold text-xl">誘導してください
+                                                <p class="text-red-500 font-bold text-xl">未排便{{ $lastToilets ? $lastToilets->created_at->diffInDays(now()) : 0 }}日目</p>
+                                            </summary>
+                                            <a href="{{ url('toilet/'.$person->id.'/edit') }}" class="relative ml-2">
+                                                @csrf
+                                                <i class="material-icons md-90 ml-auto">add</i>
+                                            </a>
                                         @else
-                                            <p class="text-red-500 font-bold text-xl">登録して<br>ください</p>
-                                                 <a href="{{ url('toilet/'.$person->id.'/edit') }}" class="relative  ml-2">
-                                                     @csrf
-                                                 <i class="material-icons md-90 ml-auto">add</i>
-                                                 </a>
-                                        @endif  
-                                    </div>
-                                  </div>
+                                            <div class="flex justify-evenly">
+                                                <a href="{{ route('toilets.show', $lastToilets->id) }}" class="font-bold text-xl">
+                                                    <div class="px-1.5">
+                                                        <p class="text-gray-900 font-bold text-sm">尿:</p>
+                                                        <p class="text-gray-900 font-bold text-xl">{{ $lastToilets->urine_amount }}</p>
+                                                    </div>
+                                                </a>
+                                                <a href="{{ route('toilets.show', $lastToilets->id) }}" class="font-bold text-xl">
+                                                    <div class="px-1.5">
+                                                        <p class="text-gray-900 font-bold text-sm">便:</p>
+                                                        <p class="text-gray-900 font-bold text-xl">{{ $lastToilets->ben_amount }}</p>
+                                                        <p class="text-gray-900 font-bold text-xl">{{ $lastToilets->ben_condition }}</p>
+                                                    </div>
+                                                </a>
+                                            </div>
+                                        @endif
+                                    @else
+                                        <p class="text-red-500 font-bold text-xl">登録して<br>ください</p>
+                                        <a href="{{ url('toilet/'.$person->id.'/edit') }}" class="relative ml-2">
+                                            @csrf
+                                            <i class="material-icons md-90 ml-auto">add</i>
+                                        </a>
+                                    @endif
+                                </div>
+                            </div>
+
                                   
                                  
                                 

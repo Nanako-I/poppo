@@ -104,8 +104,8 @@ Route::get('foodlist', [PersonController::class, 'showfood'])->name('foodlist.ed
 Route::get('food/{people_id}/edit', [FoodController::class, 'edit'])->name('food.edit');
 Route::post('food/{people_id}/edit', [FoodController::class,'store'])->name('food.post');
 
-
-Route::get('toilets/{id}', 'ToiletController@show')->name('toilets.show');
+Route::get('toilets/{id}', [ToiletController::class, 'show'])->name('toilets.show');
+// Route::get('toilets/{id}', 'ToiletController@show')->name('toilets.show');
 Route::get('toilet/{people_id}/edit', [ToiletController::class, 'edit'])->name('toilet.edit');
 Route::post('toilet/{people_id}/edit', [ToiletController::class,'store'])->name('toilet.post');
 

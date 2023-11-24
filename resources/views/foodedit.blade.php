@@ -51,7 +51,7 @@
                               <div class="flex items-center justify-center">
                                 <div class="flex flex-col items-center">
                                   <span class="text-gray-400 text-4xl" onclick="changeColorAndSize(this, 'rice_bowl_icon_1')">
-                                    <i class="fa-solid fa-bowl-rice text-red-300 hover:text-white"  id="rice_bowl_icon_1" style="font-size: 1.5em; padding: 15px 5px; transition: transform 0.2s;"></i>
+                                    <i class="fa-solid fa-bowl-rice text-red-300"  id="rice_bowl_icon_1" style="font-size: 1.5em; padding: 15px 5px; transition: transform 0.2s;"></i>
                                   </span>
                                 </div>
                               </div>
