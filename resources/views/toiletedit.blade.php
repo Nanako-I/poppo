@@ -16,7 +16,9 @@
           text-decoration: underline;
         }
       </style>
-    <h2>{{$person->person_name}}さんのトイレ記録</h2>
+      <div class="mx-1.5">
+        <h2>{{$person->person_name}}さんのトイレ記録</h2>
+      </div>
     </form>
    </div>
   </div>
@@ -26,7 +28,6 @@
        <!-- resources/views/components/errors.blade.php -->
        
 <form action="{{ url('toilet/'.$person->id.'/edit') }}" method="POST">
-         
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet">
     @csrf
@@ -47,12 +48,24 @@
         }
         </style>
         
-    <div style="display: flex; flex-direction: column; align-items: center; my-2;">
-        <input type="datetime-local" name="created_at">
+    <div style="display: flex; flex-direction: column; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
+      <!--<input type="datetime-local" name="created_at">-->
+      <h3>トイレに行った時間</h3>
     </div>
-             
-    <div style="max-width: 350px; margin: 1.5rem auto;">
-        <input type="range" id ="urine_range" class="urine-range" name="foo" min="0" max="2" oninput="oninput_urine()">
+    <div style="display: flex; flex-direction: column; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
+      <input type="time" name="created_at" id="scheduled-time">
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
+      <h3>尿の量</h3>
+    </div>
+    
+      <!--<div style="display: flex; justify-content: center; align-items: center; margin-top: 10px;">-->
+      <!--      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />-->
+      <!--      <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>-->
+      <!--     <i class="fa-solid fa-circle text-gray-300" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>-->
+      <!--</div>-->
+     <div style="max-width: 350px; margin: 1.5rem auto;">
+        <input type="range" id ="urine_range" class="urine-range" name="foo" min="0" max="3" oninput="oninput_urine()">
     </div>
       
     <style>
@@ -102,22 +115,20 @@
         &:active::-webkit-slider-thumb {
           box-shadow: 0px 5px 10px -2px rgba(0, 0, 0, 0.3);
         }
-      }
       </style>
       
-  　<div class="flex items-center justify-center">
-  　  <p class="text-lg">尿</p>
-      <input name="urine_amount" type="text" id="toilet_amount" class="w-1/4 h-8px flex-shrink-0 break-words mx-1">
-       <p class="text-lg">割</p>
-    </div>         
-  
-    <div style="max-width: 350px; margin: 1.5rem auto;">
-        <input type="range" id ="ben_range" class="ben-range" name="foo" min="0" max="2" oninput="oninput_ben()">
+  　<div style="display: flex; flex-direction: column; align-items: center;">
+  　  <!--多・普通など反映させるテキストボックス↓-->
+  　  <input name="urine_amount" type="text" id="urine_amount" class="h-8px flex-shrink-0 break-words mx-1" style="width: 4rem;">
+    </div> 
+    
+  　<div style="display: flex; flex-direction: column; align-items: center; my-2;">
+      <h3>便の量</h3>
     </div>
-      
-      <style>
-     
-      
+    <div style="max-width: 350px; margin: 1.5rem auto;">
+      <input type="range" id ="ben_range" class="ben-range" name="foo" min="0" max="3" oninput="oninput_ben()">
+    </div>
+    <style>
       .ben-range {
         -webkit-appearance: none;
         appearance: none;
@@ -157,19 +168,16 @@
         &:active::-webkit-slider-thumb {
           box-shadow: 0px 5px 10px -2px rgba(0, 0, 0, 0.3);
         }
-      }
-      </style>
       
-  　<div class="flex items-center justify-center">
-  　 　<p class="text-lg">便</p>
-      <input name="ben_amount" type="text" id="toilet_amount" class="w-1/4 h-8px flex-shrink-0 break-words mx-1">
-    　<p class="text-lg">割</p>
+      </style>
+    <div class="flex items-center justify-center">
+      <input name="ben_amount" type="text" id="ben_amount" class="h-8px flex-shrink-0 break-words mx-1 ml-px" style="width: 4rem;">
     </div> 
     
     
-    <div style="display: flex; flex-direction: column; align-items: center; my-2;">
-        <p class="text-lg">便の状態</p>
-          <select name="ben_condition" class="w-3/5 mx-1">
+    <div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">
+        <h3>便の状態</h3>
+          <select name="ben_condition" class="mx-1 my-1.5" style="width: 6rem;">
             <option value="selected">選択</option>
             <option value="硬便">硬便</option>
             <option value="普通便">普通便</option>
@@ -188,11 +196,17 @@
         margin-right: 8px;
       }
     </style>
-
-    <div style="display: flex; align-items: center; margin-left: auto; margin-right: auto; max-width: 300px;">
-         <button type="submit" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-lg text-lg mr-4">
-           送信
-         </button>
+    
+    <div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">
+    <h3>備考</h3>
+    <textarea id="result-speech" name="bikou" class="w-3/4 max-w-lg" style="height: 200px;"></textarea>
+    </div>
+    
+    <!--<div style="display: flex; align-items: center; margin-left: auto; margin-right: auto; max-width: 300px; my-2">-->
+    <div style="display: flex; align-items: center; margin-left: auto; margin-right: auto; max-width: 300px;" class="my-2">
+      <button type="submit" class="inline-flex items-center px-6 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+        送信
+      </button>
     </div>
   </form>
     
@@ -201,38 +215,75 @@
  <script>
 
 function oninput_urine(){
-  var urine_range = document.getElementById('urine_range');
-  const urine_amount = document.getElementById("urine_amount");
-  urine_amount.value = urine_range.value;
-};
+  
+  // スクロールバーの値を取得
+    var rangeValue = document.getElementById("urine_range").value;
 
+    // テキストボックスに反映
+    var textBox = document.getElementById("urine_amount");
+    switch (rangeValue) {
+        // urine_rangeの値が0だったらなしを表示させる
+        case "0":
+            textBox.value = "なし";
+            break;
+        case "1":
+            textBox.value = "少";
+            break;
+        case "2":
+            textBox.value = "普通";
+            break;
+        case "3":
+            textBox.value = "多";
+            break;
+        default:
+            textBox.value = ""; // エラー処理など
+            break;
+    }
+};
+  // var urine_range = document.getElementById('urine_range');
+  // const urine_amount = document.getElementById("urine_amount");
+  // urine_amount.value = urine_range.value;
 
 function oninput_ben(){
-  var ben_range = document.getElementById('ben_range');
-  const ben_amount = document.getElementById("ben_amount");
-  ben_amount.value = ben_range.value;
+  
+  // スクロールバーの値を取得
+    var rangeValue = document.getElementById("ben_range").value;
+
+    // テキストボックスに反映
+    var textBox = document.getElementById("ben_amount");
+    switch (rangeValue) {
+        // ben_rangeの値が0だったらなしを表示させる
+        case "0":
+            textBox.value = "なし";
+            break;
+        case "1":
+            textBox.value = "少";
+            break;
+        case "2":
+            textBox.value = "普通";
+            break;
+        case "3":
+            textBox.value = "多";
+            break;
+        default:
+            textBox.value = ""; // エラー処理など
+            break;
+    }
 };
+
+// function oninput_ben(){
+//   var ben_range = document.getElementById('ben_range');
+//   const ben_amount = document.getElementById("ben_amount");
+//   ben_amount.value = ben_range.value;
+// };
 
 // スクロールイベント↓
 
-  function countScroll() {
-  var target = document.getElementById('target');
-  var x = target.scrollLeft;
-  document.getElementById('output').innerHTML = x;
+  // function countScroll() {
+  // var target = document.getElementById('target');
+  // var x = target.scrollLeft;
+  // document.getElementById('output').innerHTML = x;
   
-  // アイコンのサイズ変更
-  // var leftIcon = document.getElementById('leftIcon');
-  // var rightIcon = document.getElementById('rightIcon');
-  // var newSize = 2 + x / 100; // スクロール量に応じてサイズを変更する調整値
-  // leftIcon.style.fontSize = newSize + 'em';
-  // rightIcon.style.fontSize = newSize + 'em';
-  
-  // アイコンの位置調整
-  // var iconWrapper = document.getElementById('iconWrapper');
-  // var maxScroll = target.scrollWidth - target.clientWidth;
-  // var iconPosition = x / maxScroll * (target.clientWidth - leftIcon.clientWidth);
-  // iconWrapper.style.left = iconPosition + 'px';
-}
 
 // スクロールイベントの監視
 var target = document.getElementById('target');

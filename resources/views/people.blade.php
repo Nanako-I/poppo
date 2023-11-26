@@ -104,7 +104,9 @@
                      <a href="{{ url('chart/'.$person->id.'/edit') }}" class="relative  ml-2">
                                                                  @csrf
 
-                      <div class="h-30 flex flex-row items-center rounded-lg bg-white width:100vw">
+                      <div class="h-30 flex flex-row items-center rounded-lg bg-white width:100vw relative z-0">
+                          <!--ハンバーガーメニューが表示された時は、下に表示されるようz-0をつける-->
+                          
                           @if ($person->filename)
                               <img alt="team" class="w-16 h-16 bg-gray-100 object-cover object-center flex-shrink-0 rounded-full mr-4" src="{{ asset('storage/sample/' . $person->filename) }}">
                             @else
@@ -499,19 +501,19 @@
                                    
                                 <!--</div>-->
                                 
-                                         <!-- 活動登録↓ -->
+                                      <!-- 午前の活動↓ -->
                         　    　<div class="border-2 p-2 rounded-lg bg-white m-2">
                                     <div class="flex justify-start items-center">
                                         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
                                         <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
-                                        <i class="fa-solid fa-volume-high text-orange-600" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>
-                                        <p class="text-orange-600 font-bold text-xl ml-2">活動の記録</p>
+                                        <i class="fa-solid fa-sun text-orange-600" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>
+                                        <p class="text-orange-600 font-bold text-xl ml-2">午前の活動</p>
                                     </div>
                                         <div class="flex items-center justify-center p-4">
                                             @if (!is_null($person) && count($person->speeches) > 0)
                                                 @php
-                                                    $lastSpeech = $person->speeches->last();
-                                                    $lastSpeechDate = \Carbon\Carbon::parse($lastSpeech->created_at)->toDateString();
+                                                    $lastSpeech = $person->speeches->whereNotNull('morning_activity')->last();
+                                                    $lastSpeechDate = $lastSpeech ? \Carbon\Carbon::parse($lastSpeech->created_at)->toDateString() : null;
                                                     $today = \Carbon\Carbon::now()->toDateString();
                                                 @endphp
                                                 
@@ -525,23 +527,26 @@
                                                 <summary class="text-red-500 font-bold text-xl">登録してください</summary>
                                                 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
                                                   <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
-                                                  <i class="fa-solid fa-volume-high text-orange-400" style="font-size: 3em; padding: 0 5px;"></i>
-                                             
-                                                    <button id="start-btn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg text-lg">
-                                                      スタート
-                                                    </button>
-                                            
-                                                    <button id="stop-btn" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg text-lg">
-                                                      ストップ
-                                                    </button>
+                                                  <!--<i class="fa-solid fa-volume-high text-orange-400" style="font-size: 3em; padding: 0 5px;"></i>-->
+                                                    <details>
+                                                        <summary class="font-bold text-xl">音声で登録する</summary>
+                                                        <p>音声で入力する場合、スタートボタンを押してください</p>
+                                                        <button id="start-btn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg text-lg">
+                                                          スタート
+                                                        </button>
+                                                
+                                                        <button id="stop-btn" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg text-lg">
+                                                          ストップ
+                                                        </button>
+                                                    </details>
                                                       <div id="result-div"></div>
                                                         <form action="{{ route('speech.store', $person->id) }}" method="POST">
                                                         @csrf
                                                             <input type="hidden" name="people_id" value="{{ $person->id }}">
-                                                            <textarea id="result-speech" name="activity" class="w-full max-w-lg" style="height: 200px;"></textarea>
-                                                            <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+                                                            <textarea id="result-speech" name="morning_activity" class="w-full max-w-lg" style="height: 200px;"></textarea>
+                                                              <button type="submit" class="inline-flex items-center px-6 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
                                                                 送信
-                                                            </button>
+                                                              </button>
                                                         </form>
                                                 </details>
                                             @endif
@@ -551,24 +556,108 @@
                                                 <summary class="text-red-500 font-bold text-xl">登録してください</summary>
                                                 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
                                                 <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
-                                                <i class="fa-solid fa-volume-high text-orange-400" style="font-size: 3em; padding: 0 5px;"></i>
-                                             
-                                                    <button id="start-btn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg text-lg">
-                                                      スタート
-                                                    </button>
-                                            
-                                                    <button id="stop-btn" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg text-lg">
-                                                      ストップ
-                                                    </button>
-                                                        <div id="result-div"></div>
+                                                <!--<i class="fa-solid fa-volume-high text-orange-400" style="font-size: 3em; padding: 0 5px;"></i>-->
+                                                    <details>
+                                                        <summary class="font-bold text-xl">音声で登録する</summary>
+                                                        <p>音声で入力する場合、スタートボタンを押してください</p>
+                                                        <button id="start-btn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg text-lg">
+                                                          スタート
+                                                        </button>
+                                                
+                                                        <button id="stop-btn" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg text-lg">
+                                                          ストップ
+                                                        </button>
+                                                    </details>
+                                                    <div id="result-div"></div>
+                                                    <form action="{{ route('speech.store', $person->id) }}" method="POST">
+                                                    @csrf
+                                                    <input type="hidden" name="people_id" value="{{ $person->id }}">
+                                                    <textarea id="result-speech" name="morning_activity" class="w-full max-w-lg" style="height: 200px;"></textarea>
+                                                           <button type="submit" class="inline-flex items-center px-6 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150 my-2">
+                                                            送信
+                                                          </button>
+                                                    </form>
+                                                </details>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    
+                                     <!-- 午後の活動↓ -->
+                        　    　<div class="border-2 p-2 rounded-lg bg-white m-2">
+                                    <div class="flex justify-start items-center">
+                                        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+                                        <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
+                                        <i class="fa-solid fa-sun text-orange-600" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>
+                                        <p class="text-orange-600 font-bold text-xl ml-2">午後の活動</p>
+                                    </div>
+                                        <div class="flex items-center justify-center p-4">
+                                            @if (!is_null($person) && count($person->speeches) > 0)
+                                                @php
+                                                    $lastAfternoonSpeech = $person->speeches->whereNotNull('afternoon_activity')->last();
+                                                    $lastAfternoonSpeechDate = $lastAfternoonSpeech ? \Carbon\Carbon::parse($lastAfternoonSpeech->created_at)->toDateString() : null;
+                                                    $today = \Carbon\Carbon::now()->toDateString();
+                                                @endphp
+                                                
+                                            @if ($lastAfternoonSpeechDate === $today)
+                                          　     <!-- 登録済みの場合 -->
+                                                <p class="font-bold text-xl p-2">済</p>
+                                                <!--<a href="{{ route('speech.show', $lastSpeech->id) }}" class="text-gray-900 font-bold text-xl">{{ $lastSpeech->activity }}</a>-->
+                                            @else
+                                                <!-- 登録していない場合 -->
+                                                <details>
+                                                <summary class="text-red-500 font-bold text-xl">登録してください</summary>
+                                                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+                                                  <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
+                                                  <!--<i class="fa-solid fa-volume-high text-orange-400" style="font-size: 3em; padding: 0 5px;"></i>-->
+                                                    <details>
+                                                        <summary class="font-bold text-xl">音声で登録する</summary>
+                                                        <p>音声で入力する場合、スタートボタンを押してください</p>
+                                                        <button id="start-btn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg text-lg">
+                                                          スタート
+                                                        </button>
+                                                
+                                                        <button id="stop-btn" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg text-lg">
+                                                          ストップ
+                                                        </button>
+                                                    </details>
+                                                      <div id="result-div"></div>
                                                         <form action="{{ route('speech.store', $person->id) }}" method="POST">
                                                         @csrf
-                                                        <input type="hidden" name="people_id" value="{{ $person->id }}">
-                                                        <textarea id="result-speech" name="activity" class="w-full max-w-lg" style="height: 200px;"></textarea>
-                                                                <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+                                                            <input type="hidden" name="people_id" value="{{ $person->id }}">
+                                                            <textarea id="result-speech" name="afternoon_activity" class="w-full max-w-lg" style="height: 200px;"></textarea>
+                                                              <button type="submit" class="inline-flex items-center px-6 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
                                                                 送信
-                                                                </button>
+                                                              </button>
                                                         </form>
+                                                </details>
+                                            @endif
+                                            @else
+                                                <!-- 登録していない場合 -->
+                                               <details>
+                                                <summary class="text-red-500 font-bold text-xl">登録してください</summary>
+                                                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+                                                <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
+                                                <!--<i class="fa-solid fa-volume-high text-orange-400" style="font-size: 3em; padding: 0 5px;"></i>-->
+                                                    <details>
+                                                        <summary class="font-bold text-xl">音声で登録する</summary>
+                                                        <p>音声で入力する場合、スタートボタンを押してください</p>
+                                                        <button id="start-btn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg text-lg">
+                                                          スタート
+                                                        </button>
+                                                
+                                                        <button id="stop-btn" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg text-lg">
+                                                          ストップ
+                                                        </button>
+                                                    </details>
+                                                    <div id="result-div"></div>
+                                                    <form action="{{ route('speech.store', $person->id) }}" method="POST">
+                                                    @csrf
+                                                    <input type="hidden" name="people_id" value="{{ $person->id }}">
+                                                    <textarea id="result-speech" name="afternoon_activity" class="w-full max-w-lg" style="height: 200px;"></textarea>
+                                                           <button type="submit" class="inline-flex items-center px-6 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150 my-2">
+                                                            送信
+                                                          </button>
+                                                    </form>
                                                 </details>
                                             @endif
                                         </div>
@@ -640,128 +729,6 @@
 
 <script>
 
-     const urineOneIcon = document.querySelector('#urine_one');
-    
-    // add a click event listener to the icon
-    urineOneIcon.addEventListener('click', () => {
-      // update the input value
-      const urineOneInput = document.querySelector('#urine_one_input');
-      urineOneInput.value = 'トイレ';
-    
-      // change the icon color
-      //urineOneIcon.classList.replace('text-gray-400', 'text-yellow-400');
-      urineOneIcon.classList.remove('text-gray-400');
-      urineOneIcon.classList.add('text-yellow-400');
-    });
-    
-     const urineTwoIcon = document.querySelector('#urine_two');
-    
-    // add a click event listener to the icon
-    urineTwoIcon.addEventListener('click', () => {
-      // update the input value
-      const urineTwoInput = document.querySelector('#urine_two_input');
-      urineTwoInput.value = 'おむつ';
-    
-      // change the icon color
-      //urineOneIcon.classList.replace('text-gray-400', 'text-yellow-400');
-      urineTwoIcon.classList.remove('text-gray-400');
-      urineTwoIcon.classList.add('text-yellow-400');
-    });
-    
-    const urineThreeIcon = document.querySelector('#urine_three');
-    
-    // add a click event listener to the icon
-    urineThreeIcon.addEventListener('click', () => {
-      // update the input value
-      const urineThreeInput = document.querySelector('#urine_three_input');
-      urineThreeInput.value = '尿漏れ';
-    
-      // change the icon color
-      //urineOneIcon.classList.replace('text-gray-400', 'text-yellow-400');
-      urineThreeIcon.classList.remove('text-gray-400');
-      urineThreeIcon.classList.add('text-yellow-400');
-    });
-    
-    const benOneIcon = document.querySelector('#ben_one');
-    
-    // add a click event listener to the icon
-    benOneIcon.addEventListener('click', () => {
-      // update the input value
-      const benOneInput = document.querySelector('#ben_one_input');
-      benOneInput.value = 'トイレ';
-    
-      // change the icon color
-      //benTwoIcon.classList.replace('text-gray-400', 'text-yellow-400');
-      benOneIcon.classList.remove('text-gray-400');
-      benOneIcon.classList.add('text-yellow-400');
-    });
-    
-     const benTwoIcon = document.querySelector('#ben_two');
-    
-    // add a click event listener to the icon
-    benTwoIcon.addEventListener('click', () => {
-      // update the input value
-      const benTwoInput = document.querySelector('#ben_two_input');
-      benTwoInput.value = 'おむつ';
-    
-      // change the icon color
-      //benTwoIcon.classList.replace('text-gray-400', 'text-yellow-400');
-      benTwoIcon.classList.remove('text-gray-400');
-      benTwoIcon.classList.add('text-yellow-400');
-    });
-    
-     const benThreeIcon = document.querySelector('#ben_three');
-    
-    // add a click event listener to the icon
-    benThreeIcon.addEventListener('click', () => {
-      // update the input value
-      const benThreeInput = document.querySelector('#ben_three_input');
-      benThreeInput.value = '付着あり';
-    
-      // change the icon color
-      //benTwoIcon.classList.replace('text-gray-400', 'text-yellow-400');
-      benThreeIcon.classList.remove('text-gray-400');
-      benThreeIcon.classList.add('text-yellow-400');
-    });
-    
-    // 尿の色↓
-    const urine_color_1 = document.getElementById("urine_color_1");
-    urine_color_1.addEventListener("click", () => {
-    const UrinColorInput = document.querySelector('#urine_color_input');
-    UrinColorInput.value = 'うすい';
-    });
-    
-    const urine_color_2 = document.getElementById("urine_color_2");
-    urine_color_2.addEventListener("click", () => {
-    const UrinColorInput = document.querySelector('#urine_color_input');
-    UrinColorInput.value = '普通';
-    });
-    
-    const urine_color_3 = document.getElementById("urine_color_3");
-    urine_color_3.addEventListener("click", () => {
-    const UrinColorInput = document.querySelector('#urine_color_input');
-    UrinColorInput.value = '濃い';
-    });
-    
-    // 便の色↓
-    const ben_color_1 = document.getElementById("ben_color_1");
-    ben_color_1.addEventListener("click", () => {
-    const BenColorInput = document.querySelector('#ben_color_input');
-    BenColorInput.value = '白';
-    });
-    
-    const ben_color_2 = document.getElementById("ben_color_2");
-    ben_color_2.addEventListener("click", () => {
-    const BenColorInput = document.querySelector('#ben_color_input');
-    BenColorInput.value = '茶色';
-    });
-    
-    const ben_color_3 = document.getElementById("ben_color_3");
-    ben_color_3.addEventListener("click", () => {
-    const BenColorInput = document.querySelector('#ben_color_input');
-    BenColorInput.value = '黒';
-    });
-
 
   const startBtn = document.querySelector('#start-btn');
   const stopBtn = document.querySelector('#stop-btn');
@@ -796,9 +763,18 @@
     resultSpeech.value = finalTranscript + interimTranscript;
   }
 
-  startBtn.onclick = () => {
-    recognition.start();
-  }
+
+
+if (startBtn) {
+    console.log('Start button found:', startBtn);
+    startBtn.onclick = () => {
+        console.log('Start button clicked.');
+        recognition.start();
+    };
+} else {
+    console.error('Start button not found.');
+}
+
   stopBtn.onclick = () => {
     recognition.stop();
   }

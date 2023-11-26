@@ -54,7 +54,7 @@ class SpeechController extends Controller
         // バリデーションした内容を保存する↓
         
         $speech = Speech::create([
-        // 'people_id' => $person->id,
+        'people_id' => $request->people_id,
         'morning_activity' => $request->morning_activity,
         'afternoon_activity' => $request->afternoon_activity,
         
