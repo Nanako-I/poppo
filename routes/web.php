@@ -91,11 +91,13 @@ Route::get('temperatures/{people_id}', [TemperatureController::class, 'show'])->
 // Route::get('temperatures/{people_id}', [PersonController::class, 'index'])->name('temperatures.show');
 Route::get('temperature/{people_id}/edit', [TemperatureController::class, 'edit'])->name('temperature.edit');
 
-
+// プルダウンで登録させるバージョン↓
 Route::post('bloodpressures/{people_id}', [BloodpressureController::class, 'store'])->name('bloodpressures.store');
 Route::get('bloodpressures/{people_id}', [BloodpressureController::class, 'show'])->name('bloodpressures.show');
-// Route::get('bloodpressure/{people_id}/edit', [BloodpressureController::class, 'edit'])->name('bloodpressure.edit');
-Route::get('bloodpressure/{people_id}', [BloodpressureController::class, 'edit'])->name('bloodpressure.edit');
+// Route::get('bloodpressure/{people_id}', [BloodpressureController::class, 'edit'])->name('bloodpressure.edit');
+
+Route::get('bloodpressures/{people_id}/edit', [BloodpressureController::class, 'edit'])->name('bloodpressures.edit');
+
 
 Route::get('foods/{id}', 'FoodController@show')->name('foods.show');
 // Route::get('foods/{id}', 'FoodController@showAmountFood')->name('foods.show');
@@ -119,7 +121,11 @@ Route::get('cars/{people_id}/edit', [CarController::class, 'edit'])->name('cars.
 
 // Route::get('speeches/{id}', 'SpeechController@show')->name('speeches.show');
 // Route::get('speech/{people_id}/edit', [SpeechController::class, 'edit'])->name('speech.edit');
-Route::post('speech/{people_id}/edit', [SpeechController::class,'store'])->name('speech.post');
+Route::get('morningspeech/{people_id}/edit', [SpeechController::class, 'show'])->name('morningspeech.show');
+Route::post('morningspeech/{people_id}/edit', [SpeechController::class,'store'])->name('morningspeech.post');
+// SpeechControllerにshowメソッド・storeメソッドが重複するためedit createで書いた↓
+Route::get('afternoonspeech/{people_id}/edit', [SpeechController::class, 'edit'])->name('afternoonspeech.show');
+Route::post('afternoonspeech/{people_id}/edit', [SpeechController::class,'create'])->name('afternoonspeech.post');
 
 // プルダウンで登録させるバージョン↓
 Route::post('speeches/{people_id}', [SpeechController::class,'store'])->name('speech.store');

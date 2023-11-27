@@ -50,6 +50,8 @@ class BloodpressureController extends Controller
         'people_id' => $request->people_id,
         'max_blood' => $request->max_blood,
         'min_blood' => $request->min_blood,
+        'pulse' => $request->pulse,
+        'spo2' => $request->spo2,
          
     ]);
     
@@ -74,6 +76,7 @@ class BloodpressureController extends Controller
     // $person = Person::findOrFail($id);
     // $bloodpressures = $person->bloodpressures;
     $bloodpressure = $person->bloodpressures;
+    $people = Person::all(); // ここで $people を取得
     // @dd($bloodpressures);
     return view('people', compact('bloodpressure'));
     
@@ -89,9 +92,12 @@ class BloodpressureController extends Controller
      * @param  \App\Models\Speech  $speech
      * @return \Illuminate\Http\Response
      */
-     public function edit(Request $request, $people_id)
+     public function edit($people_id)
 {
     $person = Person::findOrFail($people_id);
+    $bloodpressure = $person->bloodpressures;
+
+    $people = Person::all(); // ここで $people を取得
     return view('bloodpressureedit', ['id' => $person->id],compact('person'));
 }
 

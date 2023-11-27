@@ -33,11 +33,27 @@ class SpeechController extends Controller
      * @return \Illuminate\Http\Response
      */
      public function create(Request $request)
-{
-    $person = Person::findOrFail($request->people_id);
+    {
+        $storeData = $request->validate([
+            // 'temperature' => 'required|max:255',
+            // 'people_id' => 'required|exists:people,id',
+        ]);
+        // バリデーションした内容を保存する↓
+        
+        $speech = Speech::create([
+        'people_id' => $request->people_id,
+        'morning_activity' => $request->morning_activity,
+        'afternoon_activity' => $request->afternoon_activity,
+        
+         
+    ]);
+    // return redirect('people/{id}/edit');
+//   $person = Person::findOrFail($request->people_id);
+   $people = Person::all();
     // return redirect()->route('speech.edit', ['people_id' => $person->id]);
-    return view('people', ['people' => Person::all()]);
-}
+    // return view('people', ['people' => Person::all()]);
+    return view('people', compact('speech', 'people'));
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -74,13 +90,17 @@ class SpeechController extends Controller
      * @param  \App\Models\Speech  $speech
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+   public function show($people_id)
 {
-    
-    $person = Person::findOrFail($id);
+    $person = Person::findOrFail($people_id);
     $speeches = $person->speeches;
 
-    return view('people', compact('speeches'));
+    $people = Person::all(); // ここで $people を取得
+
+    return view('morningspeech', ['id' => $person->id],compact('person'));
+    // return view('morningspeechedit', ['id' => $person->id],compact('person'));
+    // return view('people', compact('speeches', 'people'));
+
     
     // $temperature = Temperature::findOrFail($id);
 
@@ -93,10 +113,14 @@ class SpeechController extends Controller
      * @param  \App\Models\Speech  $speech
      * @return \Illuminate\Http\Response
      */
-     public function edit(Request $request, $people_id)
+     public function edit($people_id)
 {
     $person = Person::findOrFail($people_id);
-    return view('speechedit', ['id' => $person->id],compact('person'));
+    $speeches = $person->speeches;
+
+    $people = Person::all(); // ここで $people を取得
+
+    return view('afternoonspeech', ['id' => $person->id],compact('person'));
 }
 
     /**

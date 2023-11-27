@@ -9,7 +9,7 @@ class Bloodpressure extends Model
 {
     use HasFactory;
     protected $table = 'bloodpressures';
-    protected $fillable = ['people_id','max_blood','min_blood'];
+    protected $fillable = ['people_id','max_blood','min_blood','min_blood', 'pulse', 'spo2'];
     
     public function person()
     {

@@ -134,7 +134,7 @@
                                         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
                                         <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
                                         <i class="fa-solid fa-bowl-rice text-emerald-700" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>
-                                        <p class="text-emerald-700 font-bold text-xl ml-2">食事量</p>
+                                        <p class="font-bold text-xl ml-2">食事量</p>
                                     </div>
                                     
                                     <!-- people.blade.php -->
@@ -192,8 +192,8 @@
                                       <div class="flex justify-start items-center">
                                         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
                                         <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
-                                        <i class="fa-solid fa-thermometer text-pink-600" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>
-                                        <p class="text-pink-600 font-bold text-xl ml-2">体温</p>
+                                        <i class="fa-solid fa-thermometer text-sky-600" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>
+                                        <p class="font-bold text-xl ml-2">体温</p>
                                     </div>
                                     
                                     <!-- people.blade.php -->
@@ -225,7 +225,7 @@
                                                 <form action="{{ route('temperatures.store', $person->id) }}" method="POST">
                                                     @csrf
                                                     <input type="hidden" name="people_id" value="{{ $person->id }}">
-                                                    <input name="temperature" id="text-box" class="appearance-none block w-1/2 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white font-bold" type="text" placeholder="">
+                                                    <input name="temperature" id="text-box" class="appearance-none block w-1/2 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white font-bold" type="text" placeholder="">℃
                                                     <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
                                                         送信
                                                     </button>
@@ -241,60 +241,53 @@
                                     <div class="flex justify-start items-center">
                                         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
                                         <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
-                                        <i class="fa-solid fa-thermometer text-pink-600" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>
-                                        <p class="text-pink-600 font-bold text-xl ml-2">血圧</p>
+                                        <i class="fa-solid fa-heart-pulse text-pink-600" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>
+                                        <p class="font-bold text-xl ml-2">血圧・脈・SpO2</p>
                                     </div>
                                     
                                     <!-- people.blade.php -->
                                     <div class="flex items-center justify-center p-4">
                                         @if (!is_null($person) && count($person->bloodpressures) > 0)
-                                        
                                             @php
                                                $lastBloodpressures = $person->bloodpressures->last();
                                             @endphp
                                             @if ($lastBloodpressures->created_at->diffInHours(now()) >= 6)
                                                 <!-- 血圧フォーム -->
-                                                <details>
-                                                    <summary class="text-red-500 font-bold text-xl">記録してください</summary>
-                                                    <form action="{{ route('bloodpressures.store', $person->id) }}" method="POST">
-                                                        @csrf
-                                                        <input type="hidden" name="people_id" value="{{ $person->id }}">
-                                                        <p>血圧（上）</p>
-                                                        <input name="max_blood" id="text-box" class="appearance-none block w-1/2 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white font-bold" type="text" placeholder="">
-                                                        <p>血圧（下）</p>
-                                                        <input name="min_blood" id="text-box" class="appearance-none block w-1/2 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white font-bold" type="text" placeholder="">
-                                                        <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
-                                                            送信
-                                                        </button>
-                                                    </form>
-                                                </details>
+                                                <summary class="text-red-500 font-bold text-xl">記録してください</summary>
+                                                <a href="{{ url('bloodpressures/'.$person->id.'/edit') }}" class="relative ml-2">
+                                                    @csrf
+                                                <i class="material-icons md-90 ml-auto">add</i>
+                                                </a>
                                             @else
-                                                <!-- 直近の検温結果表示 -->
+                                                <!-- 直近のバイタル結果表示 -->
                                                 <a href="{{ route('bloodpressures.show', $lastBloodpressures->id) }}" class="text-gray-900 font-bold text-xl">
                                         　　　　    @csrf
                                             　　　　<div class="flex justify-evenly">
-                                                        <p class="text-gray-900 font-bold text-sm">上</p>
-                                                        <p class="text-gray-900 font-bold text-xl">{{ $lastBloodpressures->max_blood }}</p>
-                                                        <p class="text-gray-900 font-bold text-sm">下</p>
-                                                        <p class="text-gray-900 font-bold text-xl">{{ $lastBloodpressures->min_blood }}</p>
+                                            　　　　        <div class="px-1.5">
+                                                　　　　        <p class="text-gray-900 font-bold text-sm">血圧:</p>
+                                                            <p class="text-gray-900 font-bold text-xl">{{ $lastBloodpressures->max_blood }}/{{ $lastBloodpressures->min_blood }}</p>
+                                                            <!--<p class="text-gray-900 font-bold text-sm">/</p>-->
+                                                            <!--<p class="text-gray-900 font-bold text-xl">{{ $lastBloodpressures->min_blood }}</p>-->
+                                                        </div>
+                                                        <div class="px-1.5">
+                                                　　　　        <p class="text-gray-900 font-bold text-sm">脈:</p>
+                                                            <p class="text-gray-900 font-bold text-xl">{{ $lastBloodpressures->pulse}}/分</p>
+                                                            <!--<p class="text-gray-900 font-bold text-sm">/分</p>-->
+                                                        </div>
+                                                        <div class="px-1.5">
+                                                　　　　        <p class="text-gray-900 font-bold text-sm">SpO2:</p>
+                                                            <p class="text-gray-900 font-bold text-xl">{{ $lastBloodpressures->spo2}}％</p>
+                                                            <!--<p class="text-gray-900 font-bold text-sm">％</p>-->
+                                                        </div>
                                                     </div>
                                                 </a>
                                             @endif
                                         @else
-                                            <details>
-                                                <summary class="text-red-500 font-bold text-xl">登録してください</summary>
-                                                <form action="{{ route('bloodpressures.store', $person->id) }}" method="POST">
-                                                @csrf
-                                                    <input type="hidden" name="people_id" value="{{ $person->id }}">
-                                                    <p>血圧（上）</p>
-                                                    <input name="max_blood" id="text-box" class="appearance-none block w-1/2 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white font-bold" type="text" placeholder="">
-                                                    <p>血圧（下）</p>
-                                                    <input name="min_blood" id="text-box" class="appearance-none block w-1/2 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white font-bold" type="text" placeholder="">
-                                                    <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
-                                                        送信
-                                                    </button>
-                                                </form>
-                                            </details>
+                                            <summary class="text-red-500 font-bold text-xl">記録してください</summary>
+                                                <a href="{{ url('bloodpressures/'.$person->id.'/edit') }}" class="relative ml-2">
+                                                    @csrf
+                                                <i class="material-icons md-90 ml-auto">add</i>
+                                                </a>
                                         @endif
                                     </div>
                                 </div>
@@ -307,14 +300,14 @@
                                     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
                                     <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
                                     <i class="fa-solid fa-toilet-paper text-blue-700" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>
-                                    <p class="text-blue-700 font-bold text-xl ml-2">トイレ</p>
+                                    <p class="font-bold text-xl ml-2">トイレ</p>
                                 </div>
                                 <div class="flex items-center justify-center p-4">
                                     @if (!is_null($person) && count($person->toilets) > 0)
                                         @php
                                             $lastToilets = $person->toilets->last();
                                         @endphp
-                                        @if ($lastToilets === null || $lastToilets->created_at->diffInHours(now()) >= 1)
+                                        @if ($lastToilets === null || $lastToilets->created_at->diffInHours(now()) >= 6)
                                             <summary class="text-red-500 font-bold text-xl">誘導してください
                                                 <p class="text-red-500 font-bold text-xl">未排便{{ $lastToilets ? $lastToilets->created_at->diffInDays(now()) : 0 }}日目</p>
                                             </summary>
@@ -350,156 +343,6 @@
                             </div>
 
                                   
-                                 
-                                
-                                <!-- 問題行動登録↓ -->
-                                    <!--<div class="border-2 p-2 rounded-lg bg-white m-2">-->
-                                    <!--    <div class="flex justify-start items-center">-->
-                                    <!--        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />-->
-                                    <!--        <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>-->
-                                    <!--        <i class="fa-solid fa-person-burst text-blue-700" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>-->
-                                    <!--        <p class="text-blue-700 font-bold text-xl ml-2">問題行動</p>-->
-                                    <!--    </div>-->
-                                    
-                                    <!--<div class="flex items-center justify-center p-4">-->
-                                    <!--<details>-->
-                                    <!--    <summary class="text-red-500 font-bold text-xl">問題行動はありましたか？</summary>-->
-                                        <!--<form action="{{ route('cars.store', $person->id) }}" method="POST">-->
-                                    <!--@csrf-->
-                                    　　
-                                    <!--　　<div style="display: flex; flex-direction: column; align-items: center;">-->
-                                    <!--      <h3>今日の問題行動</h3>-->
-                                          
-                                    <!--      <div style="max-width: 300px;">-->
-                                    <!--        <div class="checkbox-container">-->
-                                    <!--          <input type="checkbox" name="" id="" value="他害"> 他害-->
-                                    <!--        </div>-->
-                                            
-                                    <!--        <div class="checkbox-container">-->
-                                    <!--          <input type="checkbox" name="" id="" value="自傷"> 自傷-->
-                                    <!--        </div>-->
-                                            
-                                    <!--        <div class="checkbox-container">-->
-                                    <!--          <input type="checkbox" name="" id="" value="激しいこだわり">激しいこだわり -->
-                                    <!--        </div>-->
-                                            
-                                    <!--        <div class="checkbox-container">-->
-                                    <!--          <input type="checkbox" name="" id="" value="大声・大泣き">大声・大泣き-->
-                                    <!--        </div>-->
-                                            
-                                    <!--        <div class="checkbox-container">-->
-                                    <!--          <input type="checkbox" name="" id="" value="破壊">破壊 -->
-                                    <!--        </div>-->
-                                            
-                                    <!--        <div class="checkbox-container">-->
-                                    <!--          <input type="checkbox" name="" id="" value="睡眠の乱れ">睡眠の乱れ -->
-                                    <!--        </div>-->
-                                            
-                                    <!--        <div class="checkbox-container">-->
-                                    <!--          <input type="checkbox" name="" id="" value="食事関係の行動">食事関係の行動 -->
-                                    <!--        </div>-->
-                                            
-                                    <!--        <div class="checkbox-container">-->
-                                    <!--          <input type="checkbox" name="" id="" value="排泄関係の行動">排泄関係の行動 -->
-                                    <!--        </div>-->
-                                            
-                                    <!--         <div class="checkbox-container">-->
-                                    <!--          <input type="checkbox" name="" id="" value="無し">無し -->
-                                    <!--        </div>-->
-                                            
-                                    <!--         <input type="hidden" name="people_id" value="{{ $person->id }}">-->
-                                    <!--         <p>問題行動の詳細</p>-->
-                                    <!--        <input name="" id="text-box" class="appearance-none block w-full text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white font-bold" type="text" placeholder="">-->
-                                            
-                                    <!--        <p>問題行動の前の出来事</p>-->
-                                            
-                                    <!--        <div class="checkbox-container">-->
-                                    <!--          <input type="checkbox" name="" id="" value="口腔ケア"> 口腔ケア-->
-                                    <!--        </div>-->
-                                            
-                                    <!--        <div class="checkbox-container">-->
-                                    <!--          <input type="checkbox" name="" id="" value="食事準備">食事準備 -->
-                                    <!--        </div>-->
-                                            
-                                    <!--        <div class="checkbox-container">-->
-                                    <!--          <input type="checkbox" name="" id="" value="食事中">食事中-->
-                                    <!--        </div>-->
-                                            
-                                    <!--        <div class="checkbox-container">-->
-                                    <!--          <input type="checkbox" name="" id="" value="食事片付け">食事片付け-->
-                                    <!--        </div>-->
-                                            
-                                    <!--        <div class="checkbox-container">-->
-                                    <!--          <input type="checkbox" name="" id="" value="作業準備">作業準備-->
-                                    <!--        </div>-->
-                                            
-                                    <!--        <div class="checkbox-container">-->
-                                    <!--          <input type="checkbox" name="" id="" value="作業中">作業中-->
-                                    <!--        </div>-->
-                                            
-                                    <!--        <div class="checkbox-container">-->
-                                    <!--          <input type="checkbox" name="" id="" value="トイレ">トイレ -->
-                                    <!--        </div>-->
-                                            
-                                    <!--        <div class="checkbox-container">-->
-                                    <!--          <input type="checkbox" name="" id="" value="入浴準備">入浴準備 -->
-                                    <!--        </div>-->
-                                            
-                                    <!--         <div class="checkbox-container">-->
-                                    <!--          <input type="checkbox" name="" id="" value="入浴中">入浴中 -->
-                                    <!--        </div>-->
-                                            
-                                    <!--        <div class="checkbox-container">-->
-                                    <!--          <input type="checkbox" name="" id="" value="その他">その他 -->
-                                    <!--        </div>-->
-                                            
-                                    <!--        <input type="hidden" name="people_id" value="{{ $person->id }}">-->
-                                    <!--         <p>備考</p>-->
-                                    <!--        <input name="" id="text-box" class="appearance-none block w-full text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white font-bold" type="text" placeholder="">-->
-                                            
-                                    <!--        <p>考えられる原因</p>-->
-                                            
-                                    <!--        <div class="checkbox-container">-->
-                                    <!--          <input type="checkbox" name="" id="" value="周囲の音"> 周囲の音-->
-                                    <!--        </div>-->
-                                            
-                                    <!--        <div class="checkbox-container">-->
-                                    <!--          <input type="checkbox" name="" id="" value="周囲の匂い">周囲の匂い -->
-                                    <!--        </div>-->
-                                            
-                                    <!--        <div class="checkbox-container">-->
-                                    <!--          <input type="checkbox" name="" id="" value="周囲の景色">周囲の景色-->
-                                    <!--        </div>-->
-                                            
-                                    <!--        <div class="checkbox-container">-->
-                                    <!--          <input type="checkbox" name="" id="" value="職員による声かけ">職員による声かけ-->
-                                    <!--        </div>-->
-                                            
-                                    <!--        <div class="checkbox-container">-->
-                                    <!--          <input type="checkbox" name="" id="" value="他利用者とのやりとり">他利用者とのやりとり-->
-                                    <!--        </div>-->
-                                            
-                                    <!--        <div class="checkbox-container">-->
-                                    <!--          <input type="checkbox" name="" id="" value="体調">体調-->
-                                    <!--        </div>-->
-                                            
-                                        
-                                    <!--        <p>備考</p>-->
-                                    <!--        <input name="" id="text-box" class="appearance-none block w-full text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white font-bold" type="text" placeholder="">-->
-                                            
-                                    <!--        <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">-->
-                                    <!--            送信-->
-                                    <!--        </button>-->
-                                        
-                                    <!--      </div>-->
-                                    <!--    </div>-->
-                                    <!--</div>            -->
-                                       
-                                    <!--</details>-->
-                                    <!--</form>-->
-                                                
-                                   
-                                <!--</div>-->
                                 
                                       <!-- 午前の活動↓ -->
                         　    　<div class="border-2 p-2 rounded-lg bg-white m-2">
@@ -507,7 +350,7 @@
                                         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
                                         <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
                                         <i class="fa-solid fa-sun text-orange-600" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>
-                                        <p class="text-orange-600 font-bold text-xl ml-2">午前の活動</p>
+                                        <p class="font-bold text-xl ml-2">午前の活動</p>
                                     </div>
                                         <div class="flex items-center justify-center p-4">
                                             @if (!is_null($person) && count($person->speeches) > 0)
@@ -520,64 +363,27 @@
                                             @if ($lastSpeechDate === $today)
                                           　     <!-- 登録済みの場合 -->
                                                 <p class="font-bold text-xl p-2">済</p>
-                                                <!--<a href="{{ route('speech.show', $lastSpeech->id) }}" class="text-gray-900 font-bold text-xl">{{ $lastSpeech->activity }}</a>-->
+                                                
                                             @else
                                                 <!-- 登録していない場合 -->
-                                                <details>
+                                                <!--<details>-->
                                                 <summary class="text-red-500 font-bold text-xl">登録してください</summary>
-                                                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
-                                                  <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
-                                                  <!--<i class="fa-solid fa-volume-high text-orange-400" style="font-size: 3em; padding: 0 5px;"></i>-->
-                                                    <details>
-                                                        <summary class="font-bold text-xl">音声で登録する</summary>
-                                                        <p>音声で入力する場合、スタートボタンを押してください</p>
-                                                        <button id="start-btn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg text-lg">
-                                                          スタート
-                                                        </button>
+                                                <a href="{{ url('morningspeech/'.$person->id.'/edit') }}" class="relative ml-2">
                                                 
-                                                        <button id="stop-btn" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg text-lg">
-                                                          ストップ
-                                                        </button>
-                                                    </details>
-                                                      <div id="result-div"></div>
-                                                        <form action="{{ route('speech.store', $person->id) }}" method="POST">
-                                                        @csrf
-                                                            <input type="hidden" name="people_id" value="{{ $person->id }}">
-                                                            <textarea id="result-speech" name="morning_activity" class="w-full max-w-lg" style="height: 200px;"></textarea>
-                                                              <button type="submit" class="inline-flex items-center px-6 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
-                                                                送信
-                                                              </button>
-                                                        </form>
-                                                </details>
+                                                
+                                                @csrf
+                                                <i class="material-icons md-90 ml-auto">add</i>
+                                                </a>
+                                                
                                             @endif
                                             @else
                                                 <!-- 登録していない場合 -->
-                                               <details>
-                                                <summary class="text-red-500 font-bold text-xl">登録してください</summary>
-                                                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
-                                                <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
-                                                <!--<i class="fa-solid fa-volume-high text-orange-400" style="font-size: 3em; padding: 0 5px;"></i>-->
-                                                    <details>
-                                                        <summary class="font-bold text-xl">音声で登録する</summary>
-                                                        <p>音声で入力する場合、スタートボタンを押してください</p>
-                                                        <button id="start-btn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg text-lg">
-                                                          スタート
-                                                        </button>
+                                               <summary class="text-red-500 font-bold text-xl">登録してください</summary>
                                                 
-                                                        <button id="stop-btn" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg text-lg">
-                                                          ストップ
-                                                        </button>
-                                                    </details>
-                                                    <div id="result-div"></div>
-                                                    <form action="{{ route('speech.store', $person->id) }}" method="POST">
-                                                    @csrf
-                                                    <input type="hidden" name="people_id" value="{{ $person->id }}">
-                                                    <textarea id="result-speech" name="morning_activity" class="w-full max-w-lg" style="height: 200px;"></textarea>
-                                                           <button type="submit" class="inline-flex items-center px-6 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150 my-2">
-                                                            送信
-                                                          </button>
-                                                    </form>
-                                                </details>
+                                                <a href="{{ url('morningspeech/'.$person->id.'/edit') }}" class="relative ml-2">
+                                                @csrf
+                                                <i class="material-icons md-90 ml-auto">add</i>
+                                                </a>
                                             @endif
                                         </div>
                                     </div>
@@ -588,7 +394,7 @@
                                         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
                                         <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
                                         <i class="fa-solid fa-sun text-orange-600" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>
-                                        <p class="text-orange-600 font-bold text-xl ml-2">午後の活動</p>
+                                        <p class="font-bold text-xl ml-2">午後の活動</p>
                                     </div>
                                         <div class="flex items-center justify-center p-4">
                                             @if (!is_null($person) && count($person->speeches) > 0)
@@ -601,64 +407,22 @@
                                             @if ($lastAfternoonSpeechDate === $today)
                                           　     <!-- 登録済みの場合 -->
                                                 <p class="font-bold text-xl p-2">済</p>
-                                                <!--<a href="{{ route('speech.show', $lastSpeech->id) }}" class="text-gray-900 font-bold text-xl">{{ $lastSpeech->activity }}</a>-->
+                                                
                                             @else
                                                 <!-- 登録していない場合 -->
-                                                <details>
                                                 <summary class="text-red-500 font-bold text-xl">登録してください</summary>
-                                                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
-                                                  <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
-                                                  <!--<i class="fa-solid fa-volume-high text-orange-400" style="font-size: 3em; padding: 0 5px;"></i>-->
-                                                    <details>
-                                                        <summary class="font-bold text-xl">音声で登録する</summary>
-                                                        <p>音声で入力する場合、スタートボタンを押してください</p>
-                                                        <button id="start-btn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg text-lg">
-                                                          スタート
-                                                        </button>
-                                                
-                                                        <button id="stop-btn" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg text-lg">
-                                                          ストップ
-                                                        </button>
-                                                    </details>
-                                                      <div id="result-div"></div>
-                                                        <form action="{{ route('speech.store', $person->id) }}" method="POST">
-                                                        @csrf
-                                                            <input type="hidden" name="people_id" value="{{ $person->id }}">
-                                                            <textarea id="result-speech" name="afternoon_activity" class="w-full max-w-lg" style="height: 200px;"></textarea>
-                                                              <button type="submit" class="inline-flex items-center px-6 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
-                                                                送信
-                                                              </button>
-                                                        </form>
-                                                </details>
+                                                <a href="{{ url('afternoonspeech/'.$person->id.'/edit') }}" class="relative ml-2">
+                                                @csrf
+                                                <i class="material-icons md-90 ml-auto">add</i>
+                                                </a>
                                             @endif
                                             @else
                                                 <!-- 登録していない場合 -->
-                                               <details>
-                                                <summary class="text-red-500 font-bold text-xl">登録してください</summary>
-                                                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
-                                                <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
-                                                <!--<i class="fa-solid fa-volume-high text-orange-400" style="font-size: 3em; padding: 0 5px;"></i>-->
-                                                    <details>
-                                                        <summary class="font-bold text-xl">音声で登録する</summary>
-                                                        <p>音声で入力する場合、スタートボタンを押してください</p>
-                                                        <button id="start-btn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg text-lg">
-                                                          スタート
-                                                        </button>
-                                                
-                                                        <button id="stop-btn" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg text-lg">
-                                                          ストップ
-                                                        </button>
-                                                    </details>
-                                                    <div id="result-div"></div>
-                                                    <form action="{{ route('speech.store', $person->id) }}" method="POST">
-                                                    @csrf
-                                                    <input type="hidden" name="people_id" value="{{ $person->id }}">
-                                                    <textarea id="result-speech" name="afternoon_activity" class="w-full max-w-lg" style="height: 200px;"></textarea>
-                                                           <button type="submit" class="inline-flex items-center px-6 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150 my-2">
-                                                            送信
-                                                          </button>
-                                                    </form>
-                                                </details>
+                                               <summary class="text-red-500 font-bold text-xl">登録してください</summary>
+                                                <a href="{{ url('afternoonspeech/'.$person->id.'/edit') }}" class="relative ml-2">
+                                                @csrf
+                                                <i class="material-icons md-90 ml-auto">add</i>
+                                                </a>
                                             @endif
                                         </div>
                                     </div>
@@ -730,54 +494,110 @@
 <script>
 
 
-  const startBtn = document.querySelector('#start-btn');
-  const stopBtn = document.querySelector('#stop-btn');
-  const resultDiv = document.querySelector('#result-div');
-  const resultSpeech = document.querySelector('#result-speech');
+ const startBtn = document.querySelector('#start-btn');
+const stopBtn = document.querySelector('#stop-btn');
+const resultSpeech = document.querySelector('#result-speech');
 
-  SpeechRecognition = webkitSpeechRecognition || SpeechRecognition;
-  let recognition = new SpeechRecognition();
+let morningRecognition = initMorningRecognition();
 
-  recognition.lang = 'ja-JP';
-  recognition.interimResults = true;
-  recognition.continuous = true;
+function initMorningRecognition() {
+    let recognition = new (webkitSpeechRecognition || SpeechRecognition)();
+    recognition.lang = 'ja-JP';
+    recognition.interimResults = true;
+    recognition.continuous = true;
 
-  let finalTranscript = ''; // 確定した(黒の)認識結果
+    let finalTranscript = ''; // 確定した(黒の)認識結果
 
-  recognition.onresult = (event) => {
-    let interimTranscript = ''; // 暫定(灰色)の認識結果
-    for (let i = event.resultIndex; i < event.results.length; i++) {
-      let transcript = event.results[i][0].transcript;
-      if (event.results[i].isFinal) {
-        
-        finalTranscript += transcript;
-        console.log('aaa');
-      } else {
-        
-        interimTranscript = transcript;
-        console.log('bbb');
-      }
+    recognition.onresult = (event) => {
+        let interimTranscript = ''; // 暫定(灰色)の認識結果
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+            let transcript = event.results[i][0].transcript;
+            if (event.results[i].isFinal) {
+                finalTranscript += transcript;
+                console.log('aaa');
+            } else {
+                interimTranscript = transcript;
+                console.log('bbb');
+            }
+        }
+        console.log('ccc');
+        resultSpeech.value = finalTranscript + interimTranscript;
     }
-    // resultDiv.innerHTML = finalTranscript + '<i style="color:#ddd;">' + interimTranscript + '</i>';
-    console.log('ccc');
-    resultSpeech.value = finalTranscript + interimTranscript;
-  }
 
-
+    return recognition;
+}
 
 if (startBtn) {
     console.log('Start button found:', startBtn);
     startBtn.onclick = () => {
         console.log('Start button clicked.');
-        recognition.start();
+        morningRecognition.start();
     };
 } else {
     console.error('Start button not found.');
 }
 
-  stopBtn.onclick = () => {
-    recognition.stop();
-  }
+if (stopBtn) {
+    stopBtn.onclick = () => {
+        morningRecognition.stop();
+    }
+} else {
+    console.error('Stop button not found.');
+}
+
+// 午後の活動の認識処理も同様に別のオブジェクトを作成
+const startBtn2 = document.querySelector('#start-btn2');
+const stopBtn2 = document.querySelector('#stop-btn2');
+const afternoonSpeech = document.querySelector('#afternoon-speech');
+
+let afternoonRecognition = initAfternoonRecognition();
+
+function initAfternoonRecognition() {
+    let recognition2 = new (webkitSpeechRecognition || SpeechRecognition)();
+    recognition2.lang = 'ja-JP';
+    recognition2.interimResults = true;
+    recognition2.continuous = true;
+
+    let finalTranscript2 = ''; // 確定した(黒の)認識結果
+
+    recognition2.onresult = (event) => {
+        let interimTranscript2 = ''; // 暫定(灰色)の認識結果
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+            let transcript2 = event.results[i][0].transcript;
+            if (event.results[i].isFinal) {
+                finalTranscript2 += transcript;
+                console.log('aaa');
+            } else {
+                interimTranscript2 = transcript;
+                console.log('bbb');
+            }
+        }
+        console.log('ccc');
+        afternoonSpeech.value = finalTranscript2 + interimTranscript2;
+    }
+
+    return recognition2;
+}
+
+if (startBtn2) {
+    console.log('Start button 2 found:', startBtn2);
+    startBtn2.onclick = () => {
+        console.log('Start button 2 clicked.');
+        afternoonRecognition.start();
+    };
+} else {
+    console.error('Start button 2 not found.');
+}
+
+if (stopBtn2) {
+    stopBtn2.onclick = () => {
+        afternoonRecognition.stop();
+    }
+} else {
+    console.error('Stop button 2 not found.');
+}
+
+  
 // showToiletModal関数を定期的に実行する (例: 1分ごとに実行)
 setInterval(showToiletModal, 60000);
 const slides = document.querySelectorAll('.slide');
