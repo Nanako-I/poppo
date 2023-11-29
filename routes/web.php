@@ -133,7 +133,7 @@ Route::post('speeches/{people_id}', [SpeechController::class,'store'])->name('sp
 Route::get('speeches/{people_id}', [SpeechController::class,'show'])->name('speech.show');
 Route::get('/speech/{id}/edit', 'SpeechController@edit')->name('speech.edit');
 
-Route::get('record/{id}/edit', [RecordController::class, 'show'])->name('record.edit');
+Route::get('record/{people_id}/edit', [RecordController::class, 'show'])->name('record.edit');
 Route::get('people/{id}/edit', [PersonController::class, 'edit'])->name('people.edit');
 
 Route::get('/download',[SpreadsheetController::class,'chart'])->name('chart');

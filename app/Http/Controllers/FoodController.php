@@ -64,10 +64,10 @@ class FoodController extends Controller
          
     ]);
     // return redirect('people/{id}/edit');
-   $person = Person::findOrFail($request->people_id);
-    return redirect()->route('food.edit', ['people_id' => $person->id]); //
-    // return view('people');
-    // return view('people', ['people' => Person::all()]);
+    $people = Person::all();
+//   $person = Person::findOrFail($request->people_id);
+    // return redirect()->route('food.edit', ['people_id' => $person->id]); //
+    return view('people', compact('food', 'people'));
     }
 
     /**

@@ -52,28 +52,32 @@
     <!--</div>-->
     
     <div style="display: flex; flex-direction: column; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
-        <p>血圧（上）</p>
-        <input name="max_blood" id="text-box" class="appearance-none block text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white font-bold" type="text" placeholder="" style="width: 4rem;">
-        <p>血圧（下）</p>
-        <input name="min_blood" id="text-box" class="appearance-none block text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white font-bold" type="text" placeholder=""  style="width: 4rem;">
+        <p class="text-gray-900 font-bold text-xl">血圧（上）</p>
+        <input name="max_blood" id="text-box" class="appearance-none block text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white font-bold" type="text" placeholder="" style="width: 4rem;">
+        <p class="text-gray-900 font-bold text-xl">血圧（下）</p>
+        <input name="min_blood" id="text-box" class="appearance-none block text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white font-bold" type="text" placeholder=""  style="width: 4rem;">
     </div>
     
       
       
   　<div style="display: flex; flex-direction: column; align-items: center;">
+  　   
   　  <!--多・普通など↓-->
-  　  <p>脈拍</p>
-  　  <input name="pulse" type="text" id="pulse" class="h-8px flex-shrink-0 break-words mx-1" style="width: 4rem;">/分
-  　  <!--<p>/分</p>-->
-    </div> 
-    
-  　<div style="display: flex; flex-direction: column; align-items: center; my-2;">
-      <p>酸素飽和度(SpO2)</p>
-      <input name="spo2" type="text" id="spo2" class="h-8px flex-shrink-0 break-words mx-1" style="width: 4rem;">％
-      <!--<p>％</p>-->
+      　 <p class="text-gray-900 font-bold text-xl">脈拍</p>
+      　  <div class="flex items-center justify-center ml-6">
+          　  <input name="pulse" type="text" id="pulse" class="h-8px flex-shrink-0 break-words mx-1" style="width: 4rem;">
+          　 <p class="text-gray-900 font-bold text-xl">/分</p>
+        </div> 
+    </div>
+  　<div style="display: flex; flex-direction: column; align-items: center; my-4;">
+      <p class="text-gray-900 font-bold text-xl">酸素飽和度(SpO2)</p>
+            <div class="flex items-center justify-center ml-4">
+                <input name="spo2" type="text" id="spo2" class="h-8px flex-shrink-0 break-words mx-1" style="width: 4rem;">
+                <p class="text-gray-900 font-bold text-xl">％</p>
+            </div>
     </div>
     <div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">
-    <h3>備考</h3>
+    <p class="text-gray-900 font-bold text-xl">備考</p>
     <textarea id="result-speech" name="bikou" class="w-3/4 max-w-lg" style="height: 200px;"></textarea>
     </div>
     

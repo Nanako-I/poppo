@@ -173,8 +173,6 @@
                                                      @csrf
                                                  <i class="material-icons md-90 ml-auto">add</i>
                                                  </a>
-                                                 
-                                          
                                         @endif
                                     </div>
                                 </div>
@@ -204,17 +202,58 @@
                                         @endphp
                                             @if ($lastTemperature->created_at->diffInHours(now()) >= 6)
                                                 <!-- 検温フォーム -->
-                                                <details>
-                                                    <summary class="text-red-500 font-bold text-xl">検温してください</summary>
-                                                    <form action="{{ route('temperatures.store', $person->id) }}" method="POST">
-                                                        @csrf
-                                                        <input type="hidden" name="people_id" value="{{ $person->id }}">
-                                                        <input name="temperature" id="text-box" class="appearance-none block w-1/2 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white font-bold" type="text" placeholder="">
-                                                        <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
-                                                            送信
-                                                        </button>
-                                                    </form>
+                                               <style>
+                                                    summary::-webkit-details-marker {
+                                                        display: inline-block;
+                                                        content: '▼'; /* アイコンの文字を指定 */
+                                                        margin-right: 5px; /* 適宜調整してください */
+                                                    }
+                                                    summary {
+                                                        display: list-item;
+                                                        cursor: pointer;
+                                                        list-style: none;
+                                                        font-weight: bold;
+                                                        text-align: center; /* 検温してくださいを中央に配置するためのスタイル */
+                                                    }
+                                                    summary::-moz-list-bullet {
+                                                        display: inline-block;
+                                                        content: '▼'; /* アイコンの文字を指定 */
+                                                        margin-right: 5px; /* 適宜調整してください */
+                                                    }
+                                                
+                                                    summary::marker {
+                                                        display: inline-block;
+                                                        content: '▼'; /* アイコンの文字を指定 */
+                                                        margin-right: 5px; /* 適宜調整してください */
+                                                    }
+                                                </style>
+                                              
+                                                <div style="display: flex; flex-direction: column; align-items: center;">
+                                                <details class="justify-center"> <!-- この行を追加 -->
+                                                    
+                                                        <summary class="text-red-500 font-bold text-xl">検温してください</summary>
+                                                        <form action="{{ route('temperatures.store', $person->id) }}" method="POST">
+                                                            @csrf
+                                                            <input type="hidden" name="people_id" value="{{ $person->id }}">
+                                                                <div class="flex items-center justify-center ml-4">
+                                                                    <input name="temperature" id="text-box" class="appearance-none block w-1/2 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white font-bold" type="text" placeholder="">
+                                                                    <p class="text-gray-900 font-bold text-xl">℃</p>
+                                                                </div>
+                                                                
+                                                                <div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">
+                                                                    <p class="text-gray-900 font-bold text-xl">備考</p>
+                                                                    <textarea id="result-speech" name="bikou" class="w-3/4 max-w-lg" style="height: 200px;"></textarea>
+                                                                </div>
+                                                            <div class="my-2" style="display: flex; justify-content: center; align-items: center; max-width: 300px;">
+                                                              <button type="submit" class="inline-flex items-center px-6 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+                                                                送信
+                                                              </button>
+                                                            </div>
+                                                        </form>
+                                                    
                                                 </details>
+                                                <!--</div>-->
+                                                </div>
                                             @else
                                                 <!-- 直近の検温結果表示 -->
                                                 <a href="{{ route('temperatures.show', $lastTemperature->id) }}" class="font-bold text-xl">{{ $lastTemperature->temperature }}℃</a>
@@ -225,10 +264,20 @@
                                                 <form action="{{ route('temperatures.store', $person->id) }}" method="POST">
                                                     @csrf
                                                     <input type="hidden" name="people_id" value="{{ $person->id }}">
-                                                    <input name="temperature" id="text-box" class="appearance-none block w-1/2 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white font-bold" type="text" placeholder="">℃
-                                                    <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+                                                        <div class="flex items-center justify-center ml-4">
+                                                            <input name="temperature" id="text-box" class="appearance-none block w-1/2 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white font-bold" type="text" placeholder="">
+                                                            <p class="text-gray-900 font-bold text-xl">℃</p>
+                                                        </div>
+                                                        
+                                                        <div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">
+                                                            <p class="text-gray-900 font-bold text-xl">備考</p>
+                                                            <textarea id="result-speech" name="bikou" class="w-3/4 max-w-lg" style="height: 200px;"></textarea>
+                                                        </div>
+                                                    <div class="my-2" style="display: flex; justify-content: center; align-items: center; max-width: 300px;">
+                                                      <button type="submit" class="inline-flex items-center px-6 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
                                                         送信
-                                                    </button>
+                                                      </button>
+                                                    </div>
                                                 </form>
                                             </details>
                                                 
@@ -307,7 +356,7 @@
                                         @php
                                             $lastToilets = $person->toilets->last();
                                         @endphp
-                                        @if ($lastToilets === null || $lastToilets->created_at->diffInHours(now()) >= 6)
+                                        @if ($lastToilets === null || $lastToilets->created_at->diffInHours(now()) >= 12)
                                             <summary class="text-red-500 font-bold text-xl">誘導してください
                                                 <p class="text-red-500 font-bold text-xl">未排便{{ $lastToilets ? $lastToilets->created_at->diffInDays(now()) : 0 }}日目</p>
                                             </summary>
@@ -319,13 +368,13 @@
                                             <div class="flex justify-evenly">
                                                 <a href="{{ route('toilets.show', $lastToilets->id) }}" class="font-bold text-xl">
                                                     <div class="px-1.5">
-                                                        <p class="text-gray-900 font-bold text-sm">尿:</p>
+                                                        <p class="text-gray-900 font-bold text-sm">尿量:</p>
                                                         <p class="text-gray-900 font-bold text-xl">{{ $lastToilets->urine_amount }}</p>
                                                     </div>
                                                 </a>
                                                 <a href="{{ route('toilets.show', $lastToilets->id) }}" class="font-bold text-xl">
                                                     <div class="px-1.5">
-                                                        <p class="text-gray-900 font-bold text-sm">便:</p>
+                                                        <p class="text-gray-900 font-bold text-sm">便量:</p>
                                                         <p class="text-gray-900 font-bold text-xl">{{ $lastToilets->ben_amount }}</p>
                                                         <p class="text-gray-900 font-bold text-xl">{{ $lastToilets->ben_condition }}</p>
                                                     </div>
@@ -446,14 +495,7 @@
 
                                     
 
-                                        <!--<a href="{{ url('record/'.$person->id.'/edit') }}">-->
-                                      
-<!-- Display an icon -->
-      
-                      <!--<a href="{{ route('people.edit', ['id' => $person->id]) }}">-->
-                      <!--  @csrf-->
-                      <!--  <i class="material-icons md-90 ml-auto">add</i>-->
-                      <!--</a>-->
+                                        
                     </div>
                   </div>
                 @endforeach

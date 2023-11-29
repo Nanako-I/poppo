@@ -57,6 +57,7 @@ class TemperatureController extends Controller
         $temperature = Temperature::create([
         'temperature' => $request->temperature,
         'people_id' => $request->people_id,
+        'bikou' => $request->bikou,
     ]);
 
     // return redirect()->route('temperatures.show', $temperature->id);

@@ -52,7 +52,7 @@ class BloodpressureController extends Controller
         'min_blood' => $request->min_blood,
         'pulse' => $request->pulse,
         'spo2' => $request->spo2,
-         
+         'bikou' => $request->bikou,
     ]);
     
   $people = Person::all();

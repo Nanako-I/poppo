@@ -13,9 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('bloodpressures', function (Blueprint $table) {
-            $table->integer('pulse')->after('min_blood')->nullable(); // 例: 'min_blood' の後ろに 'pulse' カラムを追加
-            $table->integer('spo2')->after('pulse')->nullable();
+        Schema::table('food', function (Blueprint $table) {
+           $table->string('side_dish')->nullable()->change();
         });
     }
 
@@ -26,7 +25,7 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('bloodpressures', function (Blueprint $table) {
+        Schema::table('food', function (Blueprint $table) {
             //
         });
     }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Temperature;
+use App\Models\Bloodpressure;
 use App\Models\Toilet;
 use App\Models\Food;
 use App\Models\Speech;
@@ -79,12 +80,14 @@ class RecordController extends Controller
     public function show($people_id)
 {
     $person = Person::findOrFail($people_id);
+    $bloodpressures = Bloodpressure::where('people_id', $people_id)->get();
     $temperatures = Temperature::where('people_id', $people_id)->get();
     $toilets = Toilet::where('people_id', $people_id)->get();
     $foods = Food::where('people_id', $people_id)->get();
     $speeches = Speech::where('people_id', $people_id)->get();
     
-    return view('recordedit', compact('person', 'temperatures', 'toilets', 'foods', 'speeches'));
+    // $people = Person::all();
+    return view('recordedit', compact('person', 'temperatures',  'bloodpressures', 'toilets', 'foods', 'speeches'));
 }
 
 

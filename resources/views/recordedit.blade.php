@@ -20,19 +20,21 @@
           text-decoration: underline;
         }
       </style>
-        <h2>{{$person->person_name}}さんの記録</h2>
-      </form>  
-        <form action="{{ route('record.edit', ['id' => $person->id]) }}" method="GET">
+      
+      @php
+        $today = now()->format('Y-m-d'); // 今日の日付を取得（例：2023-08-07）
+      @endphp
 
-                @csrf
-          <button class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
-            ダウンロードする
-          </button>
-        </form>
+        <h2>{{$person->person_name}}さん</h2>
+        <h3>{{ $today }}の記録</h3>
+      </form>  
+       
+        
      
     </div>
   </div>
-    
+   
+      
     <style>
         table {
         border-collapse: collapse; /* テーブルの罫線を結合する */
@@ -51,14 +53,11 @@
      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
      <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
      
-@php
-$today = now()->format('Y-m-d'); // 今日の日付を取得（例：2023-08-07）
-@endphp
 
 <table style="padding: 10px;">
   <thead>
     <tr>
-      <th style="width: 180px;">体温 <i class="fa-solid fa-thermometer text-gray-500 hover:text-white" style="font-size: 1.7em; padding: 0 5px;"></i></th>
+      <th style="width: 180px;">体温</th>
     </tr>
   </thead>
   <tbody>
@@ -67,6 +66,103 @@ $today = now()->format('Y-m-d'); // 今日の日付を取得（例：2023-08-07�
     <tr>
       <td>{{ \Carbon\Carbon::parse($temperature->created_at)->format('H:i') }}</td>
       <td>{{ $temperature->temperature }}℃</td>
+     
+    </tr>
+    @endif
+    @endforeach
+  </tbody>
+</table>
+
+<table style="padding: 10px;">
+  <thead>
+    <tr>
+      <th style="width: 180px;">体温　備考</th>
+    </tr>
+  </thead>
+  <tbody>
+    @foreach($temperatures as $temperature)
+    @if(\Carbon\Carbon::parse($temperature->created_at)->format('Y-m-d') === $today)
+    <tr>
+      <td>{{ $temperature->bikou }}</td>
+    </tr>
+    @endif
+    @endforeach
+  </tbody>
+</table>
+
+<table>
+  <!--<thead>-->
+  <!--  <tr>-->
+      <!--<th>Date</th>-->
+  <!--    <th style="width: 180px;">バイタル<i class="fa-solid fa-heart-pulse text-gray-500 hover:text-white" style="font-size: 1.7em; padding: 0 7px; transition: transform 0.2s;"></i></th>-->
+  <!--  </tr>-->
+  <!--</thead>-->
+    <thead>
+    <tr>
+      <th style="width: 180px;">血圧</th>
+    </tr>
+  </thead>
+  <tbody>
+    @foreach($bloodpressures as $bloodpressure)
+    @if(\Carbon\Carbon::parse($bloodpressure->created_at)->format('Y-m-d') === $today)
+    <tr>
+      <td>{{ \Carbon\Carbon::parse($bloodpressure->created_at)->format('H:i') }}</td>
+      <td>{{ $bloodpressure->max_blood }}/{{ $bloodpressure->min_blood }}</td>
+    </tr>
+    @endif
+    @endforeach
+  </tbody>
+</table>
+
+<table>
+  <tbody>
+    <thead>
+      <tr>
+        <th style="width: 180px;">脈拍</th>
+      </tr>
+    </thead>
+  
+    @foreach($bloodpressures as $bloodpressure)
+    @if(\Carbon\Carbon::parse($bloodpressure->created_at)->format('Y-m-d') === $today)
+    <tr>
+      <td>{{ \Carbon\Carbon::parse($bloodpressure->created_at)->format('H:i') }}</td>
+      <td>{{ $bloodpressure->pulse }}/分</td>
+    </tr>
+    @endif
+    @endforeach
+  </tbody>
+</table>
+
+<table>
+  <tbody>
+    <thead>
+      <tr>
+        <th style="width: 180px;">SpO2</th>
+      </tr>
+    </thead>
+    @foreach($bloodpressures as $bloodpressure)
+    @if(\Carbon\Carbon::parse($bloodpressure->created_at)->format('Y-m-d') === $today)
+    <tr>
+      <td>{{ \Carbon\Carbon::parse($bloodpressure->created_at)->format('H:i') }}</td>
+      <td>{{ $bloodpressure->spo2 }}％</td>
+    </tr>
+    @endif
+    @endforeach
+  </tbody>
+</table>
+
+<table>
+  <tbody>
+    <thead>
+      <tr>
+        <th style="width: 180px;">バイタル　備考</th>
+      </tr>
+    </thead>
+  
+    @foreach($bloodpressures as $bloodpressure)
+    @if(\Carbon\Carbon::parse($bloodpressure->created_at)->format('Y-m-d') === $today)
+    <tr>
+      <td>{{ $bloodpressure->bikou }}</td>
     </tr>
     @endif
     @endforeach
@@ -78,7 +174,7 @@ $today = now()->format('Y-m-d'); // 今日の日付を取得（例：2023-08-07�
   <thead>
     <tr>
       <!--<th>Date</th>-->
-      <th style="width: 180px;">食事量<i class="fa-solid fa-bowl-rice text-gray-500 hover:text-white" style="font-size: 1.7em; padding: 0 7px; transition: transform 0.2s;"></i></th>
+      <th style="width: 180px;">食事量</th>
     </tr>
   </thead>
   <tbody>
@@ -86,9 +182,8 @@ $today = now()->format('Y-m-d'); // 今日の日付を取得（例：2023-08-07�
     @if(\Carbon\Carbon::parse($food->created_at)->format('Y-m-d') === $today)
     <tr>
       <td>{{ \Carbon\Carbon::parse($food->created_at)->format('H:i') }}</td>
-      <td>主食（ごはん）は{{ $food->staple_food }}割、副食（おかず）は{{ $food->side_dish }}割でした。</td>
-      
-      <!--<td>薬の服用は{{ $food->medicine == 'yes' ? 'あり' : 'なし' }}。</td>-->
+      <td>食事は{{ $food->staple_food }}割食べました。</td>
+      <td>薬の服用：{{ $food->medicine == 'yes' ? 'あり' : 'なし' }}。</td>
     </tr>
     @endif
     @endforeach
@@ -99,7 +194,26 @@ $today = now()->format('Y-m-d'); // 今日の日付を取得（例：2023-08-07�
   <thead>
     <tr>
       <!--<th>Date</th>-->
-      <th style="width: 180px;">トイレ<i class="fa-solid fa-toilet-paper text-gray-500" style="font-size: 1.7em; padding: 0 7px;"></i></th>
+      <th style="width: 180px;">食事　備考</th>
+    </tr>
+  </thead>
+  <tbody>
+    @foreach($foods as $food)
+    @if(\Carbon\Carbon::parse($food->created_at)->format('Y-m-d') === $today)
+    <tr>
+      <td>{{ $food->bikou }}</td>
+    </tr>
+    @endif
+    @endforeach
+  </tbody>
+</table>
+
+
+<table>
+  <thead>
+    <tr>
+      <!--<th>Date</th>-->
+      <th style="width: 180px;">尿</th>
     </tr>
   </thead>
   <tbody>
@@ -107,7 +221,65 @@ $today = now()->format('Y-m-d'); // 今日の日付を取得（例：2023-08-07�
     @if(\Carbon\Carbon::parse($toilet->created_at)->format('Y-m-d') === $today)
     <tr>
       <td>{{ \Carbon\Carbon::parse($toilet->created_at)->format('H:i') }}</td>
-      <td>尿：{{ $toilet->urine_one }}{{ $toilet->urine_two }}{{ $toilet->urine_three }}便：{{ $toilet->ben_one }}{{ $toilet->ben_two }}{{ $toilet->ben_three }}</td>
+      <td>尿量：{{ $toilet->urine_amount }}</td>
+    </tr>
+    @endif
+    @endforeach
+  </tbody>
+</table>
+
+<table>
+  <thead>
+    <tr>
+      <!--<th>Date</th>-->
+      <th style="width: 180px;">便</th>
+    </tr>
+  </thead>
+  <tbody>
+    @foreach($toilets as $toilet)
+    @if(\Carbon\Carbon::parse($toilet->created_at)->format('Y-m-d') === $today)
+    <tr>
+      <td>{{ \Carbon\Carbon::parse($toilet->created_at)->format('H:i') }}</td>
+      <td>便量：{{ $toilet->ben_amount }}性状：{{ $toilet->ben_condition }}</td>
+    </tr>
+    @endif
+    @endforeach
+  </tbody>
+</table>
+
+<table>
+  <thead>
+    <tr>
+      <!--<th>Date</th>-->
+      <th style="width: 180px;">トイレ　備考</th>
+    </tr>
+  </thead>
+  <tbody>
+    @foreach($toilets as $toilet)
+    @if(\Carbon\Carbon::parse($toilet->created_at)->format('Y-m-d') === $today)
+    <tr>
+      <td>{{ $toilet->bikou }}</td>
+    </tr>
+    @endif
+    @endforeach
+  </tbody>
+</table>
+
+
+<table>
+  <thead>
+    <tr>
+      <!--<th>Date</th>-->
+      <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
+      <th style="padding-bottom: 10px;">午前の活動</th>
+    </tr>
+  </thead>
+  <tbody>
+    @foreach($speeches as $speech)
+    @if(\Carbon\Carbon::parse($speech->created_at)->format('Y-m-d') === $today)
+    <tr>
+      <td>{{ $speech->morning_activity }}</td>
     </tr>
     @endif
     @endforeach
@@ -120,19 +292,21 @@ $today = now()->format('Y-m-d'); // 今日の日付を取得（例：2023-08-07�
       <!--<th>Date</th>-->
       <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet">
-      <th style="padding-bottom: 10px;">活動の記録<i class="material-icons text-gray-500" id="face" style="font-size: 1.7em; margin-top: 10px; margin-left: 7px;">face</i></th>
+      <th style="padding-bottom: 10px;">午後の活動</th>
     </tr>
   </thead>
   <tbody>
     @foreach($speeches as $speech)
     @if(\Carbon\Carbon::parse($speech->created_at)->format('Y-m-d') === $today)
     <tr>
-      <td>{{ $speech->activity }}</td>
+      <td>{{ $speech->afternoon_activity }}</td>
     </tr>
     @endif
     @endforeach
   </tbody>
 </table>
+
+<!--</form>-->
 </body>
 {{-- 追加した Blade ディレクティブ --}}
 </x-app-layout>

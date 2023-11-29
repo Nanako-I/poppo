@@ -22,9 +22,8 @@ class DompdfController extends Controller
         $speeches = Speech::where('people_id', $people_id)->get();
 
         $pdf = PDF::loadView('recordedit', compact('person', 'temperatures', 'toilets', 'foods', 'speeches'));
-        // return $pdf->download('document.pdf');
-        // return $pdf->stream();
-        return redirect()->route('outputPDF.edit', compact('person', 'temperatures', 'toilets', 'foods', 'speeches'));
+       
+        // return redirect()->route('outputPDF.edit', compact('person', 'temperatures', 'toilets', 'foods', 'speeches'));
     }
 
      
