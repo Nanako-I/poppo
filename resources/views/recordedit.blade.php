@@ -4,7 +4,8 @@
 <body>
   <div class="flex items-center justify-center" style="padding: 20px 0;">
     <div class="flex flex-col items-center">
-     <form action="{{ url('people' ) }}" method="POST" class="w-full max-w-lg">
+      <form method="get" action="{{ route('record.edit', $person->id) }}">
+     <!--<form action="{{ url('people' ) }}" method="POST" class="w-full max-w-lg">-->
                         @method('PATCH')
                         @csrf
     
@@ -26,7 +27,7 @@
       @endphp
 
         <h2>{{$person->person_name}}さん</h2>
-        <h3>{{ $today }}の記録</h3>
+        <h3>{{ $selectedDate }}の記録</h3>
         <label for="selected_date">日付選択：</label>
           <input type="date" name="selected_date" id="selected_date">
           <button type="submit">表示</button>
@@ -65,7 +66,7 @@
   </thead>
   <tbody>
     @foreach($temperatures as $temperature)
-    @if(\Carbon\Carbon::parse($temperature->created_at)->format('Y-m-d') === $today)
+    @if(\Carbon\Carbon::parse($temperature->created_at)->format('Y-m-d') === $selectedDate)
     <tr>
       <td>{{ \Carbon\Carbon::parse($temperature->created_at)->format('H:i') }}</td>
       <td>{{ $temperature->temperature }}℃</td>
@@ -84,7 +85,7 @@
   </thead>
   <tbody>
     @foreach($temperatures as $temperature)
-    @if(\Carbon\Carbon::parse($temperature->created_at)->format('Y-m-d') === $today)
+    @if(\Carbon\Carbon::parse($temperature->created_at)->format('Y-m-d') === $selectedDate)
     <tr>
       <td>{{ $temperature->bikou }}</td>
     </tr>
@@ -107,7 +108,7 @@
   </thead>
   <tbody>
     @foreach($bloodpressures as $bloodpressure)
-    @if(\Carbon\Carbon::parse($bloodpressure->created_at)->format('Y-m-d') === $today)
+    @if(\Carbon\Carbon::parse($bloodpressure->created_at)->format('Y-m-d') === $selectedDate)
     <tr>
       <td>{{ \Carbon\Carbon::parse($bloodpressure->created_at)->format('H:i') }}</td>
       <td>{{ $bloodpressure->max_blood }}/{{ $bloodpressure->min_blood }}</td>
@@ -126,7 +127,7 @@
     </thead>
   
     @foreach($bloodpressures as $bloodpressure)
-    @if(\Carbon\Carbon::parse($bloodpressure->created_at)->format('Y-m-d') === $today)
+    @if(\Carbon\Carbon::parse($bloodpressure->created_at)->format('Y-m-d') === $selectedDate)
     <tr>
       <td>{{ \Carbon\Carbon::parse($bloodpressure->created_at)->format('H:i') }}</td>
       <td>{{ $bloodpressure->pulse }}/分</td>
@@ -144,7 +145,7 @@
       </tr>
     </thead>
     @foreach($bloodpressures as $bloodpressure)
-    @if(\Carbon\Carbon::parse($bloodpressure->created_at)->format('Y-m-d') === $today)
+    @if(\Carbon\Carbon::parse($bloodpressure->created_at)->format('Y-m-d') === $selectedDate)
     <tr>
       <td>{{ \Carbon\Carbon::parse($bloodpressure->created_at)->format('H:i') }}</td>
       <td>{{ $bloodpressure->spo2 }}％</td>
@@ -163,7 +164,7 @@
     </thead>
   
     @foreach($bloodpressures as $bloodpressure)
-    @if(\Carbon\Carbon::parse($bloodpressure->created_at)->format('Y-m-d') === $today)
+    @if(\Carbon\Carbon::parse($bloodpressure->created_at)->format('Y-m-d') === $selectedDate)
     <tr>
       <td>{{ $bloodpressure->bikou }}</td>
     </tr>
@@ -182,7 +183,7 @@
   </thead>
   <tbody>
     @foreach($foods as $food)
-    @if(\Carbon\Carbon::parse($food->created_at)->format('Y-m-d') === $today)
+    @if(\Carbon\Carbon::parse($food->created_at)->format('Y-m-d') === $selectedDate)
     <tr>
       <td>{{ \Carbon\Carbon::parse($food->created_at)->format('H:i') }}</td>
       <td>食事は{{ $food->staple_food }}割食べました。</td>
@@ -202,7 +203,7 @@
   </thead>
   <tbody>
     @foreach($foods as $food)
-    @if(\Carbon\Carbon::parse($food->created_at)->format('Y-m-d') === $today)
+    @if(\Carbon\Carbon::parse($food->created_at)->format('Y-m-d') === $selectedDate)
     <tr>
       <td>{{ $food->bikou }}</td>
     </tr>
@@ -221,7 +222,7 @@
   </thead>
   <tbody>
     @foreach($toilets as $toilet)
-    @if(\Carbon\Carbon::parse($toilet->created_at)->format('Y-m-d') === $today)
+    @if(\Carbon\Carbon::parse($toilet->created_at)->format('Y-m-d') === $selectedDate)
     <tr>
       <td>{{ \Carbon\Carbon::parse($toilet->created_at)->format('H:i') }}</td>
       <td>尿量：{{ $toilet->urine_amount }}</td>
@@ -240,7 +241,7 @@
   </thead>
   <tbody>
     @foreach($toilets as $toilet)
-    @if(\Carbon\Carbon::parse($toilet->created_at)->format('Y-m-d') === $today)
+    @if(\Carbon\Carbon::parse($toilet->created_at)->format('Y-m-d') === $selectedDate)
     <tr>
       <td>{{ \Carbon\Carbon::parse($toilet->created_at)->format('H:i') }}</td>
       <td>便量：{{ $toilet->ben_amount }}性状：{{ $toilet->ben_condition }}</td>
@@ -259,7 +260,7 @@
   </thead>
   <tbody>
     @foreach($toilets as $toilet)
-    @if(\Carbon\Carbon::parse($toilet->created_at)->format('Y-m-d') === $today)
+    @if(\Carbon\Carbon::parse($toilet->created_at)->format('Y-m-d') === $selectedDate)
     <tr>
       <td>{{ $toilet->bikou }}</td>
     </tr>
@@ -280,7 +281,7 @@
   </thead>
   <tbody>
     @foreach($speeches as $speech)
-    @if(\Carbon\Carbon::parse($speech->created_at)->format('Y-m-d') === $today)
+    @if(\Carbon\Carbon::parse($speech->created_at)->format('Y-m-d') === $selectedDate)
     <tr>
       <td>{{ $speech->morning_activity }}</td>
     </tr>
@@ -300,7 +301,7 @@
   </thead>
   <tbody>
     @foreach($speeches as $speech)
-    @if(\Carbon\Carbon::parse($speech->created_at)->format('Y-m-d') === $today)
+    @if(\Carbon\Carbon::parse($speech->created_at)->format('Y-m-d') === $selectedDate)
     <tr>
       <td>{{ $speech->afternoon_activity }}</td>
     </tr>

@@ -77,20 +77,45 @@ class RecordController extends Controller
      * @param  \App\Models\Food  $food
      * @return \Illuminate\Http\Response
      */
-    public function show($people_id)
+//     public function show($people_id)
+// {
+//     $person = Person::findOrFail($people_id);
+//     $bloodpressures = Bloodpressure::where('people_id', $people_id)->get();
+//     $temperatures = Temperature::where('people_id', $people_id)->get();
+//     $toilets = Toilet::where('people_id', $people_id)->get();
+//     $foods = Food::where('people_id', $people_id)->get();
+//     $speeches = Speech::where('people_id', $people_id)->get();
+    
+//     return view('recordedit', compact('person', 'temperatures',  'bloodpressures', 'toilets', 'foods', 'speeches'));
+// }
+
+public function show($people_id, Request $request)
 {
     $person = Person::findOrFail($people_id);
-    $bloodpressures = Bloodpressure::where('people_id', $people_id)->get();
-    $temperatures = Temperature::where('people_id', $people_id)->get();
-    $toilets = Toilet::where('people_id', $people_id)->get();
-    $foods = Food::where('people_id', $people_id)->get();
-    $speeches = Speech::where('people_id', $people_id)->get();
+    $selectedDate = $request->input('selected_date');
     
-    // $people = Person::all();
-    return view('recordedit', compact('person', 'temperatures',  'bloodpressures', 'toilets', 'foods', 'speeches'));
+    $foods = Food::where('people_id', $people_id)
+        ->whereDate('created_at', $selectedDate)
+        ->get();
+    
+    $temperatures = Temperature::where('people_id', $people_id)
+        ->whereDate('created_at', $selectedDate)
+        ->get();
+        
+    $bloodpressures = Bloodpressure::where('people_id', $people_id)
+        ->whereDate('created_at', $selectedDate)
+        ->get();
+        
+    $toilets = Toilet::where('people_id', $people_id)
+        ->whereDate('created_at', $selectedDate)
+        ->get();
+    
+    $speeches = Speech::where('people_id', $people_id)
+        ->whereDate('created_at', $selectedDate)
+        ->get();
+        
+        return view('recordedit', compact('person', 'temperatures', 'bloodpressures', 'toilets', 'foods', 'speeches', 'selectedDate'));
 }
-
-
     /**
      * Show the form for editing the specified resource.
      *
