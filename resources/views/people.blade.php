@@ -442,7 +442,7 @@
                                     <div class="flex justify-start items-center">
                                         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
                                         <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
-                                        <i class="fa-solid fa-sun text-orange-600" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>
+                                        <i class="fa-solid fa-person text-pink-600" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>
                                         <p class="font-bold text-xl ml-2">午後の活動</p>
                                     </div>
                                         <div class="flex items-center justify-center p-4">

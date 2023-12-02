@@ -27,6 +27,9 @@
 
         <h2>{{$person->person_name}}さん</h2>
         <h3>{{ $today }}の記録</h3>
+        <label for="selected_date">日付選択：</label>
+          <input type="date" name="selected_date" id="selected_date">
+          <button type="submit">表示</button>
       </form>  
        
         
