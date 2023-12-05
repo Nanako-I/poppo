@@ -129,8 +129,8 @@
                       </div>
                       </a>
                        <!-- 食事登録↓ -->
-                        　    　　  <div class="border-2 p-2 rounded-lg bg-white m-2">
-                                      <div class="flex justify-start items-center">
+                        　    　 <div class="border-2 p-2 rounded-lg bg-white m-2">
+                                     <div class="flex justify-start items-center">
                                         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
                                         <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
                                         <i class="fa-solid fa-bowl-rice text-emerald-700" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>
@@ -142,6 +142,7 @@
                                         @if (!is_null($person) && !empty($person->foods) && count($person->foods) > 0)
                                         @php
                                            $lastFood = $person->foods->last();
+                                           
                                         @endphp
                                             @if ($lastFood && $lastFood->created_at->diffInHours(now()) >= 6)
                                                 <p class="text-red-500 font-bold text-xl">登録して<br>ください</p>
@@ -152,22 +153,29 @@
                                             @else
                                                 <!-- 直近の検温結果表示 -->
                                                 <div class="flex justify-evenly">
-                                                        <a href="{{ route('foods.show', $lastFood->id) }}" class="font-bold text-xl">
-                                                            <div class="px-1.5">
-                                                                <p class="text-gray-900 font-bold text-sm">摂取量:</p>
-                                                                <p class="text-gray-900 font-bold text-xl">{{ $lastFood->staple_food }}</p>
-                                                            </div>
-                                                        </a>
-                                                        <a href="{{ route('foods.show', $lastFood->id) }}" class="font-bold text-xl">
-                                                            <div class="px-1.5">
-                                                                <p class="text-gray-900 font-bold text-sm">服用:</p>
-                                                                <p class="text-gray-900 font-bold text-xl">{{ $lastFood->medicine == 'yes' ? 'あり' : 'なし' }}</p>
-                                                            </div>
-                                                         </a>
-                                                    </div>
+                                                <a href="{{ url('foodchange/'.$person->id) }}" class="relative ml-2 flex items-center">
+                                                     @csrf
+                                                <!--<div class="flex justify-evenly">-->
+                                                    <!--<a href="javascript:void(0);" class="font-bold text-xl">-->
+                                                        <div class="px-1.5">
+                                                            <p class="text-gray-900 font-bold text-base">摂取量:</p>
+                                                            <p class="text-gray-900 font-bold text-2xl">{{ $lastFood->staple_food }}</p>
+                                                        </div>
+                                                    <!--</a>-->
+                                                    <!--<a href="javascript:void(0);" class="font-bold text-xl">-->
+                                                        <div class="px-1.5">
+                                                            <p class="text-gray-900 font-bold text-base">服用:</p>
+                                                            <p class="text-gray-900 font-bold text-2xl">{{ $lastFood->medicine == 'yes' ? 'あり' : 'なし' }}</p>
+                                                        </div>
+                                                    <!--</a>-->
+                                                <!--</div>-->
+                                                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+                                                    <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
+                                                    <i class="fa-solid fa-pencil text-stone-500" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>
+                                                </a>
+                                               </div>
                                             @endif
                                         @else
-                                            
                                             <p class="text-red-500 font-bold text-xl">登録して<br>ください</p>
                                                  <a href="{{ url('food/'.$person->id.'/edit') }}" class="relative  ml-2">
                                                      @csrf
@@ -180,9 +188,6 @@
                                     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
                                         <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
                                         <a href="{{ url('food/'.$person->id.'/edit') }}" class="relative">
-                                          
-                                          <!--<i class="fa-solid fa-bowl-rice text-blue-500 hover:text-blue-500" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>-->
-                                            <!--<span class="absolute bottom-full left-1/2 transform -translate-x-1/2 bg-white text-gray-900 px-6 py-2 rounded-lg text-lg font-bold opacity-0 transition-opacity duration-300 border-4 border-lime-600" style="writing-mode: horizontal-tb; width: 200px;">食事量を入力する</span>-->
                                         </a>
                                         
                         <!-- 体温登録↓ -->
@@ -236,13 +241,13 @@
                                                             @csrf
                                                             <input type="hidden" name="people_id" value="{{ $person->id }}">
                                                                 <div class="flex items-center justify-center ml-4">
-                                                                    <input name="temperature" id="text-box" class="appearance-none block w-1/2 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white font-bold" type="text" placeholder="">
+                                                                    <input name="temperature" id="text-box" class="appearance-none block w-1/2 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white font-bold" type="text" placeholder="">
                                                                     <p class="text-gray-900 font-bold text-xl">℃</p>
                                                                 </div>
                                                                 
                                                                 <div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">
                                                                     <p class="text-gray-900 font-bold text-xl">備考</p>
-                                                                    <textarea id="result-speech" name="bikou" class="w-3/4 max-w-lg" style="height: 200px;"></textarea>
+                                                                    <textarea id="result-speech" name="bikou" class="w-3/4 max-w-lg font-bold" style="height: 200px;"></textarea>
                                                                 </div>
                                                             <div class="my-2" style="display: flex; justify-content: center; align-items: center; max-width: 300px;">
                                                               <button type="submit" class="inline-flex items-center px-6 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
@@ -256,7 +261,13 @@
                                                 </div>
                                             @else
                                                 <!-- 直近の検温結果表示 -->
-                                                <a href="{{ route('temperatures.show', $lastTemperature->id) }}" class="font-bold text-xl">{{ $lastTemperature->temperature }}℃</a>
+                                                <a href="{{ url('temperaturechange/'.$person->id) }}" class="relative ml-2 flex items-center">
+                                                     @csrf
+                                                    <p class="text-gray-900 font-bold text-2xl">{{ $lastTemperature->temperature }}℃</p>
+                                                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+                                                    <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
+                                                    <i class="fa-solid fa-pencil text-stone-500" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>
+                                                </a>
                                             @endif
                                         @else
                                             <details>
@@ -265,13 +276,13 @@
                                                     @csrf
                                                     <input type="hidden" name="people_id" value="{{ $person->id }}">
                                                         <div class="flex items-center justify-center ml-4">
-                                                            <input name="temperature" id="text-box" class="appearance-none block w-1/2 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white font-bold" type="text" placeholder="">
+                                                            <input name="temperature" id="text-box" class="appearance-none block w-1/2 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white font-bold" type="text" placeholder="">
                                                             <p class="text-gray-900 font-bold text-xl">℃</p>
                                                         </div>
                                                         
                                                         <div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">
                                                             <p class="text-gray-900 font-bold text-xl">備考</p>
-                                                            <textarea id="result-speech" name="bikou" class="w-3/4 max-w-lg" style="height: 200px;"></textarea>
+                                                            <textarea id="result-speech" name="bikou" class="w-3/4 max-w-lg font-bold" style="height: 200px;"></textarea>
                                                         </div>
                                                     <div class="my-2" style="display: flex; justify-content: center; align-items: center; max-width: 300px;">
                                                       <button type="submit" class="inline-flex items-center px-6 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
@@ -308,28 +319,26 @@
                                                 <i class="material-icons md-90 ml-auto">add</i>
                                                 </a>
                                             @else
-                                                <!-- 直近のバイタル結果表示 -->
-                                                <a href="{{ route('bloodpressures.show', $lastBloodpressures->id) }}" class="text-gray-900 font-bold text-xl">
-                                        　　　　    @csrf
-                                            　　　　<div class="flex justify-evenly">
-                                            　　　　        <div class="px-1.5">
-                                                　　　　        <p class="text-gray-900 font-bold text-sm">血圧:</p>
-                                                            <p class="text-gray-900 font-bold text-xl">{{ $lastBloodpressures->max_blood }}/{{ $lastBloodpressures->min_blood }}</p>
-                                                            <!--<p class="text-gray-900 font-bold text-sm">/</p>-->
-                                                            <!--<p class="text-gray-900 font-bold text-xl">{{ $lastBloodpressures->min_blood }}</p>-->
-                                                        </div>
-                                                        <div class="px-1.5">
-                                                　　　　        <p class="text-gray-900 font-bold text-sm">脈:</p>
-                                                            <p class="text-gray-900 font-bold text-xl">{{ $lastBloodpressures->pulse}}/分</p>
-                                                            <!--<p class="text-gray-900 font-bold text-sm">/分</p>-->
-                                                        </div>
-                                                        <div class="px-1.5">
-                                                　　　　        <p class="text-gray-900 font-bold text-sm">SpO2:</p>
-                                                            <p class="text-gray-900 font-bold text-xl">{{ $lastBloodpressures->spo2}}％</p>
-                                                            <!--<p class="text-gray-900 font-bold text-sm">％</p>-->
-                                                        </div>
+                                                <!-- 直近のバイタル結果表示 --><div class="flex items-center justify-around">
+                                            　　　　    <div class="px-2">
+                                            　　　　        <p class="text-gray-900 font-bold text-base">血圧:</p>
+                                                        <p class="text-gray-900 font-bold text-2xl">{{ $lastBloodpressures->max_blood }}/{{ $lastBloodpressures->min_blood }}</p>
                                                     </div>
-                                                </a>
+                                                    <div class="px-2">
+                                            　　　　        <p class="text-gray-900 font-bold text-base">脈:</p>
+                                                        <p class="text-gray-900 font-bold text-2xl">{{ $lastBloodpressures->pulse}}/分</p>
+                                                        <!--<p class="text-gray-900 font-bold text-sm">/分</p>-->
+                                                    </div>
+                                                    <div class="px-2">
+                                            　　　　        <p class="text-gray-900 font-bold text-base">SpO2:</p>
+                                                        <p class="text-gray-900 font-bold text-2xl">{{ $lastBloodpressures->spo2}}％</p>
+                                                        <!--<p class="text-gray-900 font-bold text-sm">％</p>-->
+                                                    </div>
+                                                    <div class="px-2">
+                                                    <i class="fa-solid fa-pencil text-stone-500" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s; vertical-align: middle;"></i>
+                                                    </div>
+                                                </div>
+                                                
                                             @endif
                                         @else
                                             <summary class="text-red-500 font-bold text-xl">記録してください</summary>

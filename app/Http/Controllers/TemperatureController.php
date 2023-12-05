@@ -139,6 +139,15 @@ public function edit(Request $request, $people_id)
     return view('temperatureedit', ['id' => $person->id],compact('person'));
 }
 
+public function change(Request $request, $people_id)
+    {
+        $person = Person::findOrFail($people_id);
+        $lastTemperature = $person->temperatures->last();
+        // $food = Food::all();
+      
+        // return view('foodchange', ['id' => $person->id, 'foods' => $foods], compact('person'));
+        return view('temperaturechange', compact('person', 'lastTemperature'));
+    }
     /**
      * Update the specified resource in storage.
      *
@@ -146,9 +155,21 @@ public function edit(Request $request, $people_id)
      * @param  \App\Models\temperature  $temperature
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, temperature $temperature)
+    public function update(Request $request, Temperature $temperature)
     {
-        //
+    //  public function update(PostRequest $request, Post $post)
+    // {
+        //データ更新
+        $person = Person::find($request->people_id);
+        $temperature->people_id = $person->id;
+        $temperature->temperature = $request->temperature;
+        $temperature->bikou = $request->bikou;
+        
+        $temperature->save();
+        
+        $people = Person::all();
+        
+        return view('people', compact('temperature', 'people'));
     }
 
     /**

@@ -16,7 +16,7 @@
           }
         h2 {
           font-family: Arial, sans-serif; /* フォントをArialに設定 */
-          font-size: 20px; /* フォントサイズを20ピクセルに設定 */
+          font-size: 25px; /* フォントサイズを20ピクセルに設定 */
           font-weight: bold;
           text-decoration: underline;
         }
@@ -25,16 +25,21 @@
       @php
         $today = now()->format('Y-m-d'); // 今日の日付を取得（例：2023-08-07）
       @endphp
+      
+      <div class="flex items-center justify-center" style="padding: 20px 0;">
+        <div class="flex flex-col items-center">
 
         <h2>{{$person->person_name}}さん</h2>
-        <h3>{{ $selectedDate }}の記録</h3>
-        <label for="selected_date">日付選択：</label>
+        <h3 class="text-gray-900 font-bold text-xl">{{ $selectedDate }}の記録</h3>
+        </div>
+      </div>
+        <label for="selected_date"  class="text-gray-900 font-bold text-xl">日付選択：</label>
           <input type="date" name="selected_date" id="selected_date">
-          <button type="submit">表示</button>
-      </form>  
-       
-        
-     
+          <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+            表示
+          </button>
+          
+     </form> 
     </div>
   </div>
    

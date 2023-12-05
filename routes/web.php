@@ -91,6 +91,9 @@ Route::get('temperatures/{people_id}', [TemperatureController::class, 'show'])->
 // Route::get('temperatures/{people_id}', [PersonController::class, 'index'])->name('temperatures.show');
 Route::get('temperature/{people_id}/edit', [TemperatureController::class, 'edit'])->name('temperature.edit');
 
+// 体温編集↓
+Route::get('temperaturechange/{people_id}', [TemperatureController::class, 'change'])->name('temperature.change');
+Route::post('temperaturechange/{people_id}',[TemperatureController::class,'update'])->name('temperature_update');
 // プルダウンで登録させるバージョン↓
 Route::post('bloodpressures/{people_id}', [BloodpressureController::class, 'store'])->name('bloodpressures.store');
 Route::get('bloodpressures/{people_id}', [BloodpressureController::class, 'show'])->name('bloodpressures.show');
@@ -102,9 +105,18 @@ Route::get('bloodpressures/{people_id}/edit', [BloodpressureController::class, '
 Route::get('foods/{id}', 'FoodController@show')->name('foods.show');
 // Route::get('foods/{id}', 'FoodController@showAmountFood')->name('foods.show');
 // Route::get('people/{id}', 'FoodController@show')->name('people.show');
-Route::get('foodlist', [PersonController::class, 'showfood'])->name('foodlist.edit');
+// Route::get('foodlist', [PersonController::class, 'showfood'])->name('foodlist.edit');
 Route::get('food/{people_id}/edit', [FoodController::class, 'edit'])->name('food.edit');
 Route::post('food/{people_id}/edit', [FoodController::class,'store'])->name('food.post');
+
+//本：更新画面
+Route::get('foodchange/{people_id}',[FoodController::class,'change'])->name('food.change'); //通常
+// Route::post('/booksedit/{book}',[BookController::class,'edit'])->name('book_edit'); //通常
+// Route::get('/booksedit/{book}', [BookController::class,'edit'])->name('edit');      //Validationエラーありの場合
+
+//本：更新画面
+// Route::post('foods/update',[FoodController::class,'update'])->name('food_update');
+Route::post('foodchange/{people_id}',[FoodController::class,'update'])->name('food_update');
 
 Route::get('toilets/{id}', [ToiletController::class, 'show'])->name('toilets.show');
 // Route::get('toilets/{id}', 'ToiletController@show')->name('toilets.show');

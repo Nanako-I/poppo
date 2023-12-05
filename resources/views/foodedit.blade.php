@@ -128,8 +128,8 @@
                                             <p class="text-gray-900 font-bold text-xl" style="white-space: nowrap; padding: 0 5px;">服用</p>
                                             <select name="medicine" class="w-3/5 ml-1.5">
                                                 <option value="selected">選択</option>
-                                                <option value="yes">あり</option>
-                                                <option value="no">なし</option>
+                                                <option value="あり">あり</option>
+                                                <option value="なし">なし</option>
                                             </select>
                                         </div>
                                     </div>
