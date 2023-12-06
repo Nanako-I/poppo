@@ -101,6 +101,14 @@ class BloodpressureController extends Controller
     return view('bloodpressureedit', ['id' => $person->id],compact('person'));
 }
 
+public function change(Request $request, $people_id)
+    {
+        $person = Person::findOrFail($people_id);
+        $lastBloodpressures = $person->bloodpressures->last();
+        
+        return view('bloodpressurechange', compact('person', 'lastBloodpressures'));
+    }
+
     /**
      * Update the specified resource in storage.
      *
@@ -108,9 +116,22 @@ class BloodpressureController extends Controller
      * @param  \App\Models\Speech  $speech
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Speech $speech)
+    public function update(Request $request, Bloodpressure $bloodpressure)
     {
-        //
+    //データ更新
+        $person = Person::find($request->people_id);
+        $bloodpressure->people_id = $person->id;
+        $bloodpressure->max_blood = $request->max_blood;
+        $bloodpressure->min_blood = $request->min_blood;
+        $bloodpressure->pulse = $request->pulse;
+        $bloodpressure->spo2 = $request->spo2;
+        $bloodpressure->bikou = $request->bikou;
+        
+        $bloodpressure->save();
+        
+        $people = Person::all();
+        
+        return view('people', compact('bloodpressure', 'people'));
     }
 
     /**

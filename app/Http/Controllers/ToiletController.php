@@ -105,7 +105,13 @@ class ToiletController extends Controller
     return view('toiletedit', ['id' => $person->id],compact('person'));
 }
 
-
+public function change(Request $request, $people_id)
+    {
+        $person = Person::findOrFail($people_id);
+        $lastToilets = $person->toilets->last();
+        
+        return view('toiletchange', compact('person', 'lastToilets'));
+    }
     /**
      * Update the specified resource in storage.
      *
@@ -113,9 +119,22 @@ class ToiletController extends Controller
      * @param  \App\Models\Food  $food
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Food $food)
+    public function update(Request $request, Toilet $toilet)
     {
-        //
+    //データ更新
+        $person = Person::find($request->people_id);
+        $toilet->people_id = $person->id;
+        $toilet->urine_amount = $request->urine_amount;
+        $toilet->ben_condition = $request->ben_condition;
+        $toilet->ben_amount = $request->ben_amount;
+        $toilet->bentsuu = $request->bentsuu;
+        $toilet->bikou = $request->bikou;
+        $toilet->created_at = $request->created_at;
+        $toilet->save();
+        
+        $people = Person::all();
+        
+        return view('people', compact('toilet', 'people'));
     }
 
     /**

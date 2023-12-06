@@ -319,7 +319,10 @@
                                                 <i class="material-icons md-90 ml-auto">add</i>
                                                 </a>
                                             @else
-                                                <!-- 直近のバイタル結果表示 --><div class="flex items-center justify-around">
+                                                <!-- 直近のバイタル結果表示 -->
+                                                <a href="{{ url('bloodpressurechange/'.$person->id) }}" class="relative ml-2 flex items-center">
+                                                     @csrf
+                                                <div class="flex items-center justify-around">
                                             　　　　    <div class="px-2">
                                             　　　　        <p class="text-gray-900 font-bold text-base">血圧:</p>
                                                         <p class="text-gray-900 font-bold text-2xl">{{ $lastBloodpressures->max_blood }}/{{ $lastBloodpressures->min_blood }}</p>
@@ -338,7 +341,7 @@
                                                     <i class="fa-solid fa-pencil text-stone-500" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s; vertical-align: middle;"></i>
                                                     </div>
                                                 </div>
-                                                
+                                                </a>
                                             @endif
                                         @else
                                             <summary class="text-red-500 font-bold text-xl">記録してください</summary>
@@ -374,21 +377,24 @@
                                                 <i class="material-icons md-90 ml-auto">add</i>
                                             </a>
                                         @else
+                                            <a href="{{ url('toiletchange/'.$person->id) }}" class="relative ml-2 flex items-center">
+                                                     @csrf
                                             <div class="flex justify-evenly">
-                                                <a href="{{ route('toilets.show', $lastToilets->id) }}" class="font-bold text-xl">
-                                                    <div class="px-1.5">
-                                                        <p class="text-gray-900 font-bold text-sm">尿量:</p>
-                                                        <p class="text-gray-900 font-bold text-xl">{{ $lastToilets->urine_amount }}</p>
-                                                    </div>
-                                                </a>
-                                                <a href="{{ route('toilets.show', $lastToilets->id) }}" class="font-bold text-xl">
-                                                    <div class="px-1.5">
-                                                        <p class="text-gray-900 font-bold text-sm">便量:</p>
-                                                        <p class="text-gray-900 font-bold text-xl">{{ $lastToilets->ben_amount }}</p>
-                                                        <p class="text-gray-900 font-bold text-xl">{{ $lastToilets->ben_condition }}</p>
-                                                    </div>
-                                                </a>
+                                                <div class="px-1.5">
+                                                    <p class="text-gray-900 font-bold text-sm">尿量:</p>
+                                                    <p class="text-gray-900 font-bold text-xl">{{ $lastToilets->urine_amount }}</p>
+                                                </div>
+                                           
+                                                <div class="px-1.5">
+                                                    <p class="text-gray-900 font-bold text-sm">便量:</p>
+                                                    <p class="text-gray-900 font-bold text-xl">{{ $lastToilets->ben_amount }}</p>
+                                                    <p class="text-gray-900 font-bold text-xl">{{ $lastToilets->ben_condition }}</p>
+                                                </div>
+                                                <div class="px-2">
+                                                    <i class="fa-solid fa-pencil text-stone-500" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s; vertical-align: middle;"></i>
+                                                </div>
                                             </div>
+                                            </a>
                                         @endif
                                     @else
                                         <p class="text-red-500 font-bold text-xl">登録して<br>ください</p>

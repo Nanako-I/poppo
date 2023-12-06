@@ -129,9 +129,7 @@
                                         <p class="text-gray-900 font-bold text-xl">備考<p>
                                         <textarea id="result-speech" name="bikou" class="w-full max-w-lg" style="height: 300px;">{{ $lastFood->bikou }}</textarea>
                                     </div>
-                                    
-    
-                                      @endif
+                                    @endif
                                     <button type="submit" class="inline-flex items-center px-6 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
                                           修正
                                     </button>
