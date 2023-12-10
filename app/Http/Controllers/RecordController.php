@@ -94,27 +94,39 @@ public function show($people_id, Request $request)
     $person = Person::findOrFail($people_id);
     $selectedDate = $request->input('selected_date');
     
-    $foods = Food::where('people_id', $people_id)
+    $lastFood = Food::where('people_id', $people_id)
         ->whereDate('created_at', $selectedDate)
-        ->get();
+        ->latest()
+        ->first();
     
-    $temperatures = Temperature::where('people_id', $people_id)
+    $lastTemperature = Temperature::where('people_id', $people_id)
         ->whereDate('created_at', $selectedDate)
-        ->get();
+        ->latest()
+        ->first();
         
-    $bloodpressures = Bloodpressure::where('people_id', $people_id)
+    $lastBloodPressure = Bloodpressure::where('people_id', $people_id)
         ->whereDate('created_at', $selectedDate)
-        ->get();
+        ->latest()
+        ->first();
         
-    $toilets = Toilet::where('people_id', $people_id)
+    $lastToilet = Toilet::where('people_id', $people_id)
         ->whereDate('created_at', $selectedDate)
-        ->get();
+        ->latest()
+        ->first();
     
-    $speeches = Speech::where('people_id', $people_id)
-        ->whereDate('created_at', $selectedDate)
-        ->get();
+    $lastMorningActivity = Speech::where('people_id', $people_id)
+    ->whereDate('created_at', $selectedDate)
+    ->whereNotNull('morning_activity')
+    ->latest()
+    ->first();
+
+    $lastAfternoonActivity = Speech::where('people_id', $people_id)
+    ->whereDate('created_at', $selectedDate)
+    ->whereNotNull('afternoon_activity')
+    ->latest()
+    ->first();
         
-        return view('recordedit', compact('person', 'temperatures', 'bloodpressures', 'toilets', 'foods', 'speeches', 'selectedDate'));
+        return view('recordedit', compact('person', 'lastTemperature', 'lastBloodPressure', 'lastToilet', 'lastFood', 'lastMorningActivity', 'lastAfternoonActivity', 'selectedDate'));
 }
     /**
      * Show the form for editing the specified resource.

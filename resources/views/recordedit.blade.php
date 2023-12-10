@@ -70,15 +70,12 @@
     </tr>
   </thead>
   <tbody>
-    @foreach($temperatures as $temperature)
-    @if(\Carbon\Carbon::parse($temperature->created_at)->format('Y-m-d') === $selectedDate)
     <tr>
-      <td>{{ \Carbon\Carbon::parse($temperature->created_at)->format('H:i') }}</td>
-      <td>{{ $temperature->temperature }}℃</td>
-     
+      @if($lastTemperature)
+      <td>{{ $lastTemperature->created_at->format('H:i') }}</td>
+      <td>{{ $lastTemperature->temperature }}℃</td>
+      @endif
     </tr>
-    @endif
-    @endforeach
   </tbody>
 </table>
 
@@ -89,13 +86,10 @@
     </tr>
   </thead>
   <tbody>
-    @foreach($temperatures as $temperature)
-    @if(\Carbon\Carbon::parse($temperature->created_at)->format('Y-m-d') === $selectedDate)
     <tr>
-      <td>{{ $temperature->bikou }}</td>
+      <td>{{ optional($lastTemperature)->bikou }}</td>
     </tr>
-    @endif
-    @endforeach
+    
   </tbody>
 </table>
 
@@ -112,15 +106,13 @@
     </tr>
   </thead>
   <tbody>
-    @foreach($bloodpressures as $bloodpressure)
-    @if(\Carbon\Carbon::parse($bloodpressure->created_at)->format('Y-m-d') === $selectedDate)
     <tr>
-      <td>{{ \Carbon\Carbon::parse($bloodpressure->created_at)->format('H:i') }}</td>
-      <td>{{ $bloodpressure->max_blood }}/{{ $bloodpressure->min_blood }}</td>
+      @if($lastBloodPressure)
+      <td>{{ $lastBloodPressure->created_at->format('H:i') }}</td>
+      <td>{{ $lastBloodPressure->max_blood }}/{{ $lastBloodPressure->min_blood }}</td>
+      @endif
     </tr>
-    @endif
-    @endforeach
-  </tbody>
+   </tbody>
 </table>
 
 <table>
@@ -130,15 +122,12 @@
         <th style="width: 180px;">脈拍</th>
       </tr>
     </thead>
-  
-    @foreach($bloodpressures as $bloodpressure)
-    @if(\Carbon\Carbon::parse($bloodpressure->created_at)->format('Y-m-d') === $selectedDate)
     <tr>
-      <td>{{ \Carbon\Carbon::parse($bloodpressure->created_at)->format('H:i') }}</td>
-      <td>{{ $bloodpressure->pulse }}/分</td>
+      @if($lastBloodPressure)
+      <td>{{ $lastBloodPressure->created_at->format('H:i') }}</td>
+      <td>{{ $lastBloodPressure->pulse }}/分</td>
+      @endif
     </tr>
-    @endif
-    @endforeach
   </tbody>
 </table>
 
@@ -149,14 +138,12 @@
         <th style="width: 180px;">SpO2</th>
       </tr>
     </thead>
-    @foreach($bloodpressures as $bloodpressure)
-    @if(\Carbon\Carbon::parse($bloodpressure->created_at)->format('Y-m-d') === $selectedDate)
     <tr>
-      <td>{{ \Carbon\Carbon::parse($bloodpressure->created_at)->format('H:i') }}</td>
-      <td>{{ $bloodpressure->spo2 }}％</td>
+      @if($lastBloodPressure)
+      <td>{{ $lastBloodPressure->created_at->format('H:i') }}</td>
+      <td>{{ $lastBloodPressure->spo2 }}％</td>
+      @endif
     </tr>
-    @endif
-    @endforeach
   </tbody>
 </table>
 
@@ -167,14 +154,9 @@
         <th style="width: 180px;">バイタル　備考</th>
       </tr>
     </thead>
-  
-    @foreach($bloodpressures as $bloodpressure)
-    @if(\Carbon\Carbon::parse($bloodpressure->created_at)->format('Y-m-d') === $selectedDate)
     <tr>
-      <td>{{ $bloodpressure->bikou }}</td>
+      <td>{{ optional($lastBloodPressure)->bikou }}</td>
     </tr>
-    @endif
-    @endforeach
   </tbody>
 </table>
 
@@ -187,15 +169,13 @@
     </tr>
   </thead>
   <tbody>
-    @foreach($foods as $food)
-    @if(\Carbon\Carbon::parse($food->created_at)->format('Y-m-d') === $selectedDate)
     <tr>
-      <td>{{ \Carbon\Carbon::parse($food->created_at)->format('H:i') }}</td>
-      <td>食事は{{ $food->staple_food }}割食べました。</td>
-      <td>薬の服用：{{ $food->medicine == 'yes' ? 'あり' : 'なし' }}。</td>
+      @if($lastFood)
+      <td>{{ $lastFood->created_at->format('H:i') }}</td>
+      <td>食事は{{ $lastFood->staple_food }}割食べました。</td>
+      <td>薬の服用：{{ $lastFood->medicine == 'yes' ? 'あり' : 'なし' }}</td>
+      @endif
     </tr>
-    @endif
-    @endforeach
   </tbody>
 </table>
 
@@ -207,13 +187,9 @@
     </tr>
   </thead>
   <tbody>
-    @foreach($foods as $food)
-    @if(\Carbon\Carbon::parse($food->created_at)->format('Y-m-d') === $selectedDate)
     <tr>
-      <td>{{ $food->bikou }}</td>
+      <td>{{ optional($lastFood)->bikou }}</td>
     </tr>
-    @endif
-    @endforeach
   </tbody>
 </table>
 
@@ -226,15 +202,13 @@
     </tr>
   </thead>
   <tbody>
-    @foreach($toilets as $toilet)
-    @if(\Carbon\Carbon::parse($toilet->created_at)->format('Y-m-d') === $selectedDate)
-    <tr>
-      <td>{{ \Carbon\Carbon::parse($toilet->created_at)->format('H:i') }}</td>
-      <td>尿量：{{ $toilet->urine_amount }}</td>
+   <tr>
+      @if($lastToilet)
+      <td>{{ $lastToilet->created_at->format('H:i') }}</td>
+      <td>{{ $lastToilet->urine_amount }}</td>
+      @endif
     </tr>
-    @endif
-    @endforeach
-  </tbody>
+   </tbody>
 </table>
 
 <table>
@@ -245,14 +219,12 @@
     </tr>
   </thead>
   <tbody>
-    @foreach($toilets as $toilet)
-    @if(\Carbon\Carbon::parse($toilet->created_at)->format('Y-m-d') === $selectedDate)
     <tr>
-      <td>{{ \Carbon\Carbon::parse($toilet->created_at)->format('H:i') }}</td>
-      <td>便量：{{ $toilet->ben_amount }}性状：{{ $toilet->ben_condition }}</td>
+      @if($lastToilet)
+      <td>{{ $lastToilet->created_at->format('H:i') }}</td>
+      <td>便量：{{ $lastToilet->ben_amount }}性状：{{ $lastToilet->ben_condition }}</td>
+      @endif
     </tr>
-    @endif
-    @endforeach
   </tbody>
 </table>
 
@@ -264,13 +236,9 @@
     </tr>
   </thead>
   <tbody>
-    @foreach($toilets as $toilet)
-    @if(\Carbon\Carbon::parse($toilet->created_at)->format('Y-m-d') === $selectedDate)
     <tr>
-      <td>{{ $toilet->bikou }}</td>
+      <td>{{ optional($lastToilet)->bikou }}</td>
     </tr>
-    @endif
-    @endforeach
   </tbody>
 </table>
 
@@ -278,43 +246,30 @@
 <table>
   <thead>
     <tr>
-      <!--<th>Date</th>-->
-      <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
-      rel="stylesheet">
       <th style="padding-bottom: 10px;">午前の活動</th>
     </tr>
   </thead>
   <tbody>
-    @foreach($speeches as $speech)
-    @if(\Carbon\Carbon::parse($speech->created_at)->format('Y-m-d') === $selectedDate)
     <tr>
-      <td>{{ $speech->morning_activity }}</td>
+      <td>{{ optional($lastMorningActivity)->morning_activity }}</td>
     </tr>
-    @endif
-    @endforeach
   </tbody>
 </table>
 
+<div class="mb-4">
 <table>
   <thead>
     <tr>
-      <!--<th>Date</th>-->
-      <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
-      rel="stylesheet">
       <th style="padding-bottom: 10px;">午後の活動</th>
     </tr>
   </thead>
   <tbody>
-    @foreach($speeches as $speech)
-    @if(\Carbon\Carbon::parse($speech->created_at)->format('Y-m-d') === $selectedDate)
     <tr>
-      <td>{{ $speech->afternoon_activity }}</td>
+      <td>{{ optional($lastAfternoonActivity)->afternoon_activity }}</td>
     </tr>
-    @endif
-    @endforeach
   </tbody>
 </table>
-
+</div>
 <!--</form>-->
 </body>
 {{-- 追加した Blade ディレクティブ --}}
