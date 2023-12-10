@@ -123,6 +123,15 @@ class SpeechController extends Controller
     return view('afternoonspeech', ['id' => $person->id],compact('person'));
 }
 
+
+    public function change(Request $request, $people_id)
+{
+    $person = Person::findOrFail($people_id);
+    $lastMorningspeech = $person->speeches->last(); // 最後のSpeechモデルを取得
+    $lastMorningspeechValue = $lastMorningspeech ? $lastMorningspeech->morning_activity : null;
+
+    return view('morningspeechchange', compact('person', 'lastMorningspeechValue'));
+}
     /**
      * Update the specified resource in storage.
      *
@@ -132,7 +141,43 @@ class SpeechController extends Controller
      */
     public function update(Request $request, Speech $speech)
     {
-        //
+      //データ更新
+        $person = Person::find($request->people_id);
+        $speech->people_id = $person->id;
+        $speech->morning_activity = $request->morning_activity;
+        $speech->afternoon_activity = $request->afternoon_activity;
+        
+        $speech->save();
+        
+        $people = Person::all();
+        
+        return view('people', compact('speech', 'people'));
+    }
+    
+    
+    public function PMchange(Request $request, $people_id)
+{
+    $person = Person::findOrFail($people_id);
+    $lastAfternoonspeech = $person->speeches->last(); // 最後のSpeechモデルを取得
+    $lastAfternoonspeechValue = $lastAfternoonspeech ? $lastAfternoonspeech->afternoon_activity : null;
+
+    return view('afternoonspeechchange', compact('person', 'lastAfternoonspeechValue'));
+}
+
+
+    public function PMupdate(Request $request, Speech $speech)
+    {
+      //データ更新
+        $person = Person::find($request->people_id);
+        $speech->people_id = $person->id;
+        $speech->morning_activity = $request->morning_activity;
+        $speech->afternoon_activity = $request->afternoon_activity;
+        
+        $speech->save();
+        
+        $people = Person::all();
+        
+        return view('people', compact('speech', 'people'));
     }
 
     /**

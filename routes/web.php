@@ -136,9 +136,19 @@ Route::post('toiletchange/{people_id}',[ToiletController::class,'update'])->name
 // Route::get('speech/{people_id}/edit', [SpeechController::class, 'edit'])->name('speech.edit');
 Route::get('morningspeech/{people_id}/edit', [SpeechController::class, 'show'])->name('morningspeech.show');
 Route::post('morningspeech/{people_id}/edit', [SpeechController::class,'store'])->name('morningspeech.post');
+
+// 午前の活動編集↓
+Route::get('morningspeechchange/{people_id}', [SpeechController::class, 'change'])->name('morningspeech.change');
+Route::post('morningspeechchange/{people_id}',[SpeechController::class,'update'])->name('morningspeech_update');
+
 // SpeechControllerにshowメソッド・storeメソッドが重複するためedit createで書いた↓
 Route::get('afternoonspeech/{people_id}/edit', [SpeechController::class, 'edit'])->name('afternoonspeech.show');
 Route::post('afternoonspeech/{people_id}/edit', [SpeechController::class,'create'])->name('afternoonspeech.post');
+
+// 午後の活動編集↓
+Route::get('afternoonspeechchange/{people_id}', [SpeechController::class, 'PMchange'])->name('afternoonspeech.PMchange');
+Route::post('afternoonspeechchange/{people_id}',[SpeechController::class,'PMupdate'])->name('afternoonspeech_PMupdate');
+
 
 // プルダウンで登録させるバージョン↓
 Route::post('speeches/{people_id}', [SpeechController::class,'store'])->name('speech.store');

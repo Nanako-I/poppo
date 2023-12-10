@@ -199,7 +199,7 @@
     
     <div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">
     <h3>備考</h3>
-    <textarea id="result-speech" name="bikou" class="w-3/4 max-w-lg" style="height: 200px;"></textarea>
+    <textarea id="result-speech" name="bikou" class="w-3/4 max-w-lg font-bold" style="height: 200px;"></textarea>
     </div>
     
     <!--<div style="display: flex; align-items: center; margin-left: auto; margin-right: auto; max-width: 300px; my-2">-->

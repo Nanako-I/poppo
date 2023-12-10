@@ -13,17 +13,25 @@
               }
             h2 {
               font-family: Arial, sans-serif; /* フォントをArialに設定 */
-              font-size: 20px; /* フォントサイズを20ピクセルに設定 */
-              text-decoration: underline;
+              font-size: 25px; /* フォントサイズを20ピクセルに設定 */
+              /*text-decoration: underline;*/
             }
           </style>
-      </div>   
+      </div> 
       <div class="center-container">
-            <div class="flex items-center justify-center my-2 font-bold text-2xl">
+            <div class="flex items-center text-align: center justify-center my-2 font-bold text-2xl">
           <!--<div style="display: flex; align-items: center; margin-left: auto; margin-right: auto; max-width: 300px;">-->
-               <h2>{{$person->person_name}}さんの午後活動記録</h2>
-            </div>  
-             <div class="flex items-center justify-center m-2">
+               <h2 style="margin: 0; padding: 0;">{{$person->person_name}}さんの午前活動記録</h2>
+            </div>
+                @php
+                $lastSpeech = $person->speeches->whereNotNull('morning_activity')->last();
+                @endphp
+                @if(!is_null($lastSpeech))
+                <div class="flex items-center text-align: center justify-center my-2 font-bold text-2xl">
+                （{{$lastSpeech->created_at->format('n/jG：i')}}に登録した内容）
+                </div>
+                @endif
+            <div class="flex items-center justify-center m-2">
              <p class="font-bold text-xl">音声で入力する場合、スタートボタンを押してください</p>
             </div>
         </form>
@@ -54,11 +62,11 @@
     <form action="{{ url('morningspeech/'.$person->id.'/edit') }}" method="POST">
       @csrf
         <div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">
-            <textarea id="result-speech" name="afternoon_activity" class="w-full max-w-lg font-bold" style="height: 300px;"></textarea>
+            <textarea id="result-speech" name="morning_activity" class="w-full max-w-lg font-bold" style="height: 300px;">{{ $lastSpeech->morning_activity }}</textarea>
         </div>
         <div style="display: flex; align-items: center; justify-content: center;" class="my-2">
             <button type="submit" class="inline-flex items-center px-6 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
-                送信
+                修正
             </button>
         </div>
 </div>
@@ -108,6 +116,7 @@ stopBtn.onclick = (event) => {
     event.preventDefault();
     recognition.stop();
 }
+
 </script>
 </body>
 </html>

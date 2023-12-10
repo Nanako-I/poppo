@@ -54,7 +54,7 @@
     <form action="{{ url('morningspeech/'.$person->id.'/edit') }}" method="POST">
       @csrf
         <div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">
-            <textarea id="result-speech" name="morning_activity" class="w-full max-w-lg" style="height: 300px;"></textarea>
+            <textarea id="result-speech" name="morning_activity" class="w-full max-w-lg font-bold" style="height: 300px;"></textarea>
         </div>
         <div style="display: flex; align-items: center; justify-content: center;" class="my-2">
             <button type="submit" class="inline-flex items-center px-6 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">

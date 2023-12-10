@@ -74,7 +74,6 @@
     <!-- 現在の本 -->
   <div class="flex flex-row justify-start w-screen overflow-x-auto">
     <div class="slider">
-        
     @csrf
                 @if (!is_null($people) && count($people) > 0)
              <div class="flex flex-row justify-center tw-flex-row h-150 -m-2">
@@ -145,11 +144,11 @@
                                            
                                         @endphp
                                             @if ($lastFood && $lastFood->created_at->diffInHours(now()) >= 6)
+                                                <a href="{{ url('food/'.$person->id.'/edit') }}" class="relative ml-2" style="display: flex; align-items: center;">
                                                 <p class="text-red-500 font-bold text-xl">登録して<br>ください</p>
-                                                 <a href="{{ url('food/'.$person->id.'/edit') }}" class="relative  ml-2">
-                                                     @csrf
-                                                 <i class="material-icons md-90 ml-auto">add</i>
-                                                 </a>
+                                                @csrf
+                                                <i class="fa-solid fa-plus text-gray-900" style="font-size: 1.5em; padding: 0 5px; transition: transform 0.2s;"></i>
+                                                </a>
                                             @else
                                                 <!-- 直近の検温結果表示 -->
                                                 <div class="flex justify-evenly">
@@ -176,11 +175,11 @@
                                                </div>
                                             @endif
                                         @else
+                                            <a href="{{ url('food/'.$person->id.'/edit') }}" class="relative ml-2" style="display: flex; align-items: center;">
                                             <p class="text-red-500 font-bold text-xl">登録して<br>ください</p>
-                                                 <a href="{{ url('food/'.$person->id.'/edit') }}" class="relative  ml-2">
-                                                     @csrf
-                                                 <i class="material-icons md-90 ml-auto">add</i>
-                                                 </a>
+                                                @csrf
+                                            <i class="fa-solid fa-plus text-gray-900" style="font-size: 1.5em; padding: 0 5px; transition: transform 0.2s;"></i>
+                                            </a>
                                         @endif
                                     </div>
                                 </div>
@@ -234,29 +233,28 @@
                                                 </style>
                                               
                                                 <div style="display: flex; flex-direction: column; align-items: center;">
-                                                <details class="justify-center"> <!-- この行を追加 -->
+                                                    <form action="{{ route('temperatures.store', $person->id) }}" method="POST">
+                                                        <details class="justify-center"> <!-- この行を追加 -->
                                                     
                                                         <summary class="text-red-500 font-bold text-xl">検温してください</summary>
-                                                        <form action="{{ route('temperatures.store', $person->id) }}" method="POST">
-                                                            @csrf
-                                                            <input type="hidden" name="people_id" value="{{ $person->id }}">
-                                                                <div class="flex items-center justify-center ml-4">
-                                                                    <input name="temperature" id="text-box" class="appearance-none block w-1/2 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white font-bold" type="text" placeholder="">
-                                                                    <p class="text-gray-900 font-bold text-xl">℃</p>
-                                                                </div>
-                                                                
-                                                                <div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">
-                                                                    <p class="text-gray-900 font-bold text-xl">備考</p>
-                                                                    <textarea id="result-speech" name="bikou" class="w-3/4 max-w-lg font-bold" style="height: 200px;"></textarea>
-                                                                </div>
-                                                            <div class="my-2" style="display: flex; justify-content: center; align-items: center; max-width: 300px;">
-                                                              <button type="submit" class="inline-flex items-center px-6 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
-                                                                送信
-                                                              </button>
+                                                        @csrf
+                                                        <input type="hidden" name="people_id" value="{{ $person->id }}">
+                                                            <div class="flex items-center justify-center ml-4">
+                                                                <input name="temperature" id="text-box" class="appearance-none block w-1/2 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white font-bold" type="text" placeholder="">
+                                                                <p class="text-gray-900 font-bold text-xl">℃</p>
                                                             </div>
-                                                        </form>
-                                                    
-                                                </details>
+                                                            
+                                                            <div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">
+                                                                <p class="text-gray-900 font-bold text-xl">備考</p>
+                                                                <textarea id="result-speech" name="bikou" class="w-3/4 max-w-lg font-bold" style="height: 200px;"></textarea>
+                                                            </div>
+                                                        <div class="my-2" style="display: flex; justify-content: center; align-items: center; max-width: 300px;">
+                                                          <button type="submit" class="inline-flex items-center px-6 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+                                                            送信
+                                                          </button>
+                                                        </div>
+                                                    </details>
+                                                </form>
                                                 <!--</div>-->
                                                 </div>
                                             @else
@@ -270,28 +268,27 @@
                                                 </a>
                                             @endif
                                         @else
-                                            <details>
-                                                <summary class="text-red-500 font-bold text-xl">検温してください</summary>
-                                                <form action="{{ route('temperatures.store', $person->id) }}" method="POST">
+                                            <form action="{{ route('temperatures.store', $person->id) }}" method="POST">
+                                                <details>
+                                                     <summary class="text-red-500 font-bold text-xl">検温してください</summary>
                                                     @csrf
-                                                    <input type="hidden" name="people_id" value="{{ $person->id }}">
-                                                        <div class="flex items-center justify-center ml-4">
-                                                            <input name="temperature" id="text-box" class="appearance-none block w-1/2 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white font-bold" type="text" placeholder="">
-                                                            <p class="text-gray-900 font-bold text-xl">℃</p>
+                                                        <input type="hidden" name="people_id" value="{{ $person->id }}">
+                                                            <div class="flex items-center justify-center ml-4">
+                                                                <input name="temperature" id="text-box" class="appearance-none block w-1/2 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white font-bold" type="text" placeholder="">
+                                                                <p class="text-gray-900 font-bold text-xl">℃</p>
+                                                            </div>
+                                                            
+                                                            <div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">
+                                                                <p class="text-gray-900 font-bold text-xl">備考</p>
+                                                                <textarea id="result-speech" name="bikou" class="w-3/4 max-w-lg font-bold" style="height: 200px;"></textarea>
+                                                            </div>
+                                                        <div class="my-2" style="display: flex; justify-content: center; align-items: center; max-width: 300px;">
+                                                          <button type="submit" class="inline-flex items-center px-6 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+                                                            送信
+                                                          </button>
                                                         </div>
-                                                        
-                                                        <div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">
-                                                            <p class="text-gray-900 font-bold text-xl">備考</p>
-                                                            <textarea id="result-speech" name="bikou" class="w-3/4 max-w-lg font-bold" style="height: 200px;"></textarea>
-                                                        </div>
-                                                    <div class="my-2" style="display: flex; justify-content: center; align-items: center; max-width: 300px;">
-                                                      <button type="submit" class="inline-flex items-center px-6 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
-                                                        送信
-                                                      </button>
-                                                    </div>
-                                                </form>
-                                            </details>
-                                                
+                                                </details>
+                                            </form>
                                         @endif
                                     </div>
                                 </div>
@@ -313,10 +310,10 @@
                                             @endphp
                                             @if ($lastBloodpressures->created_at->diffInHours(now()) >= 6)
                                                 <!-- 血圧フォーム -->
-                                                <summary class="text-red-500 font-bold text-xl">記録してください</summary>
-                                                <a href="{{ url('bloodpressures/'.$person->id.'/edit') }}" class="relative ml-2">
-                                                    @csrf
-                                                <i class="material-icons md-90 ml-auto">add</i>
+                                                <a href="{{ url('bloodpressures/'.$person->id.'/edit') }}" class="relative ml-2" style="display: flex; align-items: center;">
+                                                    <summary class="text-red-500 font-bold text-xl">記録してください</summary>
+                                                     @csrf
+                                                    <i class="fa-solid fa-plus text-gray-900" style="font-size: 1.5em; padding: 0 5px; transition: transform 0.2s;"></i>
                                                 </a>
                                             @else
                                                 <!-- 直近のバイタル結果表示 -->
@@ -344,11 +341,11 @@
                                                 </a>
                                             @endif
                                         @else
-                                            <summary class="text-red-500 font-bold text-xl">記録してください</summary>
-                                                <a href="{{ url('bloodpressures/'.$person->id.'/edit') }}" class="relative ml-2">
-                                                    @csrf
-                                                <i class="material-icons md-90 ml-auto">add</i>
-                                                </a>
+                                            <a href="{{ url('bloodpressures/'.$person->id.'/edit') }}"  class="relative ml-2" style="display: flex; align-items: center;">
+                                                <summary class="text-red-500 font-bold text-xl">記録してください</summary>
+                                                @csrf
+                                                <i class="fa-solid fa-plus text-gray-900" style="font-size: 1.5em; padding: 0 5px; transition: transform 0.2s;"></i>
+                                            </a>
                                         @endif
                                     </div>
                                 </div>
@@ -369,12 +366,14 @@
                                             $lastToilets = $person->toilets->last();
                                         @endphp
                                         @if ($lastToilets === null || $lastToilets->created_at->diffInHours(now()) >= 12)
-                                            <summary class="text-red-500 font-bold text-xl">誘導してください
-                                                <p class="text-red-500 font-bold text-xl">未排便{{ $lastToilets ? $lastToilets->created_at->diffInDays(now()) : 0 }}日目</p>
-                                            </summary>
                                             <a href="{{ url('toilet/'.$person->id.'/edit') }}" class="relative ml-2">
                                                 @csrf
-                                                <i class="material-icons md-90 ml-auto">add</i>
+                                            <div>
+                                                <summary class="text-red-500 font-bold text-xl">記録してください
+                                                    <i class="fa-solid fa-plus text-gray-900" style="font-size: 1.5em; padding: 0 5px; transition: transform 0.2s;"></i>
+                                                </summary>
+                                                    <p class="text-red-500 font-bold text-xl">未排便{{ $lastToilets ? $lastToilets->created_at->diffInDays(now()) : 0 }}日目</p>
+                                            </div>   
                                             </a>
                                         @else
                                             <a href="{{ url('toiletchange/'.$person->id) }}" class="relative ml-2 flex items-center">
@@ -397,10 +396,10 @@
                                             </a>
                                         @endif
                                     @else
-                                        <p class="text-red-500 font-bold text-xl">登録して<br>ください</p>
-                                        <a href="{{ url('toilet/'.$person->id.'/edit') }}" class="relative ml-2">
-                                            @csrf
-                                            <i class="material-icons md-90 ml-auto">add</i>
+                                        <a href="{{ url('toilet/'.$person->id.'/edit') }}" class="relative ml-2" style="display: flex; align-items: center;">
+                                        <summary class="text-red-500 font-bold text-xl">記録してください</summary>
+                                        @csrf
+                                            <i class="fa-solid fa-plus text-gray-900" style="font-size: 1.5em; padding: 0 5px; transition: transform 0.2s;"></i>
                                         </a>
                                     @endif
                                 </div>
@@ -426,27 +425,26 @@
                                                 
                                             @if ($lastSpeechDate === $today)
                                           　     <!-- 登録済みの場合 -->
+                                          　     <a href="{{ url('morningspeechchange/'.$person->id) }}" class="relative ml-2 flex items-center">
+                                                     @csrf
                                                 <p class="font-bold text-xl p-2">済</p>
-                                                
+                                                <i class="fa-solid fa-pencil text-stone-500" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s; vertical-align: middle;"></i>
+                                                </a>
                                             @else
                                                 <!-- 登録していない場合 -->
-                                                <!--<details>-->
+                                                <a href="{{ url('morningspeech/'.$person->id.'/edit') }}" class="relative ml-2" style="display: flex; align-items: center;">
                                                 <summary class="text-red-500 font-bold text-xl">登録してください</summary>
-                                                <a href="{{ url('morningspeech/'.$person->id.'/edit') }}" class="relative ml-2">
-                                                
-                                                
                                                 @csrf
-                                                <i class="material-icons md-90 ml-auto">add</i>
+                                                <i class="fa-solid fa-plus text-gray-900" style="font-size: 1.5em; padding: 0 5px; transition: transform 0.2s;"></i>
                                                 </a>
                                                 
                                             @endif
                                             @else
                                                 <!-- 登録していない場合 -->
-                                               <summary class="text-red-500 font-bold text-xl">登録してください</summary>
-                                                
-                                                <a href="{{ url('morningspeech/'.$person->id.'/edit') }}" class="relative ml-2">
-                                                @csrf
-                                                <i class="material-icons md-90 ml-auto">add</i>
+                                                <a href="{{ url('morningspeech/'.$person->id.'/edit') }}" class="relative ml-2" style="display: flex; align-items: center;">
+                                                    <summary class="text-red-500 font-bold text-xl">登録してください</summary>
+                                                    @csrf
+                                                    <i class="fa-solid fa-plus text-gray-900" style="font-size: 1.5em; padding: 0 5px; transition: transform 0.2s;"></i>
                                                 </a>
                                             @endif
                                         </div>
@@ -470,22 +468,25 @@
                                                 
                                             @if ($lastAfternoonSpeechDate === $today)
                                           　     <!-- 登録済みの場合 -->
+                                                <a href="{{ url('afternoonspeechchange/'.$person->id) }}" class="relative ml-2 flex items-center">
+                                                     @csrf
                                                 <p class="font-bold text-xl p-2">済</p>
-                                                
+                                                <i class="fa-solid fa-pencil text-stone-500" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s; vertical-align: middle;"></i>
+                                                </a>
                                             @else
                                                 <!-- 登録していない場合 -->
+                                                <a href="{{ url('afternoonspeech/'.$person->id.'/edit') }}"  class="relative ml-2 flex items-center">
                                                 <summary class="text-red-500 font-bold text-xl">登録してください</summary>
-                                                <a href="{{ url('afternoonspeech/'.$person->id.'/edit') }}" class="relative ml-2">
                                                 @csrf
-                                                <i class="material-icons md-90 ml-auto">add</i>
+                                                <i class="fa-solid fa-plus text-gray-900" style="font-size: 1.5em; padding: 0 5px; transition: transform 0.2s;"></i>
                                                 </a>
                                             @endif
                                             @else
                                                 <!-- 登録していない場合 -->
-                                               <summary class="text-red-500 font-bold text-xl">登録してください</summary>
-                                                <a href="{{ url('afternoonspeech/'.$person->id.'/edit') }}" class="relative ml-2">
-                                                @csrf
-                                                <i class="material-icons md-90 ml-auto">add</i>
+                                                <a href="{{ url('afternoonspeech/'.$person->id.'/edit') }}" class="relative ml-2" style="display: flex; align-items: center;">
+                                                <summary class="text-red-500 font-bold text-xl">登録してください</summary>
+                                                    @csrf
+                                                    <i class="fa-solid fa-plus text-gray-900" style="font-size: 1.5em; padding: 0 5px; transition: transform 0.2s;"></i>
                                                 </a>
                                             @endif
                                         </div>
