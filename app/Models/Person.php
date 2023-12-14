@@ -38,4 +38,9 @@ public function foods()
         return $this->hasMany(Speech::class,'people_id');
     }
     
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class,'people_id');
+    }
+    
 }

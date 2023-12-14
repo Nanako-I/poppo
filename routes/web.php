@@ -13,6 +13,7 @@ use App\Http\Controllers\FoodController;
 use App\Http\Controllers\ToiletController;
 use App\Http\Controllers\CarController;
 use App\Http\Controllers\SpeechController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\RecordController;
 use App\Http\Controllers\SpreadsheetController; // Qiitaの記事
 use App\Http\Controllers\UploadController;
@@ -157,6 +158,16 @@ Route::get('speeches/{people_id}', [SpeechController::class,'show'])->name('spee
 Route::get('/speech/{id}/edit', 'SpeechController@edit')->name('speech.edit');
 
 Route::get('record/{people_id}/edit', [RecordController::class, 'show'])->name('record.edit');
+
+Route::get('notification/{people_id}/edit', [NotificationController::class, 'show'])->name('notification.show');
+Route::post('notification/{people_id}/edit', [NotificationController::class,'store'])->name('notification.post');
+
+// 連絡事項の編集↓
+Route::get('notificationchange/{people_id}', [NotificationController::class, 'change'])->name('notification.change');
+Route::post('notificationchange/{people_id}',[NotificationController::class,'update'])->name('notification_update');
+
+
+
 Route::get('people/{id}/edit', [PersonController::class, 'edit'])->name('people.edit');
 
 Route::get('/download',[SpreadsheetController::class,'chart'])->name('chart');
