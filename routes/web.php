@@ -18,6 +18,7 @@ use App\Http\Controllers\RecordController;
 use App\Http\Controllers\SpreadsheetController; // Qiitaの記事
 use App\Http\Controllers\UploadController;
 use App\Http\Controllers\ChartController;
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\DompdfController;
 
 
@@ -54,29 +55,15 @@ Route::post('peopleregister', [PersonController::class, 'store']);
 // Route::get('peopleregister', [PersonController::class, 'create']); 
 //   Route::resource('/photos', 'App\Http\Controllers\PhotoController')->only(['create','store']);
 
+Route::post('/logout', 'Auth\LoginController@logout')->name('logout');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// Route::get('peopleregister', [PersonController::class, 'uploadForm'])->name('photos.create.form');
-// Route::post('peopleregister', [PersonController::class, 'upload'])->name('photos.create');
 
-// Route::get('peopleregister', [PhotoController::class, 'uploadForm'])->name('photos.create.form');
-// Route::post('peopleregister', [PhotoController::class, 'upload'])->name('photos.create');
-// 動いてたやつ↑
-
-// Route::get('/photos/create', [PhotoController::class, 'uploadForm'])->name('photos.create.form');
-// Route::post('/photos/create', [PhotoController::class, 'upload'])->name('photos.create');
-// postはこちら側が情報を投げる　getは情報をとってくる
-
-
-// Route::resource('temperature', TemperatureController::class);
-// Route::resource('temperature', TemperatureController::class)->parameters(['temperature' => 'temperature'])->except(['show']);
-// Route::get('temperaturelist', [PersonController::class, 'templist']);
-// Route::get('people', [TemperatureController::class, 'show'])->name('temperature.show');
-// Route::get('temperatures/{id}', 'TemperatureController@show')->name('temperatures.show');
 
 Route::get('temperaturelist', [PersonController::class, 'showtemperature'])->name('temperaturelist.edit');
 
@@ -166,6 +153,9 @@ Route::post('notification/{people_id}/edit', [NotificationController::class,'sto
 Route::get('notificationchange/{people_id}', [NotificationController::class, 'change'])->name('notification.change');
 Route::post('notificationchange/{people_id}',[NotificationController::class,'update'])->name('notification_update');
 
+// 連絡帳機能
+Route::get('chat/{people_id}', [ChatController::class, 'show'])->name('chat.show');
+Route::post('chat/{people_id}', [ChatController::class, 'store'])->name('chat.store');
 
 
 Route::get('people/{id}/edit', [PersonController::class, 'edit'])->name('people.edit');

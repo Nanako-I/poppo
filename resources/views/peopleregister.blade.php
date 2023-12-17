@@ -50,13 +50,14 @@
     <div style="display: flex; align-items: center; justify-content: center; flex-direction: column;">
     <!--<div class="flex items-center justify-center">-->
         <!--<div class="form-group col-span-1">-->
-        <div class="form-group mb-4 m-2" style="display: flex; flex-direction: column; align-items: center;">
+        <!--max-w-md: 最大幅を指定 この場合、md は中サイズの画面 PCとか？（通常、768px以上の画面幅）を指します-->
+        <div class="form-group mb-4 m-2 w-1/2 max-w-md md:w-1/6" style="display: flex; flex-direction: column; align-items: center;">
             <label class="block text-lg font-bold text-gray-700">名前</label>
             <input name="person_name" type="text" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm text-xl font-bold border-gray-300 rounded-md" placeholder="名前">
         </div>
         <!--</div>-->
         <!--<div class="form-group col-span-1">-->
-        <div class="form-group mb-4 m-2" style="display: flex; flex-direction: column; align-items: center;">
+        <div class="form-group mb-4 m-2 w-1/2 max-w-md md:w-1/6" style="display: flex; flex-direction: column; align-items: center;">
             <label class="block text-lg font-bold text-gray-700">生年月日</label>
             <input name="date_of_birth" type="date" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm text-xl font-bold border-gray-300 rounded-md" placeholder="生年月日">
         </div>
@@ -76,10 +77,12 @@
         <div class="form-group mb-4 m-2" style="display: flex; flex-direction: column; align-items: center;">
           <label class="block text-lg font-bold text-gray-700">プロフィール画像</label>
           <!--<div style="display: flex; flex-direction: column; align-items: center;">-->
+          <div style="margin-left: 10px;">
             <input name="filename" id="filename" type="file" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm text-lg border-gray-300 rounded-md ml-20">
             <!--<button class="mt-2" name="filename" id="filename" type="file" accept="image/*">プロフィール画像を選択</button>-->
-          <!--</div>-->
+          </div>
         </div>
+        
     
       <!--<div class="form-group col-span-1">-->
       <!--  <label class="block text-base font-bold text-gray-700">障害名</label>-->
@@ -106,7 +109,7 @@
         
         <hr>
         <!--<h5> 読み取った文字を上のフォームに当てはめてください。<br></h5>-->
-        <div id="modal" class="fixed inset-0 bg-gray-500 bg-opacity-50 flex z-10 hidden">
+ <div id="modal" class="fixed inset-0 bg-gray-500 bg-opacity-50 flex z-10 hidden">
   <div id="option-list" class="bg-white p-4 rounded-md shadow-md">
       <p class="bg-transparent hover:bg-blue-700 text-blue-500 font-bold py-2 px-4 rounded underline cursor-pointer" id="modal-trigger">選択するフォームを選んでください</p>
     <button id="person-name-option" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded focus:outline-none">

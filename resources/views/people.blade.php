@@ -171,6 +171,25 @@
                                         </div>
                                     </div>
                                     
+                                <!--特記事項↓ -->
+                        　    　<div class="border-2 p-2 rounded-lg bg-white m-2">
+                                    <div class="flex justify-start items-center">
+                                        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+                                        <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
+                                        <i class="fa-solid fa-comments text-sky-500" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>
+                                        <p class="font-bold text-xl ml-2">連絡</p>
+                                    </div>
+                                        <div class="flex items-center justify-center p-4">
+                                            
+                                            <!-- 登録していない場合 -->
+                                            <a href="{{ url('chat/'.$person->id) }}" class="relative ml-2" style="display: flex; align-items: center;">
+                                            <summary class="text-red-500 font-bold text-xl">連絡する</summary>
+                                            @csrf
+                                            <i class="fa-solid fa-plus text-gray-900" style="font-size: 1.5em; padding: 0 5px; transition: transform 0.2s;"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    
                        <!-- 食事登録↓ -->
                         　    　 <div class="border-2 p-2 rounded-lg bg-white m-2">
                                      <div class="flex justify-start items-center">

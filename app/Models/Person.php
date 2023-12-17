@@ -42,5 +42,9 @@ public function foods()
     {
         return $this->hasMany(Notification::class,'people_id');
     }
-    
+    public function chats()
+    {
+        return $this->hasMany(Chat::class,'people_id');
+        //  return $this->hasMany(Temperature::class);
+    }
 }
