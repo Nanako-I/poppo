@@ -40,7 +40,8 @@
       <body>
              <!--<form action="{{ url('peopleregister') }}" method="POST" class="w-full" enctype="multipart/form-data">-->
              <!--           @csrf-->
-              
+               <form action="{{ url('peopleregister') }}" method="POST" class="w-full" enctype="multipart/form-data">
+                        @csrf
                 <!--<br>-->
                 <!--<div class="mx-0.5  my-4">-->
                 <!--<h3 class ="font-bold">ウェブカメラで身分証明書（障害者手帳など）の写真を撮ってください</h3>-->
@@ -88,8 +89,8 @@
       <!--  <label class="block text-base font-bold text-gray-700">障害名</label>-->
       <!--  <input name="disability_name" type="text" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="障がい名">-->
       <!--</div>-->
-       <form action="{{ url('peopleregister') }}" method="POST" class="w-full" enctype="multipart/form-data">
-                        @csrf
+       <!--<form action="{{ url('peopleregister') }}" method="POST" class="w-full" enctype="multipart/form-data">-->
+       <!--                 @csrf-->
         <div class="flex flex-col col-span-1">
             <div class="text-gray-700 text-center px-4 py-2 m-2">
               <button type="submit" class="inline-flex items-center px-6 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
