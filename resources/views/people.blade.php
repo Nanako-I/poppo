@@ -100,8 +100,8 @@
                      
                      </style>
                      
-                     <a href="{{ url('chart/'.$person->id.'/edit') }}" class="relative  ml-2">
-                                                                 @csrf
+                     <!--<a href="{{ url('chart/'.$person->id.'/edit') }}" class="relative  ml-2">-->
+                     <!--                                            @csrf-->
 
                       <div class="h-30 flex flex-row items-center rounded-lg bg-white width:100vw relative z-0">
                           <!--ハンバーガーメニューが表示された時は、下に表示されるようz-0をつける-->
@@ -126,7 +126,7 @@
                                           <p class="text-gray-900 font-bold text-xs" _msttexthash="150072">{{$person->date_of_birth}}生まれ</p>
                                         </div>
                       </div>
-                      </a>
+                      <!--</a>-->
                       
                         <!--特記事項↓ -->
                         　    　<div class="border-2 p-2 rounded-lg bg-white m-2">
