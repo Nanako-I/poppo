@@ -26,9 +26,11 @@
         @php
            $lastToilets = $person->toilets->last();
         @endphp
-        @if(!is_null($lastToilets))
+        @if(!is_null($lastToilets) && !is_null($lastToilets->created_at))
             （{{$lastToilets->created_at->format('n/jG：i')}}に登録した内容）
         @endif
+        
+        
       </div>
     </form>
    </div>
@@ -59,153 +61,39 @@
         }
         </style>
         
-    <div style="display: flex; flex-direction: column; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
-      <!--<input type="datetime-local" name="created_at">-->
-      <h3>トイレに行った時間</h3>
+   
+    <div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">
+        <p class="text-gray-900 font-bold text-xl">尿</p>
+            <div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">
+                <select name="urine" class="mx-1 my-1.5" style="width: 6rem;">
+                    <option value="あり"{{ $lastToilets->urine === 'あり' ? ' selected' : '' }}>あり</option>
+                    <option value="なし"{{ $lastToilets->urine === 'なし' ? ' selected' : '' }}>なし</option>
+                    
+                    <option value="あり">あり</option>
+                    <option value="なし">なし</option>
+                </select>
+            </div>
     </div>
-    <div style="display: flex; flex-direction: column; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
-      <input type="time" name="created_at" id="scheduled-time" value="{{ $lastToilets->created_at }}">
-    </div>
-    <div style="display: flex; flex-direction: column; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
-      <h3>尿の量</h3>
-    </div>
-    <div style="max-width: 350px; margin: 1.5rem auto;">
-        <input type="range" id ="urine_range" class="urine-range" name="foo" min="0" max="3" oninput="oninput_urine()">
-    </div>
-      
-    <style>
-      /*// リセットCSS（すでに指定済なら不要）*/
-      /** {*/
-      /*  box-sizing: border-box;*/
-      /*}*/
-      
-      /*// 🚩：重要なポイント*/
-      
-      .urine-range {
-        -webkit-appearance: none;
-        appearance: none;
-        cursor: pointer;
-        background: #8acdff;
-        height: 14px;
-        width: 100%; 
-        border-radius: 10px; 
-        border: solid 3px #dff1ff; 
-        outline: 0; /* アウトラインを消して代わりにfocusのスタイルをあてる */
-        &:focus {
-          box-shadow: 0 0 3px rgb(0, 161, 255);
-        }
-        /*// -webkit-向けのつまみ*/
-        &::-webkit-slider-thumb {
-          -webkit-appearance: none; 
-          background: #53aeff; 
-          width: 24px; 
-          height: 24px; 
-          border-radius: 50%;
-          box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.15);
-        }
-        /*// -moz-向けのつまみ*/
-        &::-moz-range-thumb {
-          background: #53aeff;
-          width: 24px;
-          height: 24px;
-          border-radius: 50%;
-          box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.15);
-          border: none; 
-        }
-        /*// Firefoxで点線が周りに表示されてしまう問題の解消*/
-        &::-moz-focus-outer {
-          border: 0;
-        }
-        /*// つまみをドラッグしているときのスタイル*/
-        &:active::-webkit-slider-thumb {
-          box-shadow: 0px 5px 10px -2px rgba(0, 0, 0, 0.3);
-        }
-      </style>
-      
-  　<div style="display: flex; flex-direction: column; align-items: center;">
-  　  <!--多・普通など反映させるテキストボックス↓-->
-  　  <input name="urine_amount" type="text" id="urine_amount" value="{{ $lastToilets->urine_amount }}" class="h-8px flex-shrink-0 break-words mx-1" style="width: 4rem;">
-    </div> 
-    
-  　<div style="display: flex; flex-direction: column; align-items: center; my-2;">
-      <h3>便の量</h3>
-    </div>
-    <div style="max-width: 350px; margin: 1.5rem auto;">
-      <input type="range" id ="ben_range" class="ben-range" name="foo" min="0" max="3" oninput="oninput_ben()">
-    </div>
-    <style>
-      .ben-range {
-        -webkit-appearance: none;
-        appearance: none;
-        cursor: pointer;
-        background: #8acdff;
-        height: 14px;
-        width: 100%; 
-        border-radius: 10px; 
-        border: solid 3px #dff1ff; 
-        outline: 0; /* アウトラインを消して代わりにfocusのスタイルをあてる */
-        &:focus {
-          box-shadow: 0 0 3px rgb(0, 161, 255);
-        }
-        /*// -webkit-向けのつまみ*/
-        &::-webkit-slider-thumb {
-          -webkit-appearance: none; 
-          background: #53aeff; 
-          width: 24px; 
-          height: 24px; 
-          border-radius: 50%;
-          box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.15);
-        }
-        /*// -moz-向けのつまみ*/
-        &::-moz-range-thumb {
-          background: #53aeff;
-          width: 24px;
-          height: 24px;
-          border-radius: 50%;
-          box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.15);
-          border: none; 
-        }
-        /*// Firefoxで点線が周りに表示されてしまう問題の解消*/
-        &::-moz-focus-outer {
-          border: 0;
-        }
-        /*// つまみをドラッグしているときのスタイル*/
-        &:active::-webkit-slider-thumb {
-          box-shadow: 0px 5px 10px -2px rgba(0, 0, 0, 0.3);
-        }
-      
-      </style>
-    <div class="flex items-center justify-center">
-      <input name="ben_amount" type="text" id="ben_amount" value="{{ $lastToilets->ben_amount }}" class="h-8px flex-shrink-0 break-words mx-1 ml-px" style="width: 4rem;">
-    </div> 
-    
     
     <div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">
-        <h3>便の状態</h3>
-          <select name="ben_condition" value="{{ $lastToilets->ben_condition }}" class="mx-1 my-1.5" style="width: 6rem;">
-            <option value="selected">{{ $lastToilets->ben_condition }}</option>
-            <option value="硬便">硬便</option>
-            <option value="普通便">普通便</option>
-            <option value="軟便">軟便</option>
-            <option value="泥状便">泥状便</option>
-            <option value="水様便">水様便</option>
-          </select>
+        <p class="text-gray-900 font-bold text-xl">便</p>
+            <div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">
+                <select name="ben" class="mx-1 my-1.5" style="width: 6rem;">
+                    <option value="あり"{{ $lastToilets->urine === 'あり' ? ' selected' : '' }}>あり</option>
+                    <option value="なし"{{ $lastToilets->urine === 'なし' ? ' selected' : '' }}>なし</option>
+                    <option value="あり">あり</option>
+                    <option value="なし">なし</option>
+                </select>
+            </div>
     </div>
- 
-    <style>
-      .checkbox-container {
-        display: flex;
-        align-items: center;
-      }
-      input[type="checkbox"] {
-        margin-right: 8px;
-      }
-    </style>
-    
     <div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">
-    <h3>備考</h3>
-    <textarea id="result-speech" name="bikou" class="w-3/4 max-w-lg font-bold" style="height: 200px;">{{ $lastToilets->bikou }}</textarea>
+        <p class="text-gray-900 font-bold text-xl">備考</p>
+        <textarea id="result-speech" name="bikou" class="w-3/4 max-w-lg font-bold" style="height: 150px;">{{ $lastToilets->bikou }}</textarea>
     </div>
+    
+   
+    
+    
     
     <!--<div style="display: flex; align-items: center; margin-left: auto; margin-right: auto; max-width: 300px; my-2">-->
     <div style="display: flex; align-items: center; margin-left: auto; margin-right: auto; max-width: 300px;" class="my-2">

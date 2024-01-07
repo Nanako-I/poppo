@@ -63,6 +63,10 @@ class FoodController extends Controller
         
         $food = Food::create([
         'people_id' => $request->people_id,
+        'lunch' => $request->lunch,
+        'lunch_bikou' => $request->lunch_bikou,
+        'oyatsu' => $request->oyatsu,
+        'oyatsu_bikou' => $request->oyatsu_bikou,
         'food' => $request->food,
         'staple_food' => $request->staple_food,
         'side_dish' => $request->side_dish,
@@ -147,6 +151,10 @@ public function change(Request $request, $people_id)
         //データ更新
         $person = Person::find($request->people_id);
         $food->people_id = $person->id;
+        $food->lunch = $request->lunch;
+        $food->lunch_bikou = $request->lunch_bikou;
+        $food->oyatsu = $request->oyatsu;
+        $food->oyatsu_bikou = $request->oyatsu_bikou;
         $food->staple_food = $request->staple_food;
         $food->side_dish = $request->side_dish;
         $food->medicine = $request->medicine;

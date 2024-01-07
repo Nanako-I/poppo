@@ -23,6 +23,12 @@ class Person extends Model
         //  return $this->hasMany(Temperature::class);
     }
 
+public function activities()
+    {
+        return $this->hasMany(Activity::class,'people_id');
+        //  return $this->hasMany(Temperature::class);
+    }
+    
 public function foods()
     {
         return $this->hasMany(Food::class,'people_id');
@@ -47,4 +53,28 @@ public function foods()
         return $this->hasMany(Chat::class,'people_id');
         //  return $this->hasMany(Temperature::class);
     }
+    
+    
+    public function trainings()
+    {
+        return $this->hasMany(Training::class,'people_id');
+        //  return $this->hasMany(Temperature::class);
+    }
+    public function lifestyles()
+    {
+        return $this->hasMany(Lifestyle::class,'people_id');
+        
+    }
+    public function creatives()
+    {
+        return $this->hasMany(Creative::class,'people_id');
+        
+    }
+    
+    public function times()
+    {
+        return $this->hasMany(Time::class,'people_id');
+        
+    }
+    
 }

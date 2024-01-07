@@ -10,6 +10,7 @@ use App\Models\Person;
 use App\Models\Speech;
 use App\Models\Toilets;
 use App\Models\Temperature;
+use App\Models\Training;
 use Illuminate\Http\Request;
 
 class PersonController extends Controller

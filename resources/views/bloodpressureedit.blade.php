@@ -52,6 +52,11 @@
     <!--</div>-->
     
     <div style="display: flex; flex-direction: column; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
+         <div style="display: flex; flex-direction: row; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
+        <input type="checkbox" name="communication[]" value="コミュニケーション"　checked class="w-6 h-6">
+        <p class="text-gray-900 font-bold text-xl px-1.5">コミュニケーション</p>
+        </div>
+        
         <p class="text-gray-900 font-bold text-xl">血圧（上）</p>
         <input name="max_blood" id="text-box" class="appearance-none block text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white font-bold" type="text" placeholder="" style="width: 4rem;">
         <p class="text-gray-900 font-bold text-xl">血圧（下）</p>

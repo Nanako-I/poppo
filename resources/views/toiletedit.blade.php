@@ -51,6 +51,7 @@
     <div style="display: flex; flex-direction: column; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
       <!--<input type="datetime-local" name="created_at">-->
       <h3>トイレに行った時間</h3>
+       
     </div>
     <div style="display: flex; flex-direction: column; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
       <input type="time" name="created_at" id="scheduled-time">

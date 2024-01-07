@@ -53,6 +53,8 @@ class ToiletController extends Controller
         
         $toilet = Toilet::create([
         'people_id' => $request->people_id,
+        'urine' => $request->urine,
+        'ben' => $request->ben,
         'urine_one' => $request->input('urine_one'), // チェックボックスの値ではなく、テキスト入力フィールドの値を保存
         'urine_two' => $request->urine_two,
         'urine_three' => $request->urine_three,
@@ -65,7 +67,8 @@ class ToiletController extends Controller
         'updated_at' => $request->updated_at,
         'filename' => $request->filename,
         'bikou' => $request->bikou,
-         
+        // 'created_at' => $request->now(),
+        // 'updated_at' => $request->now(),
     ]);
     // return redirect('people/{id}/edit');
      $people = Person::all();
@@ -124,12 +127,14 @@ public function change(Request $request, $people_id)
     //データ更新
         $person = Person::find($request->people_id);
         $toilet->people_id = $person->id;
+        $toilet->urine = $request->urine;
+        $toilet->ben = $request->ben;
         $toilet->urine_amount = $request->urine_amount;
         $toilet->ben_condition = $request->ben_condition;
         $toilet->ben_amount = $request->ben_amount;
         $toilet->bentsuu = $request->bentsuu;
         $toilet->bikou = $request->bikou;
-        $toilet->created_at = $request->created_at;
+        // $toilet->created_at = $request->created_at;
         $toilet->save();
         
         $people = Person::all();

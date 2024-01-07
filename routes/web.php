@@ -7,6 +7,11 @@ use Illuminate\Http\Request;
 
 use App\Http\Controllers\PersonController;//追記
 use App\Http\Controllers\PhotoController;//追記
+use App\Http\Controllers\TimeController;//追記
+use App\Http\Controllers\ActivityController;//追記
+use App\Http\Controllers\TrainingController;//追記
+use App\Http\Controllers\LifestyleController;//追記
+use App\Http\Controllers\CreativeController;//追記
 use App\Http\Controllers\TemperatureController;
 use App\Http\Controllers\BloodpressureController;
 use App\Http\Controllers\FoodController;
@@ -63,15 +68,58 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+// 利用時間↓
+Route::post('times/{people_id}', [TimeController::class, 'store'])->name('time.store');
+Route::get('times/{people_id}', [TimeController::class, 'show'])->name('time.show');
+// Route::get('bloodpressure/{people_id}', [BloodpressureController::class, 'edit'])->name('bloodpressure.edit');
+
+Route::get('times/{people_id}/edit', [TimeController::class, 'edit'])->name('time.edit');
+// 利用時間編集↓
+Route::get('timechange/{people_id}', [TimeController::class, 'change'])->name('time.change');
+Route::post('timechange/{people_id}',[TimeController::class,'update'])->name('time_update');
+
+// トレーニング↓
+Route::post('trainings/{people_id}', [TrainingController::class, 'store'])->name('training.store');
+Route::get('trainings/{people_id}', [TrainingController::class, 'show'])->name('training.show');
+// Route::get('bloodpressure/{people_id}', [BloodpressureController::class, 'edit'])->name('bloodpressure.edit');
+
+Route::get('trainings/{people_id}/edit', [TrainingController::class, 'edit'])->name('training.edit');
+// トレーニング編集↓
+Route::get('trainingchange/{people_id}', [TrainingController::class, 'change'])->name('training.change');
+Route::post('trainingchange/{people_id}',[TrainingController::class,'update'])->name('training_update');
+
+
+// 生活習慣↓
+Route::post('lifestyles/{people_id}', [LifestyleController::class, 'store'])->name('lifestyle.store');
+Route::get('lifestyles/{people_id}', [LifestyleController::class, 'show'])->name('lifestyle.show');
+
+Route::get('lifestyles/{people_id}/edit', [LifestyleController::class, 'edit'])->name('lifestyle.edit');
+// 生活習慣編集↓
+Route::get('lifestylechange/{people_id}', [LifestyleController::class, 'change'])->name('lifestyle.change');
+Route::post('lifestylechange/{people_id}',[LifestyleController::class,'update'])->name('lifestyle_update');
+
+// 創作活動↓
+Route::post('creatives/{people_id}', [CreativeController::class, 'store'])->name('creative.store');
+Route::get('creatives/{people_id}', [CreativeController::class, 'show'])->name('creative.show');
+
+Route::get('creatives/{people_id}/edit', [CreativeController::class, 'edit'])->name('creative.edit');
+// 創作活動編集↓
+Route::get('creativechange/{people_id}', [CreativeController::class, 'change'])->name('creative.change');
+Route::post('creativechange/{people_id}',[CreativeController::class,'update'])->name('creative_update');
+
+// 個人・集団活動↓
+Route::post('activities/{people_id}', [ActivityController::class, 'store'])->name('activity.store');
+Route::get('activities/{people_id}', [ActivityController::class, 'show'])->name('activity.show');
+
+Route::get('activities/{people_id}/edit', [ActivityController::class, 'edit'])->name('activity.edit');
+// 個人・集団活動編集↓
+Route::get('activitychange/{people_id}', [ActivityController::class, 'change'])->name('activity.change');
+Route::post('activitychange/{people_id}',[ActivityController::class,'update'])->name('activity_update');
 
 
 Route::get('temperaturelist', [PersonController::class, 'showtemperature'])->name('temperaturelist.edit');
 
 Route::get('temperature/{people_id}/edit', [TemperatureController::class, 'edit'])->name('temperature.edit');
-// Route::resource('temperature/{people_id}/edit', [TemperatureController::class])->name('temperature.edit');
-// Route::resource('temperature/{people_id}/edit', TemperatureController::class);
-
-// Route::post('temperature/{people_id}/edit', [TemperatureController::class,'store'])->name('temperature.post');
 
 // プルダウンで登録させるバージョン↓
 Route::post('temperatures/{people_id}', [TemperatureController::class, 'store'])->name('temperatures.store');
@@ -94,27 +142,25 @@ Route::get('bloodpressurechange/{people_id}', [BloodpressureController::class, '
 Route::post('bloodpressurechange/{people_id}',[BloodpressureController::class,'update'])->name('bloodpressure_update');
 
 Route::get('foods/{id}', 'FoodController@show')->name('foods.show');
-// Route::get('foods/{id}', 'FoodController@showAmountFood')->name('foods.show');
-// Route::get('people/{id}', 'FoodController@show')->name('people.show');
 Route::get('food/{people_id}/edit', [FoodController::class, 'edit'])->name('food.edit');
-Route::post('food/{people_id}/edit', [FoodController::class,'store'])->name('food.post');
-
+// Route::post('food/{people_id}/edit', [FoodController::class,'store'])->name('food.post');
+// プルダウンで登録させるバージョン↓
+Route::post('food/{people_id}', [FoodController::class,'store'])->name('food.store');
 //本：更新画面
 Route::get('foodchange/{people_id}',[FoodController::class,'change'])->name('food.change'); //通常
-// Route::post('/booksedit/{book}',[BookController::class,'edit'])->name('book_edit'); //通常
-// Route::get('/booksedit/{book}', [BookController::class,'edit'])->name('edit');      //Validationエラーありの場合
+
 
 //本：更新画面
-// Route::post('foods/update',[FoodController::class,'update'])->name('food_update');
 Route::post('foodchange/{people_id}',[FoodController::class,'update'])->name('food_update');
 
 Route::get('toilets/{id}', [ToiletController::class, 'show'])->name('toilets.show');
 // Route::get('toilets/{id}', 'ToiletController@show')->name('toilets.show');
 Route::get('toilet/{people_id}/edit', [ToiletController::class, 'edit'])->name('toilet.edit');
-Route::post('toilet/{people_id}/edit', [ToiletController::class,'store'])->name('toilet.post');
+// Route::post('toilet/{people_id}/edit', [ToiletController::class,'store'])->name('toilet.post');
 
 // プルダウンで登録させるバージョン↓
-// Route::post('toilets/{people_id}', [ToiletController::class,'store'])->name('toilet.store');
+Route::post('toilets/{people_id}',  [ToiletController::class,'store'])->name('toilet.store');
+
 // トイレ編集↓
 Route::get('toiletchange/{people_id}', [ToiletController::class, 'change'])->name('toilet.change');
 Route::post('toiletchange/{people_id}',[ToiletController::class,'update'])->name('toilet_update');

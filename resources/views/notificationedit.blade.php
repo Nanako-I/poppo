@@ -21,8 +21,42 @@
       <div class="center-container">
             <div class="flex items-center justify-center my-2 font-bold text-2xl">
           <!--<div style="display: flex; align-items: center; margin-left: auto; margin-right: auto; max-width: 300px;">-->
-               <h2>{{$person->person_name}}さんの特記事項</h2>
+               <h2>{{$person->person_name}}さん</h2>
+               <h3>{{ \Carbon\Carbon::now()->format('n/j') }}の記録</h3>
             </div>  
+            
+            <div style="display: flex; flex-direction: column; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
+      <!--<input type="datetime-local" name="created_at">-->
+      <h4>利用時間</h4>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
+      <input type="time" name="created_at" id="scheduled-time">
+    <!--</div>-->
+    ～
+    <!--<div style="display: flex; flex-direction: column; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">-->
+      <input type="time" name="created_at" id="scheduled-time">
+    </div>
+    
+    <p>いつからの利用ですか？</p>
+    <div style="display: flex; align-items: center; margin-left: auto; margin-right: auto; max-width: 300px;">
+    <span class="text-gray-400 text-6xl" onclick="changeColor(this, 'urine_one')">
+      
+    </span>
+    <input name="urine_one" type="text" id="urine_one_input" class="w-300 h-10px flex-shrink-0 break-words" placeholder="授業終了後">
+  </div>
+  <div style="display: flex; align-items: center; margin-left: auto; margin-right: auto; max-width: 300px;">
+    <span class="text-gray-400 text-6xl" onclick="changeColor(this, 'urine_two')">
+      
+    </span>
+    <input name="urine_two" type="text" id="urine_two_input" class="w-300 h-10px flex-shrink-0 break-words" placeholder="休校">
+  </div>
+  <div style="display: flex; align-items: center; margin-left: auto; margin-right: auto; max-width: 300px;">
+    <span class="text-gray-400 text-6xl" onclick="changeColor(this, 'urine_three')">
+     
+    </span>
+    <input name="urine_three" type="text" id="urine_three_input" class="w-300 h-10px flex-shrink-0 break-words" placeholder="欠席">
+  </div>
+  
              <div class="flex items-center justify-center m-2">
              <p class="font-bold text-xl">音声で入力する場合、スタートボタンを押してください</p>
             </div>
