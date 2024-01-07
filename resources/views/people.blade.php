@@ -358,7 +358,7 @@
                                            $lastFood = $person->foods->last();
                                            
                                         @endphp
-                                            @if ($lastFood && $lastFood->created_at->diffInHours(now()) >= 6)
+                                            @if (!$lastFood || $lastFood->created_at->diffInHours(now()) >= 6)
                                             
                                     <!-- 検温フォーム -->
                                        <style>
