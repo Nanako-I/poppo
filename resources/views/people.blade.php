@@ -252,7 +252,7 @@
                                          
                                            $lastTemperature = $person->temperatures->last();
                                         @endphp
-                                            @if ($lastTemperature->created_at->diffInHours(now()) >= 6)
+                                            @if (!$lastTemperature || $lastTemperature->created_at->diffInHours(now()) >= 6)
                                                 <!-- 検温フォーム -->
                                                <style>
                                                     summary::-webkit-details-marker {
@@ -596,7 +596,7 @@
                                            $lastTraining = $person->trainings->last();
                                         @endphp
                                         
-                                            @if ($lastTraining || $lastTraining->created_at->diffInHours(now()) >= 6)
+                                            @if (!$lastTraining || $lastTraining->created_at->diffInHours(now()) >= 6)
                                             <form action="{{ route('training.store', $person->id) }}" method="POST">
                                             <details class="justify-center">
                                             <summary class="text-red-500 font-bold text-xl">登録する</summary>
