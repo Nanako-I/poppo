@@ -113,7 +113,7 @@
                                     <div class="flex justify-start items-center">
                                         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
                                         <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
-                                        <i class="fa-regular fa-clock text-pink-500" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>
+                                        <i class="fa-regular fa-clock text-gray-900" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>
                                         <p class="font-bold text-xl ml-2">利用時間・送迎</p>
                                     </div>
                                     
@@ -924,7 +924,7 @@
                                     <div class="flex justify-start items-center">
                                         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
                                         <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
-                                        <i class="fa-solid fa-people-group text-pink-500" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>
+                                        <i class="fa-solid fa-people-group text-blue-700" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>
                                         <p class="font-bold text-xl ml-2">集団・個人活動</p>
                                     </div>
                                     
