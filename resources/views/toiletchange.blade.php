@@ -69,8 +69,6 @@
                     <option value="あり"{{ $lastToilets->urine === 'あり' ? ' selected' : '' }}>あり</option>
                     <option value="なし"{{ $lastToilets->urine === 'なし' ? ' selected' : '' }}>なし</option>
                     
-                    <option value="あり">あり</option>
-                    <option value="なし">なし</option>
                 </select>
             </div>
     </div>
@@ -81,8 +79,7 @@
                 <select name="ben" class="mx-1 my-1.5" style="width: 6rem;">
                     <option value="あり"{{ $lastToilets->urine === 'あり' ? ' selected' : '' }}>あり</option>
                     <option value="なし"{{ $lastToilets->urine === 'なし' ? ' selected' : '' }}>なし</option>
-                    <option value="あり">あり</option>
-                    <option value="なし">なし</option>
+                   
                 </select>
             </div>
     </div>

@@ -2,12 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Time;
 use App\Models\Temperature;
 use App\Models\Bloodpressure;
 use App\Models\Toilet;
 use App\Models\Food;
 use App\Models\Speech;
+use App\Models\Activity;
+use App\Models\Training;
+use App\Models\Lifestyle;
+use App\Models\Creative;
 use App\Models\Person;
+
 use Illuminate\Http\Request;
 
 class RecordController extends Controller
@@ -94,6 +100,11 @@ public function show($people_id, Request $request)
     $person = Person::findOrFail($people_id);
     $selectedDate = $request->input('selected_date');
     
+    $lastTime = Time::where('people_id', $people_id)
+        ->whereDate('created_at', $selectedDate)
+        ->latest()
+        ->first();
+    
     $lastFood = Food::where('people_id', $people_id)
         ->whereDate('created_at', $selectedDate)
         ->latest()
@@ -125,8 +136,27 @@ public function show($people_id, Request $request)
     ->whereNotNull('afternoon_activity')
     ->latest()
     ->first();
+    
+    $lastActivity = Activity::where('people_id', $people_id)
+        ->whereDate('created_at', $selectedDate)
+        ->latest()
+        ->first();
         
-        return view('recordedit', compact('person', 'lastTemperature', 'lastBloodPressure', 'lastToilet', 'lastFood', 'lastMorningActivity', 'lastAfternoonActivity', 'selectedDate'));
+    $lastTraining = Training::where('people_id', $people_id)
+        ->whereDate('created_at', $selectedDate)
+        ->latest()
+        ->first();
+        
+    $lastLifestyle = Lifestyle::where('people_id', $people_id)
+        ->whereDate('created_at', $selectedDate)
+        ->latest()
+        ->first();
+        
+    $lastCreative = Creative::where('people_id', $people_id)
+        ->whereDate('created_at', $selectedDate)
+        ->latest()
+        ->first();    
+        return view('recordedit', compact('person', 'lastTime', 'lastTemperature', 'lastBloodPressure', 'lastToilet', 'lastFood', 'lastMorningActivity', 'lastAfternoonActivity', 'lastActivity', 'lastTraining', 'lastLifestyle', 'lastCreative', 'selectedDate'));
 }
     /**
      * Show the form for editing the specified resource.

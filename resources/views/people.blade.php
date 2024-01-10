@@ -535,13 +535,13 @@
                                                      @csrf
                                             <div class="flex justify-evenly">
                                                 <div class="px-1.5">
-                                                    <p class="text-gray-900 font-bold text-sm">尿:</p>
-                                                    <p class="text-gray-900 font-bold text-xl">{{ $lastToilets->urine }}</p>
+                                                    <p class="text-gray-900 font-bold text-base">尿:</p>
+                                                    <p class="text-gray-900 font-bold text-2xl">{{ $lastToilets->urine }}</p>
                                                 </div>
                                            
                                                 <div class="px-1.5">
-                                                    <p class="text-gray-900 font-bold text-sm">便:</p>
-                                                    <p class="text-gray-900 font-bold text-xl">{{ $lastToilets->ben }}</p>
+                                                    <p class="text-gray-900 font-bold text-base">便:</p>
+                                                    <p class="text-gray-900 font-bold text-2xl">{{ $lastToilets->ben }}</p>
                                                 </div>
                                                 <div class="px-2">
                                                      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
@@ -1024,7 +1024,7 @@
                                                     @endif
                                                     
                                                     @if(!empty($self_activity_otherData) && is_array($self_activity_otherData) && count($self_activity_otherData) > 0)
-                                                        <p class="text-gray-900 font-bold text-2xl px-1">その他個人活動</p>
+                                                        <p class="text-gray-900 font-bold text-2xl px-1">他個人活動</p>
                                                     @endif
                                                     
                                                     @if(!empty($recreationData) && is_array($recreationData) && count($recreationData) > 0)
@@ -1036,7 +1036,7 @@
                                                     @endif
                                                     
                                                     @if(!empty($self_activity_otherData) && is_array($self_activity_otherData) && count($self_activity_otherData) > 0)
-                                                        <p class="text-gray-900 font-bold text-2xl px-1">その他集団活動</p>
+                                                        <p class="text-gray-900 font-bold text-2xl px-1">他集団活動</p>
                                                     @endif
                                                     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
                                                     <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
@@ -1047,8 +1047,21 @@
                                                @endif
                                             </div>
                                          </div>        
-                                     
-                            </div>
+                                    <div class="border-2 p-2 rounded-lg bg-white m-2">
+                                          <div class="flex justify-start items-center">
+                                            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+                                            <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
+                                            <i class="fa-regular fa-clipboard text-green-700" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>
+                                            <p class="text-green-700 font-bold text-xl ml-2">{{ $person->person_name }}さんの連絡帳</p>
+                                          </div>
+                                          <div class="flex justify-center mt-4">
+                                            <a href="{{ url('record/'.$person->id.'/edit') }}" class="relative">
+                                              @csrf
+                                              <i class="material-icons md-90">add</i>
+                                            </a>
+                                          </div>
+                                    　　</div> 
+                        </div>
                   </div>
                 @endforeach
               </div>

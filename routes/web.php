@@ -261,5 +261,8 @@ Route::get('record/{id}/edit', [DompdfController::class, 'generatePDF'])->name('
 Route::get('businesscard', 'BusinessCardController@index');
 Route::post('businesscard/extract', 'BusinessCardController@extract');
 
+Route::view('/sample', 'sample');
+
+
 
 require __DIR__.'/auth.php';
