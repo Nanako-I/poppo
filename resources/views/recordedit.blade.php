@@ -67,7 +67,7 @@
           
               @if($lastTemperature->bikou !== null)
                 <p class="text-gray-900 font-bold text-xl px-3">{{ $lastTemperature->bikou }}</p>
-                @endif
+              @endif
          @endif
           
         </div>
@@ -316,9 +316,12 @@
               @if(!empty($self_activity_otherData) && is_array($self_activity_otherData) && count($self_activity_otherData) > 0)
                   <p class="text-gray-900 font-bold text-xl px-3">その他</p>
               @endif
-            @endif
+            
             </div>
-             <p class="text-gray-900 font-bold text-xl p-4">{{ $lastActivity->group_activity_bikou }}</p>
+            @if($lastActivity->group_activity_bikou !== null)
+                <p class="text-gray-900 font-bold text-xl p-4">{{ $lastActivity->group_activity_bikou }}</p>
+            @endif
+            @endif
         </div>
         <hr style="border: 1px solid #666; margin: 0 auto; width: 100%;">
       </div>
