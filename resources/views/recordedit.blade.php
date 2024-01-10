@@ -64,7 +64,10 @@
               <p class="text-gray-900 font-bold text-xl px-3">{{ $lastTemperature->created_at->format('H:i') }}</p>
               <p class="text-gray-900 font-bold text-xl px-3">{{ $lastTemperature->temperature }}℃</p>
             </div>
-          <p class="text-gray-900 font-bold text-xl p-4">{{ $lastTemperature->bikou }}</p>
+          
+              @if($lastTemperature->bikou !== null)
+                <p class="text-gray-900 font-bold text-xl px-3">{{ $lastTemperature->bikou }}</p>
+                @endif
          @endif
           
         </div>
@@ -115,7 +118,9 @@
                 <p class="text-gray-900 font-bold text-xl px-3">便</p>
                 <p class="text-gray-900 font-bold text-xl px-3">{{ $lastToilet->ben }}</p>
             </div>
-            <p class="text-gray-900 font-bold text-xl p-4">{{ $lastToilet->bikou }}</p>
+                @if($lastToilet->bikou !== null)
+                <p class="text-gray-900 font-bold text-xl px-3">{{ $lastToilet->bikou }}</p>
+                @endif
           @endif  
           </div>
         <hr style="border: 1px solid #666; margin: 0 auto; width: 100%;">
@@ -167,8 +172,10 @@
                 @if(!empty($training_otherData) && is_array($training_otherData) && count($training_otherData) > 0)
                     <p class="text-gray-900 font-bold text-xl px-3">その他</p>
                 @endif
-                <p class="text-gray-900 font-bold text-xl px-3">{{ $lastTraining->training_other_sentence }}</p>
                 
+                @if($lastTraining->training_other_sentence !== null)
+                <p class="text-gray-900 font-bold text-xl px-3">{{ $lastTraining->training_other_sentence }}</p>
+                @endif
               @endif
             </div>
         </div>
@@ -201,8 +208,10 @@
                 @if(!empty($otherData) && is_array($otherData) && count($otherData) > 0)
                     <p class="text-gray-900 font-bold text-xl px-3">その他</p>
                 @endif
-                <p class="text-gray-900 font-bold text-xl px-3">{{ $lastLifestyle->bikou }}</p>
                 
+                @if($lastLifestyle->bikou !== null)
+                <p class="text-gray-900 font-bold text-xl px-3">{{ $lastLifestyle->bikou }}</p>
+                @endif
               @endif
             </div>
         </div>
@@ -237,7 +246,9 @@
                 @if(!empty($otherData) && is_array($otherData) && count($otherData) > 0)
                     <p class="text-gray-900 font-bold text-xl px-3">その他</p>
                 @endif
-                <p class="text-gray-900 font-bold text-xl px-3">{{ $lastCreative->bikou }}</p>
+                @if($lastCreative->bikou !== null)
+                <p class="text-gray-900 font-bold text-xl p-4">{{ $lastCreative->bikou }}</p>
+                @endif
               @endif
             </div>
          </div>
@@ -270,7 +281,9 @@
                   <p class="text-gray-900 font-bold text-xl px-3">その他</p>
               @endif
             </div>
-             <p class="text-gray-900 font-bold text-xl p-4">{{ $lastActivity->self_activity_bikou }}</p>
+              @if($lastActivity->self_activity_bikou !== null)
+                <p class="text-gray-900 font-bold text-xl p-4">{{ $lastActivity->self_activity_bikou }}</p>
+              @endif
             @endif
         </div>
         <hr style="border: 1px solid #666; margin: 0 auto; width: 100%;">
