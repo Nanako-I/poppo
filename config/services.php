@@ -30,5 +30,11 @@ return [
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
+    
+    'amivoice' => [
+        'server_url' => env('AMIVOICE_SERVER_URL'),
+        'api_id' => env('AMIVOICE_API_ID'),
+        'api_pw' => env('AMIVOICE_API_PW'),
+    ],
 
 ];

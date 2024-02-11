@@ -8,8 +8,25 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+
 class User extends Authenticatable
 {
+    
+        
+public function people(): BelongsToMany
+    {
+        // return $this->belongsToMany('App\Models\Person');
+        
+        // 関連づけられたモデルのクラス名（Person::class）が渡される　'families'という中間テーブルの名前を指定↓
+        return $this->belongsToMany(Person::class, 'families')
+        
+        // relationshipという名前の中間テーブルの追加のカラムを指定↓
+        ->withPivot('relationship')
+        // 中間テーブルに関連づけるためのFamilyモデルが指定↓
+        ->using(Family::class);
+    }
+    
     use HasApiTokens, HasFactory, Notifiable;
 
     /**
@@ -42,3 +59,6 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 }
+
+
+

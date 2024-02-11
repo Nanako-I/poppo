@@ -204,16 +204,11 @@
                                         @if (!is_null($person) && !empty($person->foods) && count($person->foods) > 0)
                                         @php
                                            $lastFood = $person->foods->last();
-                                           
+                                        
                                         @endphp
-                                            @if ($lastFood && $lastFood->created_at->diffInHours(now()) >= 6)
-                                                <a href="{{ url('food/'.$person->id.'/edit') }}" class="relative ml-2" style="display: flex; align-items: center;">
-                                                <p class="text-red-500 font-bold text-xl">登録して<br>ください</p>
-                                                @csrf
-                                                <i class="fa-solid fa-plus text-gray-900" style="font-size: 1.5em; padding: 0 5px; transition: transform 0.2s;"></i>
-                                                </a>
-                                            @else
-                                                <!-- 直近の検温結果表示 -->
+                                            @if ($lastFood && $lastFood->created_at->isToday())
+                                            
+                                            <!-- 直近の食事結果表示 -->
                                                 <div class="flex justify-evenly">
                                                 <a href="{{ url('foodchange/'.$person->id) }}" class="relative ml-2 flex items-center">
                                                      @csrf
@@ -236,6 +231,12 @@
                                                     <i class="fa-solid fa-pencil text-stone-500" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>
                                                 </a>
                                                </div>
+                                            @else
+                                                <a href="{{ url('food/'.$person->id.'/edit') }}" class="relative ml-2" style="display: flex; align-items: center;">
+                                                <p class="text-red-500 font-bold text-xl">登録して<br>ください</p>
+                                                @csrf
+                                                <i class="fa-solid fa-plus text-gray-900" style="font-size: 1.5em; padding: 0 5px; transition: transform 0.2s;"></i>
+                                                </a>
                                             @endif
                                         @else
                                             <a href="{{ url('food/'.$person->id.'/edit') }}" class="relative ml-2" style="display: flex; align-items: center;">
@@ -267,7 +268,7 @@
                                         @php
                                            $lastTemperature = $person->temperatures->last();
                                         @endphp
-                                            @if ($lastTemperature->created_at->diffInHours(now()) >= 6)
+                                            @if ($lastTemperature && $lastTemperature->created_at->isToday())
                                                 <!-- 検温フォーム -->
                                                <style>
                                                     summary::-webkit-details-marker {
@@ -294,8 +295,17 @@
                                                         margin-right: 5px; /* 適宜調整してください */
                                                     }
                                                 </style>
-                                              
-                                                <div style="display: flex; flex-direction: column; align-items: center;">
+                                              <!-- 直近の検温結果表示 -->
+                                                <a href="{{ url('temperaturechange/'.$person->id) }}" class="relative ml-2 flex items-center">
+                                                     @csrf
+                                                    <p class="text-gray-900 font-bold text-2xl">{{ $lastTemperature->temperature }}℃</p>
+                                                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+                                                    <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
+                                                    <i class="fa-solid fa-pencil text-stone-500" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>
+                                                </a>
+                                                
+                                            @else
+                                              <div style="display: flex; flex-direction: column; align-items: center;">
                                                     <form action="{{ route('temperatures.store', $person->id) }}" method="POST">
                                                         <details class="justify-center"> <!-- この行を追加 -->
                                                     
@@ -319,16 +329,7 @@
                                                     </details>
                                                 </form>
                                                 <!--</div>-->
-                                                </div>
-                                            @else
-                                                <!-- 直近の検温結果表示 -->
-                                                <a href="{{ url('temperaturechange/'.$person->id) }}" class="relative ml-2 flex items-center">
-                                                     @csrf
-                                                    <p class="text-gray-900 font-bold text-2xl">{{ $lastTemperature->temperature }}℃</p>
-                                                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
-                                                    <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
-                                                    <i class="fa-solid fa-pencil text-stone-500" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>
-                                                </a>
+                                                </div>  
                                             @endif
                                         @else
                                             <form action="{{ route('temperatures.store', $person->id) }}" method="POST">
@@ -371,15 +372,8 @@
                                             @php
                                                $lastBloodpressures = $person->bloodpressures->last();
                                             @endphp
-                                            @if ($lastBloodpressures->created_at->diffInHours(now()) >= 6)
-                                                <!-- 血圧フォーム -->
-                                                <a href="{{ url('bloodpressures/'.$person->id.'/edit') }}" class="relative ml-2" style="display: flex; align-items: center;">
-                                                    <summary class="text-red-500 font-bold text-xl">記録してください</summary>
-                                                     @csrf
-                                                    <i class="fa-solid fa-plus text-gray-900" style="font-size: 1.5em; padding: 0 5px; transition: transform 0.2s;"></i>
-                                                </a>
-                                            @else
-                                                <!-- 直近のバイタル結果表示 -->
+                                            @if ($lastBloodpressures && $lastBloodpressures->created_at->isToday())
+                                            <!-- 直近のバイタル結果表示 -->
                                                 <a href="{{ url('bloodpressurechange/'.$person->id) }}" class="relative ml-2 flex items-center">
                                                      @csrf
                                                 <div class="flex items-center justify-around">
@@ -401,6 +395,13 @@
                                                     <i class="fa-solid fa-pencil text-stone-500" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s; vertical-align: middle;"></i>
                                                     </div>
                                                 </div>
+                                                </a>
+                                            @else
+                                            <!-- 血圧フォーム -->
+                                                <a href="{{ url('bloodpressures/'.$person->id.'/edit') }}" class="relative ml-2" style="display: flex; align-items: center;">
+                                                    <summary class="text-red-500 font-bold text-xl">記録してください</summary>
+                                                     @csrf
+                                                    <i class="fa-solid fa-plus text-gray-900" style="font-size: 1.5em; padding: 0 5px; transition: transform 0.2s;"></i>
                                                 </a>
                                             @endif
                                         @else
@@ -556,13 +557,12 @@
                                     </div>
                                     
                                     
-                                    
-                                    　　<div class="border-2 p-2 rounded-lg bg-white m-2">
+                                        <div class="border-2 p-2 rounded-lg bg-white mx-2 mb-2 mt-8">
                                           <div class="flex justify-start items-center">
                                             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
                                             <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
                                             <i class="fa-regular fa-clipboard text-green-700" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>
-                                            <p class="text-green-700 font-bold text-xl ml-2">{{ $person->person_name }}さんの記録</p>
+                                            <p class="font-bold text-xl ml-2">{{ $person->person_name }}さんの記録</p>
                                           </div>
                                           <div class="flex justify-center mt-4">
                                             <a href="{{ url('record/'.$person->id.'/edit') }}" class="relative">
@@ -572,7 +572,35 @@
                                           </div>
                                     　　</div>
 
-                                    
+                                   <!-- 動画マニュアル↓ -->
+                        　    　<div class="border-2 p-2 rounded-lg bg-white m-2">
+                                    <div class="flex justify-start items-center">
+                                        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+                                        <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
+                                        <i class="fa-solid fa-circle-play text-blue-700" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>
+                                        <p class="font-bold text-xl ml-2">{{ $person->person_name }}さんの動画マニュアル</p>
+                                    </div>
+                                        <div class="flex justify-center mt-4">
+                                            
+                                            @if ($person->videos && ($person->videos->isEmpty()) )
+                                            <!-- 登録していない場合 -->
+                                                <a href="{{ url('videos/'.$person->id) }}" class="relative ml-2 flex items-center">
+                                                <summary class="text-red-500 font-bold text-xl ml-1.5">登録する</summary>
+                                                @csrf
+                                                <i class="fa-solid fa-plus text-gray-900" style="font-size: 1.5em; padding: 0 5px; transition: transform 0.2s;"></i>
+                                                </a>
+                                                 
+                                            @else
+                                                
+                                          　    <!-- 登録済みの場合 -->
+                                                <a href="{{ url('videos/'.$person->id) }}" class="relative ml-2 flex items-center">
+                                                     @csrf
+                                                <p class="font-bold text-xl p-2">見る</p>
+                                                </a>
+                                            @endif
+                                            </a>
+                                          </div>
+                                    </div> 
 
                                         
                     </div>

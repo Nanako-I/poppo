@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-// use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -22,9 +22,12 @@ class AuthServiceProvider extends ServiceProvider
      * @return void
      */
     public function boot()
-    {
-        $this->registerPolicies();
+{
+    $this->registerPolicies();
 
-        //
-    }
+    // プレミア（カンパニー）会員用のみ許可（flagが1の人のみ許可）
+    Gate::define('company', function ($user) {
+        return ($user->flag == 1);
+    });
+}
 }

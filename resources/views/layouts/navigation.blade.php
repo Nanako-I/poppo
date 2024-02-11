@@ -1,29 +1,35 @@
 <div class = "top_total">
 <nav x-data="{ open: false }" class="dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
+    
      <style>
+     
     .top_total{
                 background-image: linear-gradient(to right, rgb(255, 195, 160,0.5), rgb(255,175,189,1));
             }
     </style>
+    
 </div> 
     <!-- Primary Navigation Menu -->
     <div class="top_bar mx-auto px-4 sm:px-6 lg:px-8 bg-orange-200">
+       
         <style>
             .top_bar{
                 background-image: linear-gradient(to right, rgb(255, 195, 160,0.5), rgb(255,175,189,1));
             }
             
         </style>
-       
+      
         <div class="flex justify-between h-16">
             <div class="flex ml-1">
                 <!-- Logo -->
+                @if (!request()->is('pdf/*/edit')) 
                 <div class="shrink-0 flex items-center">
                     <a href="{{ url('people') }}" >
                        
                         <img src="{{ asset('storage/sample/pink-heart.png') }}" width ="60" height="60">
                     </a>
                 </div>
+                @endif
 
                 <!-- Navigation Links -->
                 <!--<div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">-->

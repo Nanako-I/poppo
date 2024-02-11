@@ -20,8 +20,9 @@ use App\Http\Controllers\UploadController;
 use App\Http\Controllers\ChartController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\DompdfController;
-
-
+use App\Http\Controllers\MessageController;
+use App\Http\Controllers\AmiVoiceController;
+use App\Http\Controllers\VideoController;
 // use Google\Cloud\Speech\V1p1beta1\StreamingRecognitionConfig;
 // use Google\Cloud\Speech\V1p1beta1\StreamingRecognizeRequest;
 
@@ -45,10 +46,19 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-
-// Book用の一括ルーティング
+// プレミア会員用のルーティング
+//Route::group(['middleware' => ['auth', 'can:company']], function () {
+	// Item用の一括ルーティング
+  //Route::resource('people', PersonController::class);
+  
+//});
+// Book用の一括ルーティング　本来使ってたルーティング↓
 Route::resource('people', PersonController::class);
-// Route::resource('peopleregister',  PersonController::class);
+
+// 中間テーブルのリレーションのための追記↓
+//Route::get('people', [PersonController::class, 'index'])->name('people.show');
+
+Route::view('/register', 'register');
 
 Route::get('peopleregister', [PersonController::class, 'create']);
 Route::post('peopleregister', [PersonController::class, 'store']);
@@ -194,8 +204,17 @@ Route::get('/chartjs', function () {
 });
 
 // PDFでダウンロードする↓
-Route::get('record/{id}/edit', [DompdfController::class, 'generatePDF'])->name('outputPDF.edit');
-// Route::get('record/{id}/edit', [RecordController::class, 'show'])->name('record.edit');
+
+
+Route::get('record/{id}/edit', [DompdfController::class, 'record'])->name('record');
+Route::get('pdf/{people_id}/edit', [DompdfController::class, 'pdf'])->name('pdf');
+
+
+
+// マニュアル動画↓
+Route::post('videos/{people_id}', [VideoController::class, 'store'])->name('videos.store');
+Route::get('videos/{people_id}', [VideoController::class, 'show'])->name('videos.show');
+Route::get('videos/{people_id}/edit', [VideoController::class, 'edit'])->name('videos.edit');
 
 // Qiitaの記事↓
 // Route::get('/index', [SpreadsheetController::class, 'index']);
@@ -215,5 +234,14 @@ Route::get('record/{id}/edit', [DompdfController::class, 'generatePDF'])->name('
 Route::get('businesscard', 'BusinessCardController@index');
 Route::post('businesscard/extract', 'BusinessCardController@extract');
 
+// Route::get('message', 'MessageController@index');
+Route::get('/message', [MessageController::class, 'index']);
+Route::get('ajax/message', 'Ajax\MessageController@index'); 
+Route::post('ajax/message', 'Ajax\MessageController@create'); 
 
+// 音声認識テスト↓
+Route::view('/speechsample', 'speechsample');
+Route::view('/speechsample2', 'speechsample2');
+Route::view('/speechsample3', 'speechsample3');
+Route::view('/speechsamplehrp', 'speechsamplehrp');
 require __DIR__.'/auth.php';

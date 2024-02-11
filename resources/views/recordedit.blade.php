@@ -8,7 +8,6 @@
      <!--<form action="{{ url('people' ) }}" method="POST" class="w-full max-w-lg">-->
                         @method('PATCH')
                         @csrf
-    
       <style>
       body {
             font-family: 'Noto Sans JP', sans-serif; /* フォントをArialに設定 */
@@ -35,6 +34,8 @@
       </div>
         <label for="selected_date"  class="text-gray-900 font-bold text-xl">日付選択：</label>
           <input type="date" name="selected_date" id="selected_date">
+          
+          
           <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
             表示
           </button>
@@ -43,7 +44,13 @@
     </div>
   </div>
    
-      
+     <!--<a href="{{ url('pdf/'.$person->id.'/edit') }}">-->
+    <a href="{{ route('pdf', ['people_id' => $person->id, 'selected_date' => $selectedDate]) }}">
+            @csrf
+        <button class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+            ダウンロード
+        </button>
+        </a>
     <style>
         table {
         border-collapse: collapse; /* テーブルの罫線を結合する */
@@ -66,14 +73,14 @@
 <table style="padding: 10px;">
   <thead>
     <tr>
-      <th style="width: 180px;">体温</th>
+      <th colspan="2" style="width: 180px;">体温</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       @if($lastTemperature)
-      <td>{{ $lastTemperature->created_at->format('H:i') }}</td>
-      <td>{{ $lastTemperature->temperature }}℃</td>
+      <td style="width: 20%">{{ $lastTemperature->created_at->format('H:i') }}</td>
+      <td style="width: 80%">{{ $lastTemperature->temperature }}℃</td>
       @endif
     </tr>
   </tbody>
@@ -102,14 +109,14 @@
   <!--</thead>-->
     <thead>
     <tr>
-      <th style="width: 180px;">血圧</th>
+      <th colspan="2" style="width: 180px;">血圧</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       @if($lastBloodPressure)
-      <td>{{ $lastBloodPressure->created_at->format('H:i') }}</td>
-      <td>{{ $lastBloodPressure->max_blood }}/{{ $lastBloodPressure->min_blood }}</td>
+      <td style="width: 20%">{{ $lastBloodPressure->created_at->format('H:i') }}</td>
+      <td style="width: 80%">{{ $lastBloodPressure->max_blood }}/{{ $lastBloodPressure->min_blood }}</td>
       @endif
     </tr>
    </tbody>
@@ -119,13 +126,13 @@
   <tbody>
     <thead>
       <tr>
-        <th style="width: 180px;">脈拍</th>
+        <th colspan="2" style="width: 180px;">脈拍</th>
       </tr>
     </thead>
     <tr>
       @if($lastBloodPressure)
-      <td>{{ $lastBloodPressure->created_at->format('H:i') }}</td>
-      <td>{{ $lastBloodPressure->pulse }}/分</td>
+      <td style="width: 20%">{{ $lastBloodPressure->created_at->format('H:i') }}</td>
+      <td style="width: 80%">{{ $lastBloodPressure->pulse }}/分</td>
       @endif
     </tr>
   </tbody>
@@ -135,13 +142,13 @@
   <tbody>
     <thead>
       <tr>
-        <th style="width: 180px;">SpO2</th>
+        <th colspan="2" style="width: 180px;">SpO2</th>
       </tr>
     </thead>
     <tr>
       @if($lastBloodPressure)
-      <td>{{ $lastBloodPressure->created_at->format('H:i') }}</td>
-      <td>{{ $lastBloodPressure->spo2 }}％</td>
+      <td style="width: 20%">{{ $lastBloodPressure->created_at->format('H:i') }}</td>
+      <td style="width: 80%">{{ $lastBloodPressure->spo2 }}％</td>
       @endif
     </tr>
   </tbody>
@@ -165,15 +172,15 @@
   <thead>
     <tr>
       <!--<th>Date</th>-->
-      <th style="width: 180px;">食事量</th>
+      <th colspan="3" style="width: 180px;">食事量</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       @if($lastFood)
-      <td>{{ $lastFood->created_at->format('H:i') }}</td>
-      <td>食事は{{ $lastFood->staple_food }}割食べました。</td>
-      <td>薬の服用：{{ $lastFood->medicine == 'yes' ? 'あり' : 'なし' }}</td>
+      <td style="width: 20%">{{ $lastFood->created_at->format('H:i') }}</td>
+      <td style="width: 60%">食事は{{ $lastFood->staple_food }}割食べました。</td>
+      <td style="width: 20%">薬の服用：{{ $lastFood->medicine == 'yes' ? 'あり' : 'なし' }}</td>
       @endif
     </tr>
   </tbody>
@@ -198,14 +205,14 @@
   <thead>
     <tr>
       <!--<th>Date</th>-->
-      <th style="width: 180px;">尿</th>
+      <th colspan="2" style="width: 180px;">尿</th>
     </tr>
   </thead>
   <tbody>
    <tr>
       @if($lastToilet)
-      <td>{{ $lastToilet->created_at->format('H:i') }}</td>
-      <td>{{ $lastToilet->urine_amount }}</td>
+      <td style="width: 20%">{{ $lastToilet->created_at->format('H:i') }}</td>
+      <td style="width: 80%">{{ $lastToilet->urine_amount }}</td>
       @endif
     </tr>
    </tbody>
@@ -215,14 +222,14 @@
   <thead>
     <tr>
       <!--<th>Date</th>-->
-      <th style="width: 180px;">便</th>
+      <th colspan="2" style="width: 180px;">便</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       @if($lastToilet)
-      <td>{{ $lastToilet->created_at->format('H:i') }}</td>
-      <td>便量：{{ $lastToilet->ben_amount }}性状：{{ $lastToilet->ben_condition }}</td>
+      <td style="width: 20%">{{ $lastToilet->created_at->format('H:i') }}</td>
+      <td style="width: 80%">便量：{{ $lastToilet->ben_amount }}性状：{{ $lastToilet->ben_condition }}</td>
       @endif
     </tr>
   </tbody>
