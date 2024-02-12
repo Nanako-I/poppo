@@ -32,6 +32,59 @@
       justify-content: center;
       height: 100vh; /* 画面全体の高さに対して中央に配置するため */
     }
+    
+    @font-face{
+                font-family: ipaexm;
+                font-style: normal;
+                font-weight: normal;
+                src: url("{{ storage_path('fonts/ipaexm.ttf')}}") format('truetype');
+            }
+            
+            @font-face{
+                font-family: ipaexm;
+                font-style: bold;
+                font-weight: bold;
+                src: url("{{ storage_path('fonts/ipaexm.ttf')}}") format('truetype');
+            }
+            html,body {
+                font-family: ipaexm;
+            }
+           
+        h2 {
+        font-family: ipaexm;
+        font-style: normal;
+        font-weight: normal;
+        src: url("{{ storage_path('fonts/ipaexm.ttf')}}") format('truetype');
+        
+      }   
+        h3 {
+        font-family: ipaexm;
+        font-style: normal;
+        font-weight: normal;
+        src: url("{{ storage_path('fonts/ipaexm.ttf')}}") format('truetype');
+        
+      }
+      
+        table {
+        font-family: ipaexm;
+        font-style: normal;
+        font-weight: normal;
+        src: url("{{ storage_path('fonts/ipaexm.ttf')}}") format('truetype');
+        border-collapse: collapse; /* テーブルの罫線を結合する */
+        width: 80%; /* テーブルの幅を100%に設定する */
+        /*padding: 60px;*/
+        margin: 0 auto;
+      }
+      
+      th, td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: left;
+        white-space: normal; /* テキストを折り返す */
+        word-wrap: break-word; /* テキストを折り返す */
+        max-width: 200px; /* セル内の最大幅を設定（必要に応じて調整） */
+    }
+    
     </style>
           
       
@@ -54,49 +107,8 @@
     </div>
   </div>
    
-       <!--<button class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">-->
-       <!--     ダウンロード-->
-       <!-- </button>-->
-    <style>
-    
-              @font-face{
-                font-family: ipaexm;
-                font-style: normal;
-                font-weight: normal;
-                src: url("{{ storage_path('fonts/ipaexm.ttf')}}") format('truetype');
-            }
-            
-            @font-face{
-                font-family: ipaexm;
-                font-style: bold;
-                font-weight: bold;
-                src: url("{{ storage_path('fonts/ipaexm.ttf')}}") format('truetype');
-            }
-            html,body {
-                font-family: ipaexm;
-            }
-           
-            
-        table {
-        font-family: ipaexm;
-        font-style: normal;
-        font-weight: normal;
-        src: url("{{ storage_path('fonts/ipaexm.ttf')}}") format('truetype');
-        border-collapse: collapse; /* テーブルの罫線を結合する */
-        width: 80%; /* テーブルの幅を100%に設定する */
-        /*padding: 60px;*/
-        margin: 0 auto;
-      }
-      
-      th, td {
-        border: 1px solid black;
-        padding: 8px;
-        text-align: left;
-        white-space: normal; /* テキストを折り返す */
-        word-wrap: break-word; /* テキストを折り返す */
-        max-width: 200px; /* セル内の最大幅を設定（必要に応じて調整） */
-    }
-    </style>
+  
+   
     
      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
      <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
