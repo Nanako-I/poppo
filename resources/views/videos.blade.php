@@ -45,10 +45,9 @@
     }
 @endphp
    <div class="mt-1">
-     @if(!is_null($lastVideo))
-        <video controls width="900" hight ="600" src="{{asset('storage/sample/'.$lastVideo->filename)}}" muted class="contents_width">
-        </video>
-    @endif
+    @if(isset($lastVideo))
+    <video controls width="900" height="600" src="{{ asset('storage/sample/'.$lastVideo->filename) }}" muted class="contents_width"></video>
+@endif
    </div>
    <div class="posts_item my-1.5 flex items-center justify-end">
         <p class="font-bold text-lg mx-1">新しいマニュアル動画に差し替える→</p>
