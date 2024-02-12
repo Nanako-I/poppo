@@ -79,8 +79,7 @@ class NotificationController extends Controller
     // return redirect('people/{id}/edit');
 //   $person = Person::findOrFail($request->people_id);
    $people = Person::all();
-    // return redirect()->route('speech.edit', ['people_id' => $person->id]);
-    // return view('people', ['people' => Person::all()]);
+   
     return view('people', compact('notification', 'people'));
     }
 
