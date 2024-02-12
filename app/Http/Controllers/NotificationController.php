@@ -93,77 +93,10 @@ class NotificationController extends Controller
    public function show($people_id)
 {
     
-//     $person = Person::findOrFail($people_id);
-//     $notifications = $person->notifications;
-//     $response = Http::post('https://acp-api.amivoice.com/issue_service_authorization', [
-//     'sid' => 'Nanako-I',
-//     'spw' => 'EDVlyXeLj2AmHMku',
-//     'epi' => 300000,
-//     // 他のパラメータ
-// ]);
-// dd($response);
-// // レスポンスが成功した場合
-// if ($response->successful()) {
-//     dd($response);
-//     $cookieJar = $response->cookies;
-//     // AWSALBTGCORSクッキーの値を取得
-//     $awsalbtgcorsCookie = $cookieJar->getCookieByName('AWSALBTGCORS');
-//     // クッキーが存在するか確認
-//     if ($awsalbtgcorsCookie) {
-//         $awsalbtgcorsValue = $awsalbtgcorsCookie->getValue();
-//       //dd($awsalbtgcorsValue);
-//     } else {
-//         dd("AWSALBTGCORSクッキーが見つかりません。");
-//     }
-// } else {
-//     $statusCode = $response->status();
-//     $responseBody = $response->body();
-//     // エラー処理を行います
-//     dd("エラー: ステータスコード $statusCode, レスポンス: $responseBody");
-// }
-//     $people = Person::all(); // ここで $people を取得
-//     return view('notificationedit', ['id' => $person->id],compact('person', 'awsalbtgcorsValue'));
-//     $response = Http::get('https://example.com');
-// dd($response->body());
 
     $person = Person::findOrFail($people_id);
     $notifications = $person->notifications;
     
-//     $url = "https://acp-api.amivoice.com/issue_service_authorization";
-
-// $post_fields = array(
-//     'sid' => 'Nanako-I',//変数名＝値
-//      'spw' => 'EDVlyXeLj2AmHMku',
-//      'epi' => 300000,
-// //   "title" => "example"
-// );
-// $headers = array(
-//   "Authorization: Bearer access_token",
-//   "Content-type: application/json"
-// );
-
-// // curlのセッションを初期化する
-// $ch = curl_init();
-
-// // curlのオプションを設定する
-// $options = array(
-//   CURLOPT_URL => $url,
-//   CURLOPT_RETURNTRANSFER => true,
-//   CURLOPT_HTTPHEADER => $headers,
-//   CURLOPT_POST => true,
-//   CURLOPT_POSTFIELDS => json_encode($post_fields)
-// );
-// curl_setopt_array($ch, $options);
-
-// // curlを実行し、レスポンスデータを保存する
-// $response  = curl_exec($ch);
-// // dd($response);
-
-// $responseArray = json_decode($response, true);
-// dd($responseArray);
-
-// // curlセッションを終了する
-// curl_close($ch);
 
 
     $url = 'https://acp-api.amivoice.com/issue_service_authorization';
@@ -177,13 +110,7 @@ class NotificationController extends Controller
      'epi' => 300000,
     ];
     $queryString = http_build_query($data);
-    // dd($queryString);
-//     $data = array(
-//     'sid' => 'Nanako-I',//変数名＝値
-//      'spw' => 'EDVlyXeLj2AmHMku',
-//      'epi' => 300000,
-// );
-//   dd($data);
+ 
 $jsonData = json_encode($data);
 
 // dd($jsonData);
@@ -205,30 +132,13 @@ $headers = [
     if ($json_response === false) {
     echo 'Curl error: ' . curl_error($curl_handle);
 } else {
-    // dd($json_response);
 }
     if(curl_exec($curl_handle) === false) {
     echo 'Curl error: ' . curl_error($curl_handle);
 }
-
-    //  dd($json_response);
     
     curl_close($curl_handle);
-    //$answer = $decoded_data->answer;
-    // dd($json_response);
-//     $user_id  = filter_input(INPUT_POST, 'user_id');
-// $password = filter_input(INPUT_POST, 'password');
-//     $dataJsonString = file_get_contents("php://input");
-//     // dd($dataJsonString);
-// dd($dataJsonString);
-//     $command = "curl -X POST -d '$jsonData' $url";
-// //dd($command);
-//     // curlコマンドを実行し、結果を取得
-//     $result = exec($command);
-// //dd($result);
-// dd(var_dump($result));
-//     // 結果をログに記録
-//     Log::info("Curl command result: $result");
+  
     $people = Person::all();
     return view('notificationedit', ['id' => $person->id],compact('person', 'json_response'));
 }
