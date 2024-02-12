@@ -172,7 +172,48 @@ $headers = [
     $lastNotification = $person->notifications->last(); // 最後のSpeechモデルを取得
     $lastNotificationValue = $lastNotification ? $lastNotification->notification : null;
 
-    return view('notificationchange', compact('person', 'lastNotificationValue'));
+$url = 'https://acp-api.amivoice.com/issue_service_authorization';
+    
+    $apiID = config('services.amivoice.api_id');
+    $apiPW = config('services.amivoice.api_pw');
+    // dd($apiPW);
+    $data = [
+     'sid' => $apiID,//変数名＝値
+     'spw' => $apiPW,
+     'epi' => 300000,
+    ];
+    $queryString = http_build_query($data);
+ 
+$jsonData = json_encode($data);
+
+// dd($jsonData);
+$headers = [
+    // 'Content-Type: application/json',
+    'Authorization: Bearer ' . $jsonData
+];
+
+    
+    $curl_handle = curl_init();//curlセッションを初期化して、curlハンドルを取得
+    curl_setopt($curl_handle, CURLOPT_POST, TRUE);
+    curl_setopt($curl_handle, CURLOPT_CUSTOMREQUEST, "POST");
+    curl_setopt($curl_handle, CURLOPT_URL, $url);
+    curl_setopt($curl_handle, CURLOPT_POSTFIELDS, $queryString);
+    curl_setopt($curl_handle, CURLOPT_HTTPHEADER, $headers);
+
+    curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER, true); // curl_exec()の結果を文字列にする
+    $json_response = curl_exec($curl_handle);
+    if ($json_response === false) {
+    echo 'Curl error: ' . curl_error($curl_handle);
+} else {
+}
+    if(curl_exec($curl_handle) === false) {
+    echo 'Curl error: ' . curl_error($curl_handle);
+}
+    
+    curl_close($curl_handle);
+  
+  
+    return view('notificationchange', compact('person', 'lastNotificationValue', 'json_response'));
 }
     /**
      * Update the specified resource in storage.

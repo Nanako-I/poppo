@@ -35,11 +35,11 @@
         <label for="selected_date"  class="text-gray-900 font-bold text-xl">日付選択：</label>
           <input type="date" name="selected_date" id="selected_date">
           
-          
+         
           <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
             表示
           </button>
-          
+         
      </form> 
     </div>
   </div>
@@ -47,10 +47,12 @@
      <!--<a href="{{ url('pdf/'.$person->id.'/edit') }}">-->
     <a href="{{ route('pdf', ['people_id' => $person->id, 'selected_date' => $selectedDate]) }}">
             @csrf
-        <button class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+      <div class="flex items-center justify-end" > 
+        <button class="inline-flex items-center px-4 py-2 mr-36 mb-1 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
             ダウンロード
         </button>
-        </a>
+      </div> 
+    </a>
     <style>
         table {
         border-collapse: collapse; /* テーブルの罫線を結合する */

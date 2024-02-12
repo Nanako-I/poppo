@@ -119,11 +119,15 @@
                 修正
             </button>
         </div>
+      <p id="amivoiceApiKeyContainer" data-api-key="{{ $json_response }}"></p>
 </div>
 </form>
 <div id="messages" class="hidden"></div>
 
 <script type="text/javascript">
+setTimeout(() => {
+	
+
 (function() {
   // <!--
   function log_(n, s) {
@@ -298,6 +302,7 @@
   Wrp.resultUpdatedIntervalElement = resultUpdatedInterval;
   Wrp.extensionElement = extension;
   Wrp.authorizationElement = authorization;
+  //Wrp.authorizationElement = amivoiceApiKey;　//←変更してみた
   Wrp.codecElement = codec;
   Wrp.resultTypeElement = resultType;
   Wrp.checkIntervalTimeElement = checkIntervalTime;
@@ -342,7 +347,9 @@
   keepFillerToken.value = Wrp.keepFillerToken;
   resultUpdatedInterval.value = Wrp.resultUpdatedInterval;
   extension.value = Wrp.extension;
+  
   authorization.value = Wrp.authorization;
+  //document.getElementById('authorization').value = amivoiceApiKey;//←変更してみた
   codec.value = Wrp.codec;
   resultType.value = Wrp.resultType;
   checkIntervalTime.value = Wrp.checkIntervalTime;
@@ -409,6 +416,7 @@
 
   version.innerHTML = Wrp.version + " " + Result.version;
 })();
+}, "1000");
 </script>
 </body>
 </html>

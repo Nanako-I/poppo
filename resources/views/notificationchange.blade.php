@@ -119,11 +119,16 @@
                 修正
             </button>
         </div>
+         <p id="amivoiceApiKeyContainer" data-api-key="{{ $json_response }}"></p>
 </div>
 </form>
 <div id="messages" class="hidden"></div>
 
 <script type="text/javascript">
+
+setTimeout(() => {
+	
+
 (function() {
   // <!--
   function log_(n, s) {
@@ -238,7 +243,7 @@
     this.recognitionResultText.innerHTML = text;
   }
 
- // 認識処理が確定した時に呼び出されます。
+  // 認識処理が確定した時に呼び出されます。
   function resultFinalized(result) {
     log_(this.name, "EVENT: resultFinalized(): result[" + result + "]");
     // Result クラスを使用して結果をパース
@@ -253,11 +258,15 @@
     // RT (Real Time) および CF (Confidence) の計算
     var rt = ((duration > 0) ? (elapsedTime / duration).toFixed(2) : "-") + " (" + (elapsedTime / 1000).toFixed(2) + "/" + ((duration > 0) ? (duration / 1000).toFixed(2) : "-") + ")";
     var cf = (confidence >= 0.0) ? confidence.toFixed(2) : "-";
-  
+    
+    // 認識結果を表示する要素に結果をセット
+    //this.recognitionResultText.innerHTML = text;
+    //this.recognitionResultInfo.innerHTML = "RT: " + rt + "<br>CF: " + cf;
     
     var textareaElement = document.getElementById("recognitionResult");
     //textareaElement.value += text + "\n"; // 新しいテキストを追加し、改行して区切る
     textareaElement.value += text;
+    //this.recognitionResultInfo.innerHTML = "RT: " + rt + "<br>CF: " + cf;
     
      // ログに認識結果の詳細情報を記録
     log_(this.name, text + " <font color=\"darkgray\">(RT: " + rt + ") (CF: " + cf + ")</font>");
@@ -294,6 +303,7 @@
   Wrp.resultUpdatedIntervalElement = resultUpdatedInterval;
   Wrp.extensionElement = extension;
   Wrp.authorizationElement = authorization;
+  //Wrp.authorizationElement = amivoiceApiKey;　//←変更してみた
   Wrp.codecElement = codec;
   Wrp.resultTypeElement = resultType;
   Wrp.checkIntervalTimeElement = checkIntervalTime;
@@ -338,7 +348,9 @@
   keepFillerToken.value = Wrp.keepFillerToken;
   resultUpdatedInterval.value = Wrp.resultUpdatedInterval;
   extension.value = Wrp.extension;
+  
   authorization.value = Wrp.authorization;
+  //document.getElementById('authorization').value = amivoiceApiKey;//←変更してみた
   codec.value = Wrp.codec;
   resultType.value = Wrp.resultType;
   checkIntervalTime.value = Wrp.checkIntervalTime;
@@ -405,6 +417,7 @@
 
   version.innerHTML = Wrp.version + " " + Result.version;
 })();
+}, "1000");
 </script>
 </body>
 </html>
