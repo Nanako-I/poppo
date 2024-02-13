@@ -3,6 +3,9 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+// セッションタイムアウト時にリダイレクトさせる処理↓以下のuse文を追加する。
+use Illuminate\session\TolenMismatchException;
+
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -47,4 +50,15 @@ class Handler extends ExceptionHandler
             //
         });
     }
+
+	// ※ここから記述する※
+    // セッションタイムアウト時はログインページにリダイレクトさせる
+	public function render($request, Throwable $exception) {
+		if ($exception instanceof TokenMismatchException) {
+			return redirect()->route('login');
+		}
+
+		return parent::render($request, $exception);
+	}
 }
+
