@@ -4,7 +4,8 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 // セッションタイムアウト時にリダイレクトさせる処理↓以下のuse文を追加する。
-use Illuminate\session\TolenMismatchException;
+use Illuminate\Session\TokenMismatchException;
+use Illuminate\Support\Facades\Auth;
 
 use Throwable;
 
@@ -53,12 +54,17 @@ class Handler extends ExceptionHandler
 
 	// ※ここから記述する※
     // セッションタイムアウト時はログインページにリダイレクトさせる
-	public function render($request, Throwable $exception) {
-		if ($exception instanceof TokenMismatchException) {
-			return redirect()->route('login');
-		}
+	public function render($request, Throwable $exception)
+{
+    if ($exception instanceof TokenMismatchException) {
+        // CSRF トークンの不一致が検出された場合の処理
+        // セッションをクリアし、ログインページにリダイレクト
+        Auth::logout(); // ログアウト
+        $request->session()->invalidate(); // セッションを無効化
+        return redirect()->route('login'); // ログインページにリダイレクト
+    }
 
-		return parent::render($request, $exception);
-	}
+    return parent::render($request, $exception);
+}
 }
 
