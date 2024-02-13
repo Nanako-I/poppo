@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
+use App\Http\Middleware\Authenticate;;//追記
 
 use App\Http\Controllers\PersonController;//追記
 use App\Http\Controllers\PhotoController;//追記
@@ -40,7 +41,10 @@ use App\Http\Controllers\VideoController;
 */
 Route::get('/', function () {
     return view('auth.login');
-});
+})->middleware([Authenticate::class]); // Authenticate ミドルウェアを適用
+
+
+
 
 Route::get('/dashboard', function () {
     return view('dashboard');

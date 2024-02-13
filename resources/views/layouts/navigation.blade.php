@@ -69,6 +69,7 @@
 
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ml-6">
+                @auth <!-- ユーザーがログインしている場合のみ表示 -->
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         
@@ -100,6 +101,10 @@
                         </form>
                     </x-slot>
                 </x-dropdown>
+                @else <!-- ユーザーがログインしていない場合 -->
+                    <a href="{{ route('login') }}" class="text-sm text-gray-700 underline">Login</a>
+                    <!-- ログインリンクなど、他のアクションを追加 -->
+                @endauth
             </div>
 
             <!-- Hamburger -->
