@@ -4,7 +4,8 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
-use App\Http\Middleware\Authenticate;;//追記
+use App\Http\Middleware\Authenticate;//追記
+use App\Http\Middleware\RedirectIfNotAuthenticated;//追記
 
 use App\Http\Controllers\PersonController;//追記
 use App\Http\Controllers\PhotoController;//追記
@@ -45,7 +46,7 @@ Route::get('/', function () {
 
 
 
-
+Route::middleware([RedirectIfNotAuthenticated::class])->group(function () {
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -249,3 +250,5 @@ Route::view('/speechsample2', 'speechsample2');
 Route::view('/speechsample3', 'speechsample3');
 Route::view('/speechsamplehrp', 'speechsamplehrp');
 require __DIR__.'/auth.php';
+
+});
