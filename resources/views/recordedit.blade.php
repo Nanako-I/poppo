@@ -1,4 +1,4 @@
-@vite(['resources/css/app.css', 'resources/js/app.js'])
+
 <x-app-layout>
 
     <!--ヘッダー[START]-->
@@ -23,7 +23,71 @@
           font-weight: bold;
           /*text-decoration: underline;*/
         }
-      </style>
+   .oya-stamp-box {
+      float: right;
+      margin-right: 70px;
+      margin-top: 10px;
+    /*display: flex; /* flexコンテナーとして設定 */
+    /*justify-content: flex-end; /* 右端に寄せる */
+  }
+    .stamp-box {
+          width: 120px; /* はんこより少し大きめに設定 */
+          height: 120px; /* はんこより少し大きめに設定 */
+          border: 1px solid #000; /* 黒い実線のボーダー */
+          display: flex;
+          justify-content: center;
+          align-items: center;
+           /*display: none; */
+        }
+        /*.stamp-box .hanko {*/
+          #hanko {
+            font-size: 16px; /* Sassの変数は使用できないため、直接指定 */
+            border: 3px double #f00; /* Sassの変数と算術演算子を展開して直接指定 */
+            border-radius: 50%;
+            color: #f00;
+            width: 100px; /* Sassの変数は使用できないため、直接指定 */
+            height: 100px; /* Sassの変数は使用できないため、直接指定 */
+            display: none; /* 最初は非表示にする */ 
+            /* display: flex;*/ 
+            flex-direction: column;
+            justify-content: center;
+            text-align: center; /* 中央揃え */
+            align-items: center;
+          }
+          /*.stamp-box .hanko hr {*/
+          #hanko hr {
+            width: 100%;
+            margin: 0;
+            border-color: #f00;
+            /* display: none; /* 最初は非表示にする */
+          }
+          .icon-container {
+            position: relative;
+          }
+          
+          .icon-container::after {
+            content: "ご家族とチャットする";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            white-space: nowrap;
+            font-size: 14px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s, transform 0.2s;
+          }
+          
+          .icon-container:hover::after {
+            opacity: 1;
+            transform: translate(-50%, -5px);
+          }
+
+    </style>
       
       @php
         $today = now()->format('Y-m-d'); // 今日の日付を取得（例：2023-08-07）
@@ -45,10 +109,39 @@
      </form> 
     </div>
   </div>
+  
    
+      <div class="flex justify-end "> 
+        <div class="flex-col"> 
+        <a href="{{ route('pdf', ['people_id' => $person->id, 'selected_date' => $selectedDate]) }}">
+              @csrf
+          <button class="inline-flex items-center px-4 py-2 mr-5 mb-1 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+              ダウンロード
+          </button>
+        </a>
+        <a href="{{ url('chat/'.$person->id) }}" class="relative ml-2" style="display: flex; align-items: center;">
+          <i class="fa-solid fa-comments text-sky-500 icon-container mr-5 " style="font-size: 3em; padding: 0 5px; transition: transform 0.2s;"></i>
+          @csrf
+        </a>
+      </div> 
+    </div> 
+    <style>
+        table {
+        border-collapse: collapse; /* テーブルの罫線を結合する */
+        width: 80%; /* テーブルの幅を100%に設定する */
+        /*padding: 60px;*/
+        margin: 0 auto;
+      }
+      
+      th, td {
+        border: 1px solid black; /* 罫線を追加する */
+        padding: 8px; /* セル内の余白を設定する */
+        text-align: left; /* セル内のテキストを左寄せにする */
+      }
+    </style>
       
     <section class="text-gray-600 body-font mx-auto" _msthidden="10">
-  <div class="container px-5 py-24 mx-auto flex flex-wrap" _msthidden="10">
+  <div class="container px-5 pb-24 mx-auto flex flex-wrap" _msthidden="10">
     
     <div class="flex flex-col flex-wrap lg:py-6 -mb-10 lg:w-1/2 lg:pl-12 lg:text-left text-center" _msthidden="9">
       <div class="flex flex-col mb-10 lg:items-start items-center" _msthidden="3">
@@ -106,10 +199,10 @@
             <circle cx="12" cy="7" r="4"></circle>
         </div>
         <div class="flex-grow p-4" _msthidden="3">
+          <h2 class="text-gray-900 text-lg title-font font-medium mb-3" _msttexthash="96746" _msthidden="1" _msthash="746">トイレ</h2>
           
           @if($lastToilet)
-          <h2 class="text-gray-900 text-lg title-font font-medium mb-3" _msttexthash="96746" _msthidden="1" _msthash="746">トイレ</h2>
-            <div class="flex justify-around text-left items-start">
+          <div class="flex justify-around text-left items-start">
                 <p class="text-gray-900 font-bold text-xl px-3">尿</p>
                 <p class="text-gray-900 font-bold text-xl px-3">{{ $lastToilet->urine }}</p>
             </div>
@@ -247,7 +340,7 @@
                     <p class="text-gray-900 font-bold text-xl px-3">その他</p>
                 @endif
                 @if($lastCreative->bikou !== null)
-                <p class="text-gray-900 font-bold text-xl p-4">{{ $lastCreative->bikou }}</p>
+                <p class="text-gray-900 font-bold text-xl px-3">{{ $lastCreative->bikou }}</p>
                 @endif
               @endif
             </div>
@@ -280,11 +373,12 @@
               @if(!empty($self_activity_otherData) && is_array($self_activity_otherData) && count($self_activity_otherData) > 0)
                   <p class="text-gray-900 font-bold text-xl px-3">その他</p>
               @endif
-            </div>
+            
               @if($lastActivity->self_activity_bikou !== null)
-                <p class="text-gray-900 font-bold text-xl p-4">{{ $lastActivity->self_activity_bikou }}</p>
+                <p class="text-gray-900 font-bold text-xl px-3">{{ $lastActivity->self_activity_bikou }}</p>
               @endif
             @endif
+          </div>
         </div>
         <hr style="border: 1px solid #666; margin: 0 auto; width: 100%;">
       </div>
@@ -317,19 +411,70 @@
                   <p class="text-gray-900 font-bold text-xl px-3">その他</p>
               @endif
             
-            </div>
             @if($lastActivity->group_activity_bikou !== null)
-                <p class="text-gray-900 font-bold text-xl p-4">{{ $lastActivity->group_activity_bikou }}</p>
+                <p class="text-gray-900 font-bold text-xl px-3">{{ $lastActivity->group_activity_bikou }}</p>
             @endif
             @endif
+          </div>
         </div>
         <hr style="border: 1px solid #666; margin: 0 auto; width: 100%;">
       </div>
-      
+    <form action="{{ url('record/'.$person->id.'/edit') }}" method="POST">  
+      <p class="text-gray-900 font-bold text-xl px-3">確認後、お名前をご記入いただき「押印する」ボタンを押してください↓</p>
+      <div style="display: flex; flex-direction: column; justify-content: flex-start; margin: 10px 0;">
+        @csrf
+        <input type="hidden" name="people_id" value="{{ $person->id }}"> <!-- ここで people_id を含める -->
+        <input type="hidden" name="kiroku_date" value="{{ $selectedDate }}"> <!-- $selectedDate を含める -->
+       <textarea id="hanko-area" name="hanko_name" type="text" class="w-full max-w-lg font-bold" style="width: 150px; height: 50px; color: black; font-size: 20px; text-align: center;" placeholder="お名前"></textarea>
+        
+        <button id="hanko-btn" type="submit" class="inline-flex items-center w-32 px-6 py-3 mt-3 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+          押印する
+        </button>
+    </form>
+       @php        
+          $hankoName = '';
+      @endphp
+        <div class="oya-stamp-box">
+          <div class="stamp-box mt-3">
+            <div id="hanko">
+              <span>確認済</span>
+            <hr noshade>
+            <span>{{ $today }}</span>
+            <hr noshade>
+            <span id="hanko-name">{{ $hankoName }}</span>
+          </div>
+          </div>
+        </div>
+      </div>  
     </div>
   </div>
 </section>
 <!--</form>-->
 </body>
-{{-- 追加した Blade ディレクティブ --}}
+<script>
+
+
+document.getElementById("hanko-btn").addEventListener("click", function() {
+    var hankoAreaValue = document.getElementById("hanko-area").value;
+    // テキストエリアの値を直接代入する
+    document.getElementById("hanko-name").innerHTML = hankoAreaValue;
+    document.getElementById("hanko").style.display = "flex";
+});
+
+ function submitForm() {
+        // フォームの送信を防止
+        event.preventDefault();
+        
+        // ここで任意の処理を追加する（例えば、確認ダイアログを表示するなど）
+        
+        // フォームのデータを取得
+        var form = document.querySelector("form");
+        
+        // フォームを送信
+        form.submit();
+        
+        // フォームの送信を有効にするためにtrueを返す
+        return true;
+    }
+</script>
 </x-app-layout>

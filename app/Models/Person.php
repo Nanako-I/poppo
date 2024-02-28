@@ -77,4 +77,10 @@ public function foods()
         
     }
     
+    public function pdfs()
+    {
+        return $this->hasMany(Dompdf::class,'people_id');
+        
+    }
+    
 }

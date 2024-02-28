@@ -18,12 +18,16 @@
         <div class="flex justify-between h-16">
             <div class="flex ml-1">
                 <!-- Logo -->
+                @if (!request()->is('pdf/*/edit')) 
                 <div class="shrink-0 flex items-center">
                     <a href="{{ url('people') }}" >
                        
                         <img src="{{ asset('storage/sample/pink-heart.png') }}" width ="60" height="60">
                     </a>
                 </div>
+                @endif
+                
+                
 
                 <!-- Navigation Links -->
                 <!--<div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">-->

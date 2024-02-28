@@ -4,6 +4,8 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
+use App\Http\Middleware\Authenticate;//追記
+use App\Http\Middleware\RedirectIfNotAuthenticated;//追記
 
 use App\Http\Controllers\PersonController;//追記
 use App\Http\Controllers\PhotoController;//追記
@@ -46,6 +48,7 @@ Route::get('/', function () {
     return view('auth.login');
 });
 
+Route::middleware([RedirectIfNotAuthenticated::class])->group(function () {
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -240,7 +243,11 @@ Route::get('/chartjs', function () {
 });
 
 // PDFでダウンロードする↓
-Route::get('record/{id}/edit', [DompdfController::class, 'generatePDF'])->name('outputPDF.edit');
+Route::get('record/{id}/edit', [DompdfController::class, 'record'])->name('record');
+Route::post('record/{id}/edit', [DompdfController::class, 'store'])->name('record.store');
+// 押印後の遷移先URL↓
+Route::get('recorddownload/{people_id}/edit', [DompdfController::class, 'show'])->name('record.show');
+Route::get('pdf/{people_id}/edit', [DompdfController::class, 'pdf'])->name('pdf');
 // Route::get('record/{id}/edit', [RecordController::class, 'show'])->name('record.edit');
 
 // Qiitaの記事↓
@@ -266,3 +273,4 @@ Route::view('/sample', 'sample');
 
 
 require __DIR__.'/auth.php';
+});
