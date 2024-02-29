@@ -2,7 +2,7 @@
 <x-app-layout>
 
     <!--ヘッダー[START]-->
-<html>
+
   <!--<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>-->
   <div class="flex items-center justify-center" style="padding: 20px 0;">
     <div class="flex flex-col items-center">
@@ -533,21 +533,33 @@
   </tbody>
 </table>
 
-<div class="oya-stamp-box">
-<!--<div class="oya-stamp-box" style="display: flex; justify-content: flex-end;">-->
-  <div class="stamp-box mt-3">
-    <div id="hanko">
-      <span>確認済</span>
-      <hr noshade>
-      <span>{{ $today }}</span>
-      <hr noshade>
-      <span id="hanko_name">{{ $hankoName->hanko_name }}</span>
+<table>
+  <thead>
+    <tr>
+       <th style="width: 180px;">印鑑</th>
+    </tr>
+  </thead>
+<tbody>
+  <tr>
+    <td>
+    <div class="oya-stamp-box">
+    <!--<div class="oya-stamp-box" style="display: flex; justify-content: flex-end;">-->
+      <div class="stamp-box mt-3">
+        <div id="hanko">
+          <span>確認済</span>
+          <hr noshade>
+          <span>{{ $today }}</span>
+          <hr noshade>
+          <span id="hanko_name">{{ $hankoName->hanko_name }}</span>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
-<!--</form>-->
+    </td>
+  </tr>
+  </tbody>
+</table>
 </body>
-</html>
+
 {{-- 追加した Blade ディレクティブ --}}
 <!--</x-app-layout>-->
 <!--</x-guest-layout>-->
