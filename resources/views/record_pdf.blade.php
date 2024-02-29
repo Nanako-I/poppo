@@ -535,18 +535,31 @@
   </tbody>
 </table>
 
-<div class="oya-stamp-box">
-<!--<div class="oya-stamp-box" style="display: flex; justify-content: flex-end;">-->
-  <div class="stamp-box mt-3">
-    <div id="hanko">
-      <span>確認済</span>
-      <hr noshade>
-      <span>{{ $today }}</span>
-      <hr noshade>
-      <span id="hanko_name">{{ $hankoName->hanko_name }}</span>
+<table style="height: 100%;">
+  <thead>
+    <tr>
+       <th style="width: 180px;">印鑑</th>
+    </tr>
+  </thead>
+<tbody>
+  <tr>
+    <td>
+    <div class="oya-stamp-box">
+    <!--<div class="oya-stamp-box" style="display: flex; justify-content: flex-end;">-->
+      <div class="stamp-box mt-3">
+        <div id="hanko">
+          <span>確認済</span>
+          <hr noshade>
+          <span>{{ $today }}</span>
+          <hr noshade>
+          <span id="hanko_name">{{ $hankoName->hanko_name }}</span>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
+    </td>
+  </tr>
+  </tbody>
+</table>
 </body>
 
 {{-- 追加した Blade ディレクティブ --}}
