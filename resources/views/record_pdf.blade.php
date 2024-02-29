@@ -535,7 +535,7 @@
   </tbody>
 </table>
 
-<table>
+<table style="height: 100%;">
   <thead>
     <tr>
        <th style="width: 180px;">印鑑</th>
