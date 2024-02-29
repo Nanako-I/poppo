@@ -274,47 +274,46 @@
   <tbody>
     <tr>
       <td>
-      @if(isset($lastTraining) && $lastTraining->communication !== null)
-        <label><input type="checkbox" checked disabled> コミュニケーション</label>
-        @else
-        <label><input type="checkbox" disabled> コミュニケーション</label>
-        @endif
-
-        @if(isset($lastTraining) && $lastTraining->exercise !== null)
-        <label><input type="checkbox" checked disabled> 運動</label>
-        @else
-        <label><input type="checkbox" disabled> 運動</label>
-        @endif
-        
-        @if(isset($lastTraining) && $lastTraining->reading_writing !== null)
-        <label><input type="checkbox" checked disabled> 読み書き</label>
-        @else
-        <label><input type="checkbox" disabled> 読み書き</label>
-        @endif
-        
-        @if(isset($lastTraining) && $lastTraining->calculation !== null)
-        <label><input type="checkbox" checked disabled> 計算</label>
-        @else
-        <label><input type="checkbox" disabled> 計算</label>
-        @endif
-        
-        @if(isset($lastTraining) && $lastTraining->homework !== null)
-        <label><input type="checkbox" checked disabled> 宿題</label>
-        @else
-        <label><input type="checkbox" disabled> 宿題</label>
-        @endif
-        
-        @if(isset($lastTraining) && $lastTraining->shopping !== null)
-        <label><input type="checkbox" checked disabled> 買い物</label>
-        @else
-        <label><input type="checkbox" disabled> 買い物</label>
-        @endif
-        
-        @if(isset($lastTraining) && $lastTraining->training_other !== null)
-        <label><input type="checkbox" checked disabled> その他</label>
-        @else
-        <label><input type="checkbox" disabled>その他</label>
-        @endif
+    @if($lastTraining)
+              
+              @php
+                  $communicationData = json_decode($lastTraining->communication);
+                  $exerciseData = json_decode($lastTraining->exercise);
+                  $reading_writingData = json_decode($lastTraining->reading_writing);
+                  $calculationData = json_decode($lastTraining->calculation);
+                  $homeworkData = json_decode($lastTraining->homework);
+                  $shoppingData = json_decode($lastTraining->shopping);
+                  $training_otherData = json_decode($lastTraining->training_other);
+              @endphp
+              
+                @if(!empty($communicationData) && is_array($communicationData) && count($communicationData) > 0)
+                    <p>コミュニケーション</p>
+                @endif
+                
+                @if(!empty($exerciseData) && is_array($exerciseData) && count($exerciseData) > 0)
+                    <p>運動</p>
+                @endif
+                
+                @if(!empty($reading_writingData) && is_array($reading_writingData) && count($reading_writingData) > 0)
+                    <p>読み書き</p>
+                @endif
+                
+                @if(!empty($calculationData) && is_array($calculationData) && count($calculationData) > 0)
+                    <p>計算</p>
+                @endif
+                
+                @if(!empty($homeworkData) && is_array($homeworkData) && count($homeworkData) > 0)
+                    <p>宿題</p>
+                @endif
+                
+                @if(!empty($shoppingData) && is_array($shoppingData) && count($shoppingData) > 0)
+                    <p>買い物</p>
+                @endif
+                
+                @if(!empty($training_otherData) && is_array($training_otherData) && count($training_otherData) > 0)
+                    <p>その他</p>
+                @endif
+            @endif
       </td>
     </tr>
   </tbody>
@@ -332,6 +331,7 @@
       @if(isset($lastTraining))
       <td>{{ optional($lastTraining)->training_other_sentence}}</td>
       @endif
+    
     </tr>
   </tbody>
 </table>
@@ -345,22 +345,24 @@
   <tbody>
     <tr>
       <td>
-        @if(isset($lastLifestyle) && $lastLifestyle->baggage !== null)
-        <label><input type="checkbox" checked disabled> 荷物整理</label>
-        @else
-        <label><input type="checkbox" disabled> 荷物整理</label>
-        @endif
-
-        @if(isset($lastLifestyle) && $lastLifestyle->clean !== null)
-        <label><input type="checkbox" checked disabled> 掃除</label>
-        @else
-        <label><input type="checkbox" disabled> 掃除</label>
-        @endif
-        
-        @if(isset($lastLifestyle) && $lastLifestyle->other !== null)
-        <label><input type="checkbox" checked disabled>その他</label>
-        @else
-        <label><input type="checkbox" disabled>その他</label>
+        @if($lastLifestyle)
+          @php
+              $baggageData = json_decode($lastLifestyle->baggage);
+              $cleanData = json_decode($lastLifestyle->clean);
+              $otherData = json_decode($lastLifestyle->other);
+          @endphp
+          
+            @if(!empty($baggageData) && is_array($baggageData) && count($baggageData) > 0)
+                <p>荷物整理</p>
+            @endif
+            
+            @if(!empty($cleanData) && is_array($cleanData) && count($cleanData) > 0)
+                <p>掃除</p>
+            @endif
+            
+            @if(!empty($otherData) && is_array($otherData) && count($otherData) > 0)
+                <p>その他</p>
+            @endif
         @endif
       </td>
      </tr>
@@ -392,23 +394,25 @@
   <tbody>
     <tr>
       <td>
-        @if(isset($lastCreative) && $lastCreative->craft !== null)
-        <label><input type="checkbox" checked disabled> 図画工作</label>
-        @else
-        <label><input type="checkbox" disabled> 図画工作</label>
-        @endif
-
-        @if(isset($lastCreative) && $lastCreative->cooking !== null)
-        <label><input type="checkbox" checked disabled> 料理</label>
-        @else
-        <label><input type="checkbox" disabled> 料理</label>
+       @if($lastCreative)
+        @php
+            $craftData = json_decode($lastCreative->craft);
+            $cookingData = json_decode($lastCreative->cooking);
+            $otherData = json_decode($lastCreative->other);
+        @endphp
+        
+        @if(!empty($craftData) && is_array($craftData) && count($craftData) > 0)
+            <p>図画工作</p>
         @endif
         
-        @if(isset($lastCreative) && $lastCreative->other !== null)
-        <label><input type="checkbox" checked disabled>その他</label>
-        @else
-        <label><input type="checkbox" disabled>その他</label>
+        @if(!empty($cookingData) && is_array($cookingData) && count($cookingData) > 0)
+            <p>料理</p>
         @endif
+        
+        @if(!empty($otherData) && is_array($otherData) && count($otherData) > 0)
+            <p>その他</p>
+        @endif
+      @endif
       </td>
      </tr>
   </tbody>
@@ -439,22 +443,24 @@
   <tbody>
     <tr>
       <td>
-        @if(isset($lastActivity) && $lastActivity->kadai !== null)
-        <label><input type="checkbox" checked disabled> 課題</label>
-        @else
-        <label><input type="checkbox" disabled> 課題</label>
-        @endif
-
-        @if(isset($lastActivity) && $lastActivity->rest !== null)
-        <label><input type="checkbox" checked disabled> 余暇</label>
-        @else
-        <label><input type="checkbox" disabled> 余暇</label>
-        @endif
-        
-        @if(isset($lastActivity) && $lastActivity->self_activity_other !== null)
-        <label><input type="checkbox" checked disabled> その他</label>
-        @else
-        <label><input type="checkbox" disabled> その他</label>
+        @if($lastActivity)  
+          @php
+              $kadaiData = json_decode($lastActivity->kadai);
+              $restData = json_decode($lastActivity->rest);
+              $self_activity_otherData = json_decode($lastActivity->self_activity_other);
+          @endphp
+          
+          @if(!empty($kadaiData) && is_array($kadaiData) && count($kadaiData) > 0)
+              <p>課題</p>
+          @endif
+          
+          @if(!empty($restData) && is_array($restData) && count($restData) > 0)
+              <p>余暇</p>
+          @endif
+          
+          @if(!empty($self_activity_otherData) && is_array($self_activity_otherData) && count($self_activity_otherData) > 0)
+              <p>その他</p>
+          @endif
         @endif
       </td>
      </tr>
@@ -486,22 +492,25 @@
   <tbody>
     <tr>
       <td>
-        @if(isset($lastActivity) && $lastActivity->recreation !== null)
-        <label><input type="checkbox" checked disabled> レクリエーション</label>
-        @else
-        <label><input type="checkbox" disabled> レクリエーション</label>
-        @endif
-
-        @if(isset($lastActivity) && $lastActivity->region_exchange !== null)
-        <label><input type="checkbox" checked disabled> 地域交流</label>
-        @else
-        <label><input type="checkbox" disabled> 地域交流</label>
-        @endif
-        
-        @if(isset($lastActivity) && $lastActivity->group_activity_other !== null)
-        <label><input type="checkbox" checked disabled> その他</label>
-        @else
-        <label><input type="checkbox" disabled> その他</label>
+        @if($lastActivity)
+          @php
+              
+              $recreationData = json_decode($lastActivity->recreation);
+              $region_exchangeData = json_decode($lastActivity->region_exchange);
+              $group_activity_otherData = json_decode($lastActivity->group_activity_other);
+          @endphp
+          
+          @if(!empty($recreationData) && is_array($recreationData) && count($recreationData) > 0)
+              <p class="text-gray-900 font-bold text-xl px-3">レクリエーション</p>
+          @endif
+          
+          @if(!empty($region_exchangeData) && is_array($region_exchangeData) && count($region_exchangeData) > 0)
+              <p class="text-gray-900 font-bold text-xl px-3">地域交流</p>
+          @endif
+          
+          @if(!empty($self_activity_otherData) && is_array($self_activity_otherData) && count($self_activity_otherData) > 0)
+              <p class="text-gray-900 font-bold text-xl px-3">その他</p>
+          @endif
         @endif
       </td>
      </tr>
