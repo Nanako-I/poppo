@@ -183,8 +183,8 @@ class DompdfController extends Controller
 
         // PDFファイルをダウンロード
         // return $pdf->download('recordfile.pdf');
-        return $pdf->stream('記録表.pdf');
-        //return view('record_pdf', compact('person', 'lastTemperature', 'lastToilet', 'lastFood', 'lastTraining', 'lastLifestyle', 'lastCreative', 'lastActivity', 'selectedDate', 'today', 'hankoName'));
+        //return $pdf->stream('記録表.pdf');
+        return view('record_pdf', compact('person', 'lastTemperature', 'lastToilet', 'lastFood', 'lastTraining', 'lastLifestyle', 'lastCreative', 'lastActivity', 'selectedDate', 'today', 'hankoName'));
 }
     
     public function show($people_id, Request $request)

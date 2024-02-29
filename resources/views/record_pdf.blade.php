@@ -12,7 +12,7 @@
                         @method('PATCH')
                         
     <style> body {
-      font-family: ipaexm !important;
+      font-family: ipaexm;
       height: 100%;
       margin: 0; /* ブラウザのデフォルトマージンを除去 */
       padding: 0; /* ブラウザのデフォルトパディングを除去 */
@@ -535,31 +535,18 @@
   </tbody>
 </table>
 
-<table style="height: 100%;">
-  <thead>
-    <tr>
-       <th style="width: 180px;">印鑑</th>
-    </tr>
-  </thead>
-<tbody>
-  <tr>
-    <td>
-    <div class="oya-stamp-box">
-    <!--<div class="oya-stamp-box" style="display: flex; justify-content: flex-end;">-->
-      <div class="stamp-box mt-3">
-        <div id="hanko">
-          <span>確認済</span>
-          <hr noshade>
-          <span>{{ $today }}</span>
-          <hr noshade>
-          <span id="hanko_name">{{ $hankoName->hanko_name }}</span>
-        </div>
-      </div>
+<div class="oya-stamp-box">
+<!--<div class="oya-stamp-box" style="display: flex; justify-content: flex-end;">-->
+  <div class="stamp-box mt-3">
+    <div id="hanko">
+      <span>確認済</span>
+      <hr noshade>
+      <span>{{ $today }}</span>
+      <hr noshade>
+      <span id="hanko_name">{{ $hankoName->hanko_name }}</span>
     </div>
-    </td>
-  </tr>
-  </tbody>
-</table>
+  </div>
+</div>
 </body>
 
 {{-- 追加した Blade ディレクティブ --}}
