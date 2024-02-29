@@ -11,10 +11,12 @@
         <!--<form action="{{ url('people' ) }}" method="POST" class="w-full max-w-lg">-->
                         @method('PATCH')
                         
-    <style> body { font-family: ipaexm !important; } </style>
-   
-
-    <style>
+    <style> body {
+      font-family: ipaexm !important;
+      height: 100%;
+      margin: 0; /* ブラウザのデフォルトマージンを除去 */
+      padding: 0; /* ブラウザのデフォルトパディングを除去 */
+    }
 /*     x-app-layout {*/
 /*  display: none;*/
 /*}*/
