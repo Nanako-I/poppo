@@ -503,15 +503,15 @@
           @endphp
           
           @if(!empty($recreationData) && is_array($recreationData) && count($recreationData) > 0)
-              <p class="text-gray-900 font-bold text-xl px-3">レクリエーション</p>
+              <p>レクリエーション</p>
           @endif
           
           @if(!empty($region_exchangeData) && is_array($region_exchangeData) && count($region_exchangeData) > 0)
-              <p class="text-gray-900 font-bold text-xl px-3">地域交流</p>
+              <p>地域交流</p>
           @endif
           
           @if(!empty($self_activity_otherData) && is_array($self_activity_otherData) && count($self_activity_otherData) > 0)
-              <p class="text-gray-900 font-bold text-xl px-3">その他</p>
+              <p>その他</p>
           @endif
         @endif
       </td>
