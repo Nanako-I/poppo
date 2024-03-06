@@ -46,7 +46,8 @@ use App\Http\Controllers\DompdfController;
 */
 Route::get('/', function () {
     return view('auth.login');
-});
+})->middleware([Authenticate::class]); 
+
 
 Route::middleware([RedirectIfNotAuthenticated::class])->group(function () {
 Route::get('/dashboard', function () {
