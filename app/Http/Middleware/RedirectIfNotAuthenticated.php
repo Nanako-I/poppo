@@ -17,8 +17,16 @@ class RedirectIfNotAuthenticated
      */
     public function handle(Request $request, Closure $next)
     {
-        if (!Auth::check() && !$request->is('login')) {
-            return redirect()->route('login');
+        // if (!Auth::check() && !$request->is('login')) {
+        //     return redirect()->route('login');
+        // }
+        
+        // ログインしていない場合
+        if (!Auth::check()) {
+            // リクエストが login, register, forgot-password ルートの場合はリダイレクトしない
+            if (!$request->is('login') && !$request->is('register') && !$request->is('forgot-password')) {
+                return redirect()->route('login');
+            }
         }
 
         return $next($request);

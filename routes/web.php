@@ -65,6 +65,7 @@ Route::post('peopleregister', [PersonController::class, 'store']);
 //   Route::resource('/photos', 'App\Http\Controllers\PhotoController')->only(['create','store']);
 
 Route::post('/logout', 'Auth\LoginController@logout')->name('logout');
+// Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
