@@ -9,7 +9,7 @@ class Chat extends Model
 {
     use HasFactory;
     protected $table = 'chats';
-    protected $fillable = ['people_id','user_name','user_identifier','message','created_at','updated_at'];
+    protected $fillable = ['people_id','user_name','user_identifier','message','filename','path','created_at','updated_at'];
     
     public function person()
     {

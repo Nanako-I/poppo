@@ -17,7 +17,7 @@ class Person extends Model
     // usersテーブルと紐づける↓
     public function users(): BelongsToMany
     {
-        // return $this->belongsToMany('App\Models\User');
+  
         // familiesという中間テーブルを指定する↓
         return $this->belongsToMany(User::class, 'families')
         ->withPivot('relationship')
@@ -57,9 +57,34 @@ public function foods()
         return $this->hasMany(Food::class,'people_id');
     }
     
+    public function waters()
+    {
+        return $this->hasMany(Water::class,'people_id');
+    }
+    
+    public function medicines()
+    {
+        return $this->hasMany(Medicine::class,'people_id');
+    }
+    
+    public function tubes()
+    {
+        return $this->hasMany(Tube::class,'people_id');
+    }
+    
     public function toilets()
     {
         return $this->hasMany(Toilet::class,'people_id');
+    }
+    
+    public function kyuuins()
+    {
+        return $this->hasMany(Kyuuin::class,'people_id');
+    }
+    
+    public function hossas()
+    {
+        return $this->hasMany(Hossa::class,'people_id');
     }
     
     public function speeches()
@@ -71,6 +96,19 @@ public function foods()
     {
         return $this->hasMany(Notification::class,'people_id');
     }
+    
+    public function hogoshas()
+    {
+        return $this->hasMany(Hogosha::class,'people_id');
+        //  return $this->hasMany(Temperature::class);
+    }
+    
+    public function child_conditions()
+    {
+        return $this->hasMany(ChildCondition::class,'people_id');
+        //  return $this->hasMany(Temperature::class);
+    }
+    
     public function chats()
     {
         return $this->hasMany(Chat::class,'people_id');

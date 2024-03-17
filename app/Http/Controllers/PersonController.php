@@ -144,22 +144,7 @@ class PersonController extends Controller
      * @return \Illuminate\Http\Response
      */
      
-    // 体温登録のルート↓
-    public function showtemperature(Person $person)
-{
-    $people = Person::all();
-        // ('people')に$peopleが代入される
-    return view('temperaturelist',compact('people'));
-} 
-
-// 食事
-// 登録のルート↓
-    public function showfood(Person $person)
-{
-    $people = Person::all();
-        // ('people')に$peopleが代入される
-    return view('foodlist',compact('people'));
-} 
+  
     //  フォームから送られてきたデータ↓
     public function update(Request $request, Person $person)
     {

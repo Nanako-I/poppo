@@ -26,7 +26,7 @@
                 <div class="shrink-0 flex items-center">
                     <a href="{{ url('people') }}" >
                        
-                        <img src="{{ asset('storage/sample/pink-heart.png') }}" width ="60" height="60">
+                        <img src="{{ asset('storage/sample/rainbow_heart_toumei.png') }}" width ="60" height="60">
                     </a>
                 </div>
                 @endif
@@ -69,7 +69,6 @@
 
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ml-6">
-                @auth <!-- ユーザーがログインしている場合のみ表示 -->
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         
@@ -101,10 +100,6 @@
                         </form>
                     </x-slot>
                 </x-dropdown>
-                @else <!-- ユーザーがログインしていない場合 -->
-                    <a href="{{ route('login') }}" class="text-sm text-gray-700 underline">Login</a>
-                    <!-- ログインリンクなど、他のアクションを追加 -->
-                @endauth
             </div>
 
             <!-- Hamburger -->

@@ -11,6 +11,11 @@ use App\Http\Controllers\PersonController;//追記
 use App\Http\Controllers\PhotoController;//追記
 use App\Http\Controllers\TemperatureController;
 use App\Http\Controllers\BloodpressureController;
+use App\Http\Controllers\MedicineController;
+use App\Http\Controllers\KyuuinController;
+use App\Http\Controllers\TubeController;
+use App\Http\Controllers\WaterController;
+use App\Http\Controllers\HossaController;
 use App\Http\Controllers\FoodController;
 use App\Http\Controllers\ToiletController;
 use App\Http\Controllers\CarController;
@@ -21,6 +26,10 @@ use App\Http\Controllers\SpreadsheetController; // Qiitaの記事
 use App\Http\Controllers\UploadController;
 use App\Http\Controllers\ChartController;
 use App\Http\Controllers\ChatController;
+use App\Http\Controllers\HogoshaController;
+use App\Http\Controllers\ChildConditionController;
+use App\Http\Controllers\ChildFoodController;
+
 use App\Http\Controllers\DompdfController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\AmiVoiceController;
@@ -67,8 +76,6 @@ Route::view('/register', 'register');
 
 Route::get('peopleregister', [PersonController::class, 'create']);
 Route::post('peopleregister', [PersonController::class, 'store']);
-// Route::get('peopleregister', [PersonController::class, 'create']); 
-//   Route::resource('/photos', 'App\Http\Controllers\PhotoController')->only(['create','store']);
 
 Route::post('/logout', 'Auth\LoginController@logout')->name('logout');
 
@@ -81,12 +88,7 @@ Route::middleware('auth')->group(function () {
 
 
 Route::get('temperaturelist', [PersonController::class, 'showtemperature'])->name('temperaturelist.edit');
-
 Route::get('temperature/{people_id}/edit', [TemperatureController::class, 'edit'])->name('temperature.edit');
-// Route::resource('temperature/{people_id}/edit', [TemperatureController::class])->name('temperature.edit');
-// Route::resource('temperature/{people_id}/edit', TemperatureController::class);
-
-// Route::post('temperature/{people_id}/edit', [TemperatureController::class,'store'])->name('temperature.post');
 
 // プルダウンで登録させるバージョン↓
 Route::post('temperatures/{people_id}', [TemperatureController::class, 'store'])->name('temperatures.store');
@@ -109,31 +111,64 @@ Route::get('bloodpressurechange/{people_id}', [BloodpressureController::class, '
 Route::post('bloodpressurechange/{people_id}',[BloodpressureController::class,'update'])->name('bloodpressure_update');
 
 Route::get('foods/{id}', 'FoodController@show')->name('foods.show');
-// Route::get('foods/{id}', 'FoodController@showAmountFood')->name('foods.show');
-// Route::get('people/{id}', 'FoodController@show')->name('people.show');
 Route::get('food/{people_id}/edit', [FoodController::class, 'edit'])->name('food.edit');
 Route::post('food/{people_id}/edit', [FoodController::class,'store'])->name('food.post');
-
-//本：更新画面
 Route::get('foodchange/{people_id}',[FoodController::class,'change'])->name('food.change'); //通常
-// Route::post('/booksedit/{book}',[BookController::class,'edit'])->name('book_edit'); //通常
-// Route::get('/booksedit/{book}', [BookController::class,'edit'])->name('edit');      //Validationエラーありの場合
-
-//本：更新画面
-// Route::post('foods/update',[FoodController::class,'update'])->name('food_update');
 Route::post('foodchange/{people_id}',[FoodController::class,'update'])->name('food_update');
 
 Route::get('toilets/{id}', [ToiletController::class, 'show'])->name('toilets.show');
-// Route::get('toilets/{id}', 'ToiletController@show')->name('toilets.show');
 Route::get('toilet/{people_id}/edit', [ToiletController::class, 'edit'])->name('toilet.edit');
 Route::post('toilet/{people_id}/edit', [ToiletController::class,'store'])->name('toilet.post');
 
 // プルダウンで登録させるバージョン↓
-// Route::post('toilets/{people_id}', [ToiletController::class,'store'])->name('toilet.store');
 // トイレ編集↓
 Route::get('toiletchange/{people_id}', [ToiletController::class, 'change'])->name('toilet.change');
 Route::post('toiletchange/{people_id}',[ToiletController::class,'update'])->name('toilet_update');
 
+// プルダウンで登録させるバージョン↓
+Route::post('medicine/{people_id}', [MedicineController::class, 'store'])->name('medicine.store');
+Route::get('medicine/{people_id}', [MedicineController::class, 'show'])->name('medicine.show');
+Route::get('medicine/{people_id}/edit', [MedicineController::class, 'edit'])->name('medicine.edit');
+
+// 内服編集↓
+Route::get('medicinechange/{people_id}', [MedicineController::class, 'change'])->name('medicine.change');
+Route::post('medicinechange/{people_id}',[MedicineController::class,'update'])->name('medicine_update');
+
+// プルダウンで登録させるバージョン↓
+Route::post('kyuuin/{people_id}', [KyuuinController::class, 'store'])->name('kyuuin.store');
+Route::get('kyuuin/{people_id}', [KyuuinController::class, 'show'])->name('kyuuin.show');
+Route::get('kyuuin/{people_id}/edit', [KyuuinController::class, 'edit'])->name('kyuuin.edit');
+
+// 吸引編集↓
+Route::get('kyuuinchange/{people_id}', [KyuuinController::class, 'change'])->name('kyuuin.change');
+Route::post('kyuuinchange/{people_id}',[KyuuinController::class,'update'])->name('kyuuin_update');
+
+// プルダウンで登録させるバージョン↓
+Route::post('tube/{people_id}', [TubeController::class, 'store'])->name('tube.store');
+Route::get('tube/{people_id}', [TubeController::class, 'show'])->name('tube.show');
+Route::get('tube/{people_id}/edit', [TubeController::class, 'edit'])->name('tube.edit');
+
+// 注入編集↓
+Route::get('tubechange/{people_id}', [TubeController::class, 'change'])->name('tube.change');
+Route::post('tubechange/{people_id}',[TubeController::class,'update'])->name('tube_update');
+
+// プルダウンで登録させるバージョン↓
+Route::post('water/{people_id}', [WaterController::class, 'store'])->name('water.store');
+Route::get('water/{people_id}', [WaterController::class, 'show'])->name('water.show');
+Route::get('water/{people_id}/edit', [WaterController::class, 'edit'])->name('water.edit');
+
+// 水編集↓
+Route::get('waterchange/{people_id}', [WaterController::class, 'change'])->name('water.change');
+Route::post('waterchange/{people_id}',[WaterController::class,'update'])->name('water_update');
+
+// プルダウンで登録させるバージョン↓
+Route::post('hossa/{people_id}', [HossaController::class, 'store'])->name('hossa.store');
+Route::get('hossa/{people_id}', [HossaController::class, 'show'])->name('hossa.show');
+Route::get('hossa/{people_id}/edit', [HossaController::class, 'edit'])->name('hossa.edit');
+
+// 発作編集↓
+Route::get('hossachange/{people_id}', [HossaController::class, 'change'])->name('hossa.change');
+Route::post('hossachange/{people_id}',[HossaController::class,'update'])->name('hossa_update');
 
 // Route::get('speeches/{id}', 'SpeechController@show')->name('speeches.show');
 // Route::get('speech/{people_id}/edit', [SpeechController::class, 'edit'])->name('speech.edit');
@@ -164,9 +199,35 @@ Route::get('record/{people_id}/edit', [RecordController::class, 'show'])->name('
 Route::get('notification/{people_id}/edit', [NotificationController::class, 'show'])->name('notification.show');
 Route::post('notification/{people_id}/edit', [NotificationController::class,'store'])->name('notification.post');
 
-// 連絡事項の編集↓
+// 編集↓
 Route::get('notificationchange/{people_id}', [NotificationController::class, 'change'])->name('notification.change');
 Route::post('notificationchange/{people_id}',[NotificationController::class,'update'])->name('notification_update');
+
+
+// ★保護者の連絡
+// Route::get('hogosha/{people_id}/edit', [HogoshaController::class, 'edit'])->name('hogosha.edit');
+// Route::post('hogosha/{people_id}/edit', [HogoshaController::class,'store'])->name('hogosha.post');
+
+// // 編集↓
+// Route::get('hogoshachange/{people_id}', [HogoshaController::class, 'change'])->name('hogosha.change');
+// Route::post('hogoshachange/{people_id}',[HogoshaController::class,'update'])->name('hogosha');
+
+// 子どもの体調について　親からの報告↓
+Route::get('hogosha/{people_id}/edit', [ChildConditionController::class, 'edit'])->name('condition.edit');
+Route::post('hogosha/{people_id}/edit', [ChildConditionController::class,'store'])->name('condition.post');
+
+// 編集↓
+Route::get('conditionchange/{people_id}', [ChildConditionController::class, 'change'])->name('condition.change');
+Route::post('conditionchange/{people_id}',[ChildConditionController::class,'update'])->name('condition.update');
+
+// 子どもの食事について　親からの報告↓
+Route::get('hogosha/{people_id}/edit', [ChildFoodController::class, 'edit'])->name('childfood.edit');
+Route::post('hogosha/{people_id}/edit', [ChildFoodController::class,'store'])->name('childfood.post');
+
+// 編集↓
+Route::get('childfoodchange/{people_id}', [ChildFoodController::class, 'change'])->name('childfood.change');
+Route::post('childfoodchange/{people_id}',[ChildFoodController::class,'update'])->name('childfood.update');
+
 
 // 連絡帳機能
 Route::get('chat/{people_id}', [ChatController::class, 'show'])->name('chat.show');
@@ -202,7 +263,6 @@ Route::post('/convert-pdf', [UploadController::class, 'convertPDFsToPNG'])->name
 Route::post('/readPNG', [UploadController::class, 'readPNG'])->name('readPNG.edit');
 
 Route::get('chart/{id}/edit', [ChartController::class, 'show'])->name('chart.edit');
-// Route::get('food/{people_id}/edit', [FoodController::class, 'edit'])->name('food.edit');
 
 Route::get('/chartjs', function () {
     return view('chartjs');

@@ -6,6 +6,11 @@ use App\Models\Temperature;
 use App\Models\Bloodpressure;
 use App\Models\Toilet;
 use App\Models\Food;
+use App\Models\Water;
+use App\Models\Medicine;
+use App\Models\Kyuuin;
+use App\Models\Tube;
+use App\Models\Hossa;
 use App\Models\Speech;
 use App\Models\Person;
 use Illuminate\Http\Request;
@@ -47,28 +52,7 @@ class RecordController extends Controller
      */
     public function store(Request $request)
     {
-    //   $storeData = $request->validate([
-            // 'food' => 'required|max:255',
-            // 'staple_food' => 'required|max:255',
-            // 'side_dish' => 'required|max:255',
-            // 'medicine' => 'required|max:255',
-        // ]);
-        // バリデーションした内容を保存する↓
-        
-        // $toilet = Toilet::create([
-        // 'people_id' => $request->people_id,
-        // 'urine_one' => $request->urine_one,
-        // 'urine_two' => $request->urine_two,
-        // 'urine_three' => $request->urine_three,
-        // 'ben_one' => $request->ben_one,
-        // 'ben_two' => $request->ben_two,
-        // 'ben_three' => $request->ben_three,
-        // 'filename' => $request->filename,
-         
-    // ]);
-    // return redirect('people/{id}/edit');
-//   $person = Person::findOrFail($request->people_id);
-//     return redirect()->route('food.edit', ['people_id' => $person->id]); //
+    
     }
 
     /**
@@ -77,17 +61,7 @@ class RecordController extends Controller
      * @param  \App\Models\Food  $food
      * @return \Illuminate\Http\Response
      */
-//     public function show($people_id)
-// {
-//     $person = Person::findOrFail($people_id);
-//     $bloodpressures = Bloodpressure::where('people_id', $people_id)->get();
-//     $temperatures = Temperature::where('people_id', $people_id)->get();
-//     $toilets = Toilet::where('people_id', $people_id)->get();
-//     $foods = Food::where('people_id', $people_id)->get();
-//     $speeches = Speech::where('people_id', $people_id)->get();
-    
-//     return view('recordedit', compact('person', 'temperatures',  'bloodpressures', 'toilets', 'foods', 'speeches'));
-// }
+
 
 public function show($people_id, Request $request)
 {
@@ -113,7 +87,32 @@ public function show($people_id, Request $request)
         ->whereDate('created_at', $selectedDate)
         ->latest()
         ->first();
+        
+    $lastWater = Water::where('people_id', $people_id)
+        ->whereDate('created_at', $selectedDate)
+        ->latest()
+        ->first();
     
+    $lastMedicine = Medicine::where('people_id', $people_id)
+        ->whereDate('created_at', $selectedDate)
+        ->latest()
+        ->first();
+        
+    $lastKyuuin = Kyuuin::where('people_id', $people_id)
+        ->whereDate('created_at', $selectedDate)
+        ->latest()
+        ->first();
+        
+    $lastTube = Tube::where('people_id', $people_id)
+        ->whereDate('created_at', $selectedDate)
+        ->latest()
+        ->first();
+        
+    $lastHossa = Hossa::where('people_id', $people_id)
+        ->whereDate('created_at', $selectedDate)
+        ->latest()
+        ->first();
+        
     $lastMorningActivity = Speech::where('people_id', $people_id)
     ->whereDate('created_at', $selectedDate)
     ->whereNotNull('morning_activity')
@@ -126,7 +125,7 @@ public function show($people_id, Request $request)
     ->latest()
     ->first();
         
-        return view('recordedit', compact('person', 'lastTemperature', 'lastBloodPressure', 'lastToilet', 'lastFood', 'lastMorningActivity', 'lastAfternoonActivity', 'selectedDate'));
+        return view('recordedit', compact('person', 'lastTemperature', 'lastBloodPressure', 'lastToilet', 'lastFood', 'lastWater', 'lastMedicine', 'lastKyuuin', 'lastTube', 'lastHossa' ,'lastMorningActivity', 'lastAfternoonActivity', 'selectedDate'));
 }
     /**
      * Show the form for editing the specified resource.

@@ -17,7 +17,7 @@ class FoodController extends Controller
     public function index() {
    //** ↓ 下をコピー ↓ **    
     
-		//本の全件データ取得
+		
     $foods = Food::orderBy('created_at', 'asc')->get();
 
     return view('foods', ['foods' => $foods]);
