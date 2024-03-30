@@ -29,6 +29,8 @@ use App\Http\Controllers\ChatController;
 use App\Http\Controllers\HogoshaController;
 use App\Http\Controllers\ChildConditionController;
 use App\Http\Controllers\ChildFoodController;
+use App\Http\Controllers\ChildToiletController;
+use App\Http\Controllers\BathController;
 
 use App\Http\Controllers\DompdfController;
 use App\Http\Controllers\MessageController;
@@ -113,7 +115,7 @@ Route::post('bloodpressurechange/{people_id}',[BloodpressureController::class,'u
 Route::get('foods/{id}', 'FoodController@show')->name('foods.show');
 Route::get('food/{people_id}/edit', [FoodController::class, 'edit'])->name('food.edit');
 Route::post('food/{people_id}/edit', [FoodController::class,'store'])->name('food.post');
-Route::get('foodchange/{people_id}',[FoodController::class,'change'])->name('food.change'); //通常
+Route::get('foodchange/{people_id}',[FoodController::class,'change'])->name('food.change'); 
 Route::post('foodchange/{people_id}',[FoodController::class,'update'])->name('food_update');
 
 Route::get('toilets/{id}', [ToiletController::class, 'show'])->name('toilets.show');
@@ -175,20 +177,12 @@ Route::post('hossachange/{people_id}',[HossaController::class,'update'])->name('
 Route::get('morningspeech/{people_id}/edit', [SpeechController::class, 'show'])->name('morningspeech.show');
 Route::post('morningspeech/{people_id}/edit', [SpeechController::class,'store'])->name('morningspeech.post');
 
-// 午前の活動編集↓
+// 1日の活動編集↓
 Route::get('morningspeechchange/{people_id}', [SpeechController::class, 'change'])->name('morningspeech.change');
 Route::post('morningspeechchange/{people_id}',[SpeechController::class,'update'])->name('morningspeech_update');
 
-// SpeechControllerにshowメソッド・storeメソッドが重複するためedit createで書いた↓
-Route::get('afternoonspeech/{people_id}/edit', [SpeechController::class, 'edit'])->name('afternoonspeech.show');
-Route::post('afternoonspeech/{people_id}/edit', [SpeechController::class,'create'])->name('afternoonspeech.post');
-
-// 午後の活動編集↓
-Route::get('afternoonspeechchange/{people_id}', [SpeechController::class, 'PMchange'])->name('afternoonspeech.PMchange');
-Route::post('afternoonspeechchange/{people_id}',[SpeechController::class,'PMupdate'])->name('afternoonspeech_PMupdate');
 
 
-// プルダウンで登録させるバージョン↓
 Route::post('speeches/{people_id}', [SpeechController::class,'store'])->name('speech.store');
 // Route::post('/speech', 'SpeechController@store')->name('speech.store');
 Route::get('speeches/{people_id}', [SpeechController::class,'show'])->name('speech.show');
@@ -214,7 +208,10 @@ Route::post('notificationchange/{people_id}',[NotificationController::class,'upd
 
 // 子どもの体調について　親からの報告↓
 Route::get('hogosha/{people_id}/edit', [ChildConditionController::class, 'edit'])->name('condition.edit');
-Route::post('hogosha/{people_id}/edit', [ChildConditionController::class,'store'])->name('condition.post');
+Route::post('condition/{people_id}/edit', [ChildConditionController::class,'store'])->name('condition.post');
+
+// Route::get('hogosha/{people_id}/edit', [ChildConditionController::class, 'edit'])->name('condition.edit');
+// Route::post('hogosha/{people_id}/edit', [ChildConditionController::class,'store'])->name('condition.post');
 
 // 編集↓
 Route::get('conditionchange/{people_id}', [ChildConditionController::class, 'change'])->name('condition.change');
@@ -228,6 +225,21 @@ Route::post('hogosha/{people_id}/edit', [ChildFoodController::class,'store'])->n
 Route::get('childfoodchange/{people_id}', [ChildFoodController::class, 'change'])->name('childfood.change');
 Route::post('childfoodchange/{people_id}',[ChildFoodController::class,'update'])->name('childfood.update');
 
+// 子どもの排泄について　親からの報告↓
+Route::get('hogosha/{people_id}/edit', [ChildToiletController::class, 'edit'])->name('childtoilet.edit');
+Route::post('toilet/{people_id}/edit', [ChildToiletController::class,'store'])->name('childtoilet.post');
+
+// 編集↓
+Route::get('childtoiletchange/{people_id}', [ChildToiletController::class, 'change'])->name('childtoilet.change');
+Route::post('childtoiletchange/{people_id}',[ChildToiletController::class,'update'])->name('childtoilet.update');
+
+// 子どもの入浴について　親からの報告↓
+Route::get('hogosha/{people_id}/edit', [BathController::class, 'edit'])->name('childbath.edit');
+Route::post('bath/{people_id}/edit', [BathController::class,'store'])->name('childbath.post');
+
+// 編集↓
+Route::get('childbathchange/{people_id}', [BathController::class, 'change'])->name('childbath.change');
+Route::post('childbathchange/{people_id}',[BathController::class,'update'])->name('childbath.update');
 
 // 連絡帳機能
 Route::get('chat/{people_id}', [ChatController::class, 'show'])->name('chat.show');
@@ -242,21 +254,11 @@ Route::resource('/upload',UploadController::class);
 
 Route::delete('/delete/{fileName}',[UploadController::class,'delete'])->name('upload.delete');
 
-// Route::delete('/delete/{fileName}', function ($fileName) {
-//     // ファイルを削除
-//     Storage::delete('storage/images/' . $fileName);
-    
-//     return response()->json(['message' => 'ファイルが削除されました']);
-// });
+
 
 // Route::post('/read-pdf', 'UploadController@readPdf');
 Route::post('/upload', [UploadController::class, 'store'])->name('upload.edit');
-// Route::get('/convert-pdf-to-image', 'PdfToImageController@convertPdfToImage');
-// Route::get('/convert-pdf-to-image',  [UploadController::class, 'convertPdfToImage'])->name('convert.edit');
 
-// Route::get('/upload', function () {
-//     return view('upload');
-// });
 
 // Route::get('/convert-pdf', [UploadController::class, 'convert'])->name('convert.edit');
 Route::post('/convert-pdf', [UploadController::class, 'convertPDFsToPNG'])->name('convert.edit');
@@ -269,8 +271,6 @@ Route::get('/chartjs', function () {
 });
 
 // PDFでダウンロードする↓
-
-
 Route::get('record/{id}/edit', [DompdfController::class, 'record'])->name('record');
 Route::get('pdf/{people_id}/edit', [DompdfController::class, 'pdf'])->name('pdf');
 
@@ -309,6 +309,13 @@ Route::view('/speechsample', 'speechsample');
 Route::view('/speechsample2', 'speechsample2');
 Route::view('/speechsample3', 'speechsample3');
 Route::view('/speechsamplehrp', 'speechsamplehrp');
+Route::view('/speechsamplehrp', 'speechsamplehrp');
+
+// カレンダー↓
+Route::get('/calendar', function () {
+    return view('calendar');
+});
+
 require __DIR__.'/auth.php';
 
 });

@@ -106,7 +106,7 @@
                                     
                                 
                                     
-                        <!-- 体調登録↓ -->
+                         <!-- 体調登録↓ -->
                         　    　 <div class="border-2 p-2 rounded-lg bg-white m-2">
                                      <div class="flex justify-start items-center">
                                         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
@@ -193,9 +193,11 @@
                                         @endif
                                     </div>
                                 </div>
+
+                                          
                   
                                         
-                                 <!-- 最終食事・おやつ登録↓ -->
+                                <!-- 最終食事・おやつ登録↓ -->
                         　    　 <div class="border-2 p-2 rounded-lg bg-white m-2">
                                      <div class="flex justify-start items-center">
                                         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
@@ -206,7 +208,7 @@
                                     
                                     <!-- people.blade.php -->
                                    <div class="flex items-center justify-center p-4">
-                                        @if (!is_null($person) && !empty($person->child_foods) && count($person->child_foods) > 0)
+                                        @if (!is_null($person) && !is_null($person->child_foods) && count($person->child_foods) > 0)
                                         @php
                                            $lastFood = $person->child_foods->last();
                                         @endphp
@@ -219,7 +221,10 @@
                                                     <div class="flex items-center justify-around">
                                                 　　　　    <div class="px-2">
                                                 　　　　        <p class="text-gray-900 font-bold text-base">最終食事時間:</p>
-                                                            <p class="text-gray-900 font-bold text-2xl">{{ $lastFood->food_created_at }}</p>
+                                                            <p class="text-gray-900 font-bold text-2xl">
+                                                               {{ \Carbon\Carbon::parse($lastFood->food_created_at)->format('m/d H:i') }}
+                                                             </p>
+
                                                         </div>
                                                         <div class="px-2">
                                                 　　　　        <p class="text-gray-900 font-bold text-base">おやつの有無:</p>
@@ -303,7 +308,240 @@
                                         @endif
                                     </div>
                                 </div>    
+                                
+                                <!-- トイレ登録↓ -->
+                        　    　<div class="border-2 p-2 rounded-lg bg-white m-2">
+                                <div class="flex justify-start items-center">
+                                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+                                    <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
+                                    <i class="fa-solid fa-toilet-paper text-blue-700" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>
+                                    <p class="font-bold text-xl ml-2">トイレ</p>
+                                </div>
+                                <div class="flex items-center justify-center p-4">
+                                    @if (!is_null($person) && !is_null($person->child_toilets) && count($person->child_toilets) > 0)
+                                        @php
+                                           $lastToilet = $person->child_toilets->last();
+                                        @endphp
+                                            @if ($lastToilet && $lastToilet->created_at->isToday())
+                                         <!-- 食事表示 -->
+                                                <div class="flex justify-evenly">
+                                                <a href="{{ url('childtoiletchange/'.$person->id) }}" class="relative ml-2 flex items-center">
+                                                     @csrf
+                                                    <div class="flex items-center justify-around">
+                                                　　　　    <div class="px-2">
+                                                　　　　        <p class="text-gray-900 font-bold text-base">最終排尿時間:</p>
+                                                            <p class="text-gray-900 font-bold text-2xl">
+                                                               {{ \Carbon\Carbon::parse($lastToilet->urine_created_at)->format('m/d H:i') }}
+                                                             </p>
+
+                                                        </div>
+                                                        
+                                                        <div class="px-2">
+                                                　　　　        <p class="text-gray-900 font-bold text-base">最終排便時間:</p>
+                                                            <p class="text-gray-900 font-bold text-2xl">
+                                                               {{ \Carbon\Carbon::parse($lastToilet->ben_created_at)->format('m/d H:i') }}
+                                                             </p>
+
+                                                        </div>
+                                                        
+                                                        <div class="px-2">
+                                                　　　　        <p class="text-gray-900 font-bold text-base">便の状態:</p>
+                                                            <p class="text-gray-900 font-bold text-xl">{{ $lastToilet->ben_condition }}</p>
+                                                        </div>
+                                                   
+                                                    <div class="px-2">
+                                                    <i class="fa-solid fa-pencil text-stone-500" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s; vertical-align: middle;"></i>
+                                                    </div>
+                                                </div>
+                                                </a>
+                                               </div>
+                                            @else
+                                              <div style="display: flex; flex-direction: column; align-items: center;">
+                                                    <form action="{{ route('childtoilet.post', $person->id) }}" method="POST">
+                                                        <details class="justify-center"> <!-- この行を追加 -->
+                                                    
+                                                        <summary class="text-red-500 font-bold text-xl">登録してください</summary>
+                                                        @csrf
+                                                        <input type="hidden" name="people_id" value="{{ $person->id }}">
+                                                         <div style="display: flex; flex-direction: column; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
+                                                            <div class="flex-direction: column; justify-center ml-4">
+                                                                <h3 class="text-gray-900 font-bold text-xl">最終排尿時間</h3>
+                                                                    <div style="display: flex; flex-direction: column; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
+                                                                    <input type="datetime-local" name="urine_created_at" id="scheduled-time">
+                                                                    </div>
+                                                            </div>
+                                                            
+                                                            <div class="flex-direction: column; justify-center ml-4">
+                                                                <h3 class="text-gray-900 font-bold text-xl">最終排便時間</h3>
+                                                                    <div style="display: flex; flex-direction: column; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
+                                                                    <input type="datetime-local" name="ben_created_at" id="scheduled-time">
+                                                                    </div>
+                                                            </div>
+                                                            
+                                                            <div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">
+                                                            <h3 class="text-gray-900 font-bold text-xl">便の状態</h3>
+                                                              <select name="ben_condition" class="mx-1 my-1.5" style="width: 6rem;">
+                                                                <option value="回答なし">選択</option>
+                                                                <option value="硬便">硬便</option>
+                                                                <option value="普通便">普通便</option>
+                                                                <option value="軟便">軟便</option>
+                                                                <option value="泥状便">泥状便</option>
+                                                                <option value="水様便">水様便</option>
+                                                             </select>
+                                                            </div>
+                                                            
+                                                        <div class="my-2" style="display: flex; justify-content: center; align-items: center; max-width: 300px;">
+                                                          <button type="submit" class="inline-flex items-center px-6 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+                                                            送信
+                                                          </button>
+                                                        </div>
+                                                    </details>
+                                                </form>
+                                                <!--</div>-->
+                                                </div>  
+                                            @endif
+                                        @else
+                                            <div style="display: flex; flex-direction: column; align-items: center;">
+                                                    <form action="{{ route('childtoilet.post', $person->id) }}" method="POST">
+                                                        <details class="justify-center"> <!-- この行を追加 -->
+                                                    
+                                                        <summary class="text-red-500 font-bold text-xl">登録してください</summary>
+                                                        @csrf
+                                                        <input type="hidden" name="people_id" value="{{ $person->id }}">
+                                                         <div style="display: flex; flex-direction: column; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
+                                                            <div class="flex items-center justify-center ml-4">
+                                                                <h3 class="text-gray-900 font-bold text-xl">最終排尿時間</h3>
+                                                                    <div style="display: flex; flex-direction: column; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
+                                                                    <input type="datetime-local" name="urine_created_at" id="scheduled-time">
+                                                                    </div>
+                                                            </div>
+                                                            
+                                                            <div class="flex-direction: column; justify-center ml-4">
+                                                                <h3 class="text-gray-900 font-bold text-xl">最終排便時間</h3>
+                                                                    <div style="display: flex; flex-direction: column; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
+                                                                    <input type="datetime-local" name="ben_created_at" id="scheduled-time">
+                                                                    </div>
+                                                            </div>
+                                                            
+                                                            <div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">
+                                                            <h3 class="text-gray-900 font-bold text-xl">便の状態</h3>
+                                                              <select name="ben_condition" class="mx-1 my-1.5" style="width: 6rem;">
+                                                                <option value="回答なし">選択</option>
+                                                                <option value="硬便">硬便</option>
+                                                                <option value="普通便">普通便</option>
+                                                                <option value="軟便">軟便</option>
+                                                                <option value="泥状便">泥状便</option>
+                                                                <option value="水様便">水様便</option>
+                                                             </select>
+                                                            </div>
+                                                            
+                                                        <div class="my-2" style="display: flex; justify-content: center; align-items: center; max-width: 300px;">
+                                                          <button type="submit" class="inline-flex items-center px-6 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+                                                            送信
+                                                          </button>
+                                                        </div>
+                                                    </details>
+                                                </form>
+                                                <!--</div>-->
+                                                </div>  
+                                        @endif
+                                    </div>
+                                </div>
+                                   
+                                 <div class="border-2 p-2 rounded-lg bg-white m-2">
+                                    <div class="flex justify-start items-center">
+                                        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+                                        <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
+                                        <i class="fa-solid fa-bath text-violet-600" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>
+                                        <p class="font-bold text-xl ml-2">入浴希望</p>
+                                    </div>
                                     
+                                    
+                                   <div class="flex items-center justify-center p-4">
+                                        @if (!is_null($person) && !is_null($person->baths) && count($person->baths) > 0)
+                                        @php
+                                           $lastBath = $person->baths->last();
+                                        @endphp
+                                            @if ($lastBath && $lastBath->created_at->isToday())
+                                            
+                                            <!-- 入浴希望表示 -->
+                                                <div class="flex justify-evenly">
+                                                <a href="{{ url('childbathchange/'.$person->id) }}" class="relative ml-2 flex items-center">
+                                                     @csrf
+                                                    <div class="flex justify-evenly">
+                                                        <div style="display: flex; flex-direction: column; align-items: center;">
+                                                    　　　　    <div class="px-2">
+                                                    　　　　        <p class="text-gray-900 font-bold text-base">入浴:</p>
+                                                            </div>
+                                                            <div class="px-2">
+                                                    　　　　        <p class="text-gray-900 font-bold text-2xl">{{ $lastBath->kibou}}</p>
+                                                            </div>
+                                                        </div>
+                                                        <div class="px-2">
+                                                        <i class="fa-solid fa-pencil text-stone-500" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s; vertical-align: middle;"></i>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                               </div>
+                                            @else
+                                              <div style="display: flex; flex-direction: column; align-items: center;">
+                                                    <form action="{{ route('childbath.post', $person->id) }}" method="POST">
+                                                        <details class="justify-center"> <!-- この行を追加 -->
+                                                    
+                                                        <summary class="text-red-500 font-bold text-xl">登録してください</summary>
+                                                        @csrf
+                                                        <input type="hidden" name="people_id" value="{{ $person->id }}">
+                                                         <div style="display: flex; flex-direction: column; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
+
+                                                            <div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">
+                                                            <select name="kibou" class="mx-1 my-1.5" style="width: 10rem;">
+                                                                <option value="回答なし">選択</option>
+                                                                <option value="希望する">希望する</option>
+                                                                <option value="希望しない">希望しない</option>
+                                                              </select>
+                                                            </div>
+                                                            
+                                                        <div class="my-2" style="display: flex; justify-content: center; align-items: center; max-width: 300px;">
+                                                          <button type="submit" class="inline-flex items-center px-6 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+                                                            送信
+                                                          </button>
+                                                        </div>
+                                                    </details>
+                                                </form>
+                                                <!--</div>-->
+                                                </div>  
+                                            @endif
+                                        @else
+                                            <div style="display: flex; flex-direction: column; align-items: center;">
+                                                    <form action="{{ route('childbath.post', $person->id) }}" method="POST">
+                                                        <details class="justify-center"> <!-- この行を追加 -->
+                                                    
+                                                        <summary class="text-red-500 font-bold text-xl">登録してください</summary>
+                                                        @csrf
+                                                        <input type="hidden" name="people_id" value="{{ $person->id }}">
+                                                         <div style="display: flex; flex-direction: column; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
+                                                               
+                                                            <div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">
+                                                            <select name="kibou" class="mx-1 my-1.5" style="width: 10rem;">
+                                                                <option value="回答なし">選択</option>
+                                                                <option value="希望する">希望する</option>
+                                                                <option value="希望しない">希望しない</option>
+                                                            </select>
+                                                            </div>
+                                                            
+                                                        <div class="my-2" style="display: flex; justify-content: center; align-items: center; max-width: 300px;">
+                                                          <button type="submit" class="inline-flex items-center px-6 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+                                                            送信
+                                                          </button>
+                                                        </div>
+                                                    </details>
+                                                </form>
+                                                <!--</div>-->
+                                                </div>  
+                                        @endif
+                                    </div>
+                                </div>    
+                                
                                         <div class="border-2 p-2 rounded-lg bg-white mx-2 mb-2 mt-8">
                                           <div class="flex justify-start items-center">
                                             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />

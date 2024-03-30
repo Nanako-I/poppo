@@ -52,7 +52,7 @@
 
 
 
-    
+    <!-- 現在の本 -->
   <div class="flex flex-row justify-start w-screen overflow-x-auto">
     <div class="slider">
     @csrf

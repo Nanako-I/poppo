@@ -160,36 +160,7 @@ public function change(Request $request, $people_id)
         return view('people', compact('food', 'people'));
     }
     
-    // public function update(Request $request, Food $food)
-    // {
-        
-    // //     
-    //     // $lastFood = Food::find($request->id);
-    //     // $lastFood->staple_food   = $request->staple_food;
-    //     // $lastFood->side_dish = $request->side_dish;
-    //     // $lastFood->medicine = $request->medicine;
-    //     // $lastFood->medicine_name   = $request->medicine_name;
-    //     // $lastFood->bikou   = $request->bikou;
-    //     // $lastFood->save();
-    //     // return redirect('/');
-    //     $updateFood = $this->food->updateFood($request, $food);
-    //     //   $food = Food::find($request->people_id);
-    //     // $updateFood = $this->food->updateFood($request, $food);
-        
-    //     return view('people', compact('food', 'people'));
-    // }
-    
-    // Food.phpでupdateFoodを定義する
-    // public function update(Request $request, Food $food)
-    // {
-    //     // $lastFood = Food::find($request->id);
-    //     $food->updateFood($request);
-        
-    //     // $food = Food::find($request->people_id);
-    //     // $updateFood = $food->updateFood($request, $food);
-    //     $people = Person::all();
-    //     return view('people', compact('food', 'people'));
-    // }
+ 
   
 
     /**

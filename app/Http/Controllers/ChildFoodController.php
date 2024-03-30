@@ -77,9 +77,10 @@ public function change(Request $request, $people_id)
         //** ↓ 下をコピー ↓ **
         $person = Person::findOrFail($people_id);
         // dd($person->foods);
-        $lastFoodTime = $person->food_created_at->last();
-        $lastOyatsu = $person->oyatsu->last();
-        return view('childfoodchange', compact('person', 'lastFoodTime', 'lastOyatsu'));
+        // $lastFoodTime = $person->food_created_at->last();
+        // $lastOyatsu = $person->oyatsu->last();
+        $lastFood = $person->child_foods->last();
+        return view('childfoodchange', compact('person', 'lastFood'));
     }
 
 
@@ -93,13 +94,9 @@ public function change(Request $request, $people_id)
 {
   $people = Person::all(); // Personモデルからデータを取得して$people変数に代入
   $person = Person::findOrFail($people_id);
- // $person->food_created_at が null でないかチェックしてから last() メソッドを呼び出す
-    $lastFoodTime = $person->food_created_at ? $person->food_created_at->last() : null;
-
-    // $person->oyatsu が null でないかチェックしてから last() メソッドを呼び出す
-    $lastOyatsu = $person->oyatsu ? $person->oyatsu->last() : null;
-       
-    return view('hogosha',  ['id' => $person->id],compact('people', 'lastFoodTime', 'lastOyatsu')); // $people変数をビューに渡す
+  $lastFood = $person->child_foods->last();
+    // return view('hogosha',  ['id' => $person->id],compact('people', 'lastFoodTime', 'lastOyatsu'));
+    return view('hogosha',  ['id' => $person->id],compact('people', 'lastFood'));
 }
 
 

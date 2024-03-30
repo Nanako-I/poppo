@@ -109,6 +109,25 @@ public function foods()
         //  return $this->hasMany(Temperature::class);
     }
     
+    public function child_foods()
+    {
+        return $this->hasMany(ChildFood::class,'people_id');
+  
+    }
+    
+    public function child_toilets()
+    {
+        return $this->hasMany(ChildToilet::class,'people_id');
+  
+    }
+    
+    public function baths()
+    {
+        return $this->hasMany(Bath::class,'people_id');
+  
+    }
+    
+    
     public function chats()
     {
         return $this->hasMany(Chat::class,'people_id');
