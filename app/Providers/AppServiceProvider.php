@@ -24,6 +24,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-    URL::forceScheme('https');
+        // httpsに強制リダイレクトさせるのは本番環境のみにする
+        if (\App::environment('production')) {
+            URL::forceScheme('https');
+        }
     }
 }
