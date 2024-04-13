@@ -22,9 +22,9 @@
           }
       </style>
       <div class="mx-1.5">
-        <h2>{{$person->person_name}}さんのトイレ情報</h2>
+        <h2>{{$person->person_name}}さんの最終体温計測時間</h2>
         @php
-           $lastToilet = $person->child_toilets->last();
+           $lastTemperature = $person->child_temperatures->last();
         @endphp
         
       </div>
@@ -36,7 +36,7 @@
         <!-- バリデーションエラーの表示に使用-->
        <!-- resources/views/components/errors.blade.php -->
        
-<form action="{{ url('childtoiletchange/'.$person->id) }}" method="POST">
+<form action="{{ url('childtemperaturechange/'.$person->id) }}" method="POST">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet">
     @csrf
@@ -55,31 +55,16 @@
         }
         </style>
         
-        <div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">
-            <h3>最終排尿</h3>
-            <div style="display: flex; flex-direction: column; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
-                <input type="datetime-local" name="urine_created_at" id="scheduled-time" value="{{ $lastToilet->urine_created_at}}">
-            </div>
+        
+        <div style="display: flex; flex-direction: column; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
+            <input type="datetime-local" name="created_at" id="scheduled-time" value="{{ $lastTemperature->created_at}}">
         </div>
         
         <div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">
-            <h3>最終排便</h3>
-            <div style="display: flex; flex-direction: column; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
-                <input type="datetime-local" name="ben_created_at" id="scheduled-time" value="{{ $lastToilet->ben_created_at}}">
-            </div>
+            <h3 class="text-gray-900 font-bold text-xl">体温</h3>
+            <input name="temperature" type="text" value="{{ $lastTemperature->temperature }}" id="temperature"  class="appearance-none block w-1/5 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white font-bold">
+            <p class="text-gray-900 font-bold text-xl">℃</p>
         </div>
-        
-        <div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">
-        <h3>便の状態</h3>
-          <select name="ben_condition" class="mx-1 my-1.5" style="width: 6rem;">
-            <option value="{{ $lastToilet->ben_condition }}">{{ $lastToilet->ben_condition }}</option>
-            <option value="硬便">硬便</option>
-            <option value="普通便">普通便</option>
-            <option value="軟便">軟便</option>
-            <option value="泥状便">泥状便</option>
-            <option value="水様便">水様便</option>
-          </select>
-      </div>
       
     
     

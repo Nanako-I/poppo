@@ -58,6 +58,7 @@ class ChildToiletController extends Controller
         'urine_created_at' => $request->urine_created_at,
         'ben_created_at' => $request->ben_created_at,
         'ben_condition' => $request->ben_condition,
+        // 'created_at' => $request->created_at,
     ]);
     
     $people = Person::all();
@@ -96,7 +97,16 @@ public function change(Request $request, $people_id)
     // return view('hogosha',  ['id' => $person->id],compact('people', 'lastFoodTime', 'lastOyatsu'));
     return view('hogosha',  ['id' => $person->id],compact('people', 'lastToilet'));
 }
-
+// public function edit(Request $request, $people_id)
+// {
+//   $people = Person::all(); // Personモデルからデータを取得して$people変数に代入
+//   $person = Person::findOrFail($people_id);
+//   $lastToilet = null;
+// if (!is_null($person->child_toilets)) {
+//     $lastToilet = $person->child_toilets->isEmpty() ? null : $person->child_toilets->last();
+//     return view('hogosha',  ['id' => $person->id],compact('people', 'lastToilet'));
+// }
+// }
 
     /**
      * Update the specified resource in storage.

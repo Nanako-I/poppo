@@ -2,20 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Temperature;
-use App\Models\Bloodpressure;
-use App\Models\Toilet;
-use App\Models\Food;
-use App\Models\Water;
-use App\Models\Medicine;
-use App\Models\Kyuuin;
-use App\Models\Tube;
-use App\Models\Hossa;
-use App\Models\Speech;
+use App\Models\ChildCondition;
+use App\Models\ChildTemperature;
+use App\Models\ChildFood;
+use App\Models\ChildToilet;
+use App\Models\Bath;
 use App\Models\Person;
 use Illuminate\Http\Request;
 
-class RecordController extends Controller
+class HogoshaRecordController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -66,66 +61,35 @@ class RecordController extends Controller
 public function show($people_id, Request $request)
 {
     $person = Person::findOrFail($people_id);
+    // $selectedDate = $request->input('selected_date');
     $selectedDate = $request->input('selected_date', now()->format('Y-m-d')); // リクエストから日付を取得、デフォルトは今日
     
-    $lastFood = Food::where('people_id', $people_id)
+    $lastChildCondition = ChildCondition::where('people_id', $people_id)
         ->whereDate('created_at', $selectedDate)
         ->latest()
         ->first();
     
-    $lastTemperature = Temperature::where('people_id', $people_id)
+    $lastChildTemperature = ChildTemperature::where('people_id', $people_id)
         ->whereDate('created_at', $selectedDate)
         ->latest()
         ->first();
         
-    $lastBloodPressure = Bloodpressure::where('people_id', $people_id)
+    $lastChildFood = ChildFood::where('people_id', $people_id)
         ->whereDate('created_at', $selectedDate)
         ->latest()
         ->first();
         
-    $lastToilet = Toilet::where('people_id', $people_id)
+    $lastChildToilet = ChildToilet::where('people_id', $people_id)
         ->whereDate('created_at', $selectedDate)
         ->latest()
         ->first();
         
-    $lastWater = Water::where('people_id', $people_id)
-        ->whereDate('created_at', $selectedDate)
-        ->latest()
-        ->first();
-    
-    $lastMedicine = Medicine::where('people_id', $people_id)
+    $Bathkibou = Bath::where('people_id', $people_id)
         ->whereDate('created_at', $selectedDate)
         ->latest()
         ->first();
         
-    $lastKyuuin = Kyuuin::where('people_id', $people_id)
-        ->whereDate('created_at', $selectedDate)
-        ->latest()
-        ->first();
-        
-    $lastTube = Tube::where('people_id', $people_id)
-        ->whereDate('created_at', $selectedDate)
-        ->latest()
-        ->first();
-        
-    $lastHossa = Hossa::where('people_id', $people_id)
-        ->whereDate('created_at', $selectedDate)
-        ->latest()
-        ->first();
-        
-    $lastMorningActivity = Speech::where('people_id', $people_id)
-    ->whereDate('created_at', $selectedDate)
-    ->whereNotNull('morning_activity')
-    ->latest()
-    ->first();
-
-    $lastAfternoonActivity = Speech::where('people_id', $people_id)
-    ->whereDate('created_at', $selectedDate)
-    ->whereNotNull('afternoon_activity')
-    ->latest()
-    ->first();
-        
-        return view('recordedit', compact('person', 'lastTemperature', 'lastBloodPressure', 'lastToilet', 'lastFood', 'lastWater', 'lastMedicine', 'lastKyuuin', 'lastTube', 'lastHossa' ,'lastMorningActivity', 'lastAfternoonActivity', 'selectedDate'));
+        return view('hogosharecord', compact('person', 'lastChildCondition', 'lastChildTemperature', 'lastChildFood', 'lastChildToilet', 'Bathkibou','selectedDate'));
 }
     /**
      * Show the form for editing the specified resource.

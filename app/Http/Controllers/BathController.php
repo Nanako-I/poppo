@@ -111,11 +111,16 @@ if (!is_null($person->baths)) {
      */
      public function update(Request $request, Bath $bath)
     {
-    
+        $validated = $request->validate([
+            // 'kibou' => 'required', // この行でkibouが必須であることを指定
+            // 他のフィールドのバリデーションルールもここに追加
+        ]);
+        
         //データ更新
         $person = Person::find($request->people_id);
         $bath->people_id = $person->id;
         $bath->kibou = $request->kibou;
+       
         $bath->save();
         
         $people = Person::all();

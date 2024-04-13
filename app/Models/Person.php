@@ -52,7 +52,7 @@ class Person extends Model
         //  return $this->hasMany(Temperature::class);
     }
 
-public function foods()
+    public function foods()
     {
         return $this->hasMany(Food::class,'people_id');
     }
@@ -107,6 +107,12 @@ public function foods()
     {
         return $this->hasMany(ChildCondition::class,'people_id');
         //  return $this->hasMany(Temperature::class);
+    }
+    
+    public function child_temperatures()
+    {
+        return $this->hasMany(ChildTemperature::class,'people_id');
+  
     }
     
     public function child_foods()

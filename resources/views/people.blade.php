@@ -121,7 +121,6 @@
                                             @if (!is_null($person) && count($person->hogoshas) > 0)
                                                 @php
                                                     $lastHogosha = $person->hogoshas->last();
-                                                    
                                                 @endphp
                                                 
                                             @if ($lastHogosha && $lastHogosha->created_at->isToday())    
@@ -264,21 +263,56 @@
                                             @if (!is_null($person) && count($person->waters) > 0)
                                             @php
                                                $lastWater = $person->waters->last();
+                                               $today = \Carbon\Carbon::now()->toDateString();
+                                               $todaysWaters = $person->waters()
+                                                ->where('created_at', '>=', $today)
+                                                ->where('created_at', '<', $today . ' 23:59:59')
+                                                ->orderBy('created_at', 'asc') // 昇順に並べ替え
+                                                ->get();
                                             @endphp
-                                                @if ($lastWater && $lastWater->created_at->isToday())
-                                                    <!-- 内服フォーム -->
-                                                   
-                                                  <!-- 直近の内服結果表示 -->
-                                                    <a href="{{ url('waterchange/'.$person->id) }}" class="relative ml-2 flex items-center">
-                                                         @csrf
-                                                         <!--<p class="text-gray-900 font-bold text-2xl">吸引した時間</p>-->
-                                                        <p class="text-gray-900 font-bold text-2xl">{{ $lastWater->created_at->format('H:i')  }}</p>
-                                                        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
-                                                        <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
-                                                        <i class="fa-solid fa-pencil text-stone-500" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>
-                                                    </a>
+                                            
+                                                @if ($todaysWaters->count() > 0)
+                                                <div class="flex flex-col">
+                                                    <p class="text-gray-900 font-bold text-lg">水分を摂った時間</p>
+                                                    <!-- 今日の水分摂取リスト -->
+                                                    @foreach ($todaysWaters as $water)
+                                                            <div class="flex-row items-center justify-between p-2 border-b border-gray-300">
+                                                            <p class="text-gray-900 font-bold text-lg">{{ $water->created_at->format('H:i') }}</p>
+                                                            </div>
+                                                    @endforeach
+                                                            <a href="{{ url('wateredit/' . $person->id) }}" class="text-stone-500">
+                                                                <i class="fa-solid fa-pencil" style="font-size: 1.5em;"></i>
+                                                            </a>
                                                     
-                                                @else
+                                                    
+                                                    <div style="display: flex; flex-direction: column; align-items: center;">
+                                                            <form action="{{ route('water.store', $person->id) }}" method="POST">
+                                                                <details class="justify-center"> <!-- この行を追加 -->
+                                                            
+                                                                <summary class="text-red-500 font-bold text-xl">登録する</summary>
+                                                                @csrf
+                                                                <input type="hidden" name="people_id" value="{{ $person->id }}">
+                                                                    <div class="flex flex-col items-center justify-center ml-4">
+                                                                        <p class="text-gray-900 font-bold text-xl">水分を摂った時間</p>
+                                                                        <input type="time" name="created_at" id="scheduled-time">
+                                                                        <!--<input name="temperature" id="text-box" class="appearance-none block w-1/2 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white font-bold" type="text" placeholder="">-->
+                                                                    </div>
+                                                                    
+                                                                    <div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">
+                                                                        <p class="text-gray-900 font-bold text-xl">備考</p>
+                                                                        <textarea id="result-speech" name="water_bikou" class="w-3/4 max-w-lg font-bold" style="height: 200px;"></textarea>
+                                                                    </div>
+                                                                    
+                                                                <div class="my-2" style="display: flex; justify-content: center; align-items: center; max-width: 300px;">
+                                                                  <button type="submit" class="inline-flex items-center px-6 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+                                                                    送信
+                                                                  </button>
+                                                                </div>
+                                                            </details>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            @else
                                                   <div style="display: flex; flex-direction: column; align-items: center;">
                                                         <form action="{{ route('water.store', $person->id) }}" method="POST">
                                                             <details class="justify-center"> <!-- この行を追加 -->
@@ -286,7 +320,7 @@
                                                             <summary class="text-red-500 font-bold text-xl">登録する</summary>
                                                             @csrf
                                                             <input type="hidden" name="people_id" value="{{ $person->id }}">
-                                                                <div class="flex items-center justify-center ml-4">
+                                                                <div class="flex flex-col items-center justify-center ml-4">
                                                                     <p class="text-gray-900 font-bold text-xl">水分を摂った時間</p>
                                                                     <input type="time" name="created_at" id="scheduled-time">
                                                                     <!--<input name="temperature" id="text-box" class="appearance-none block w-1/2 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white font-bold" type="text" placeholder="">-->
@@ -369,7 +403,7 @@
                                                             <summary class="text-red-500 font-bold text-xl">登録する</summary>
                                                             @csrf
                                                             <input type="hidden" name="people_id" value="{{ $person->id }}">
-                                                                <div class="flex items-center justify-center ml-4">
+                                                                <div class="flex flex-col items-center justify-center ml-4">
                                                                     <p class="text-gray-900 font-bold text-xl">内服した時間</p>
                                                                     <input type="time" name="created_at" id="scheduled-time">
                                                                     <!--<input name="temperature" id="text-box" class="appearance-none block w-1/2 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white font-bold" type="text" placeholder="">-->
@@ -395,7 +429,7 @@
                                                          <summary class="text-red-500 font-bold text-xl">登録する</summary>
                                                         @csrf
                                                             <input type="hidden" name="people_id" value="{{ $person->id }}">
-                                                                <div class="flex items-center justify-center ml-4">
+                                                                <div class="flex flex-col items-center justify-center ml-4">
                                                                     <p class="text-gray-900 font-bold text-xl">内服した時間</p>
                                                                     <input type="time" name="created_at" id="scheduled-time">
                                                                     <!--<input name="temperature" id="text-box" class="appearance-none block w-1/2 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white font-bold" type="text" placeholder="">-->
@@ -476,7 +510,7 @@
                                                             <summary class="text-red-500 font-bold text-xl">登録する</summary>
                                                             @csrf
                                                             <input type="hidden" name="people_id" value="{{ $person->id }}">
-                                                                <div class="flex items-center justify-center ml-4">
+                                                                <div class="flex flex-col items-center justify-center ml-4">
                                                                     <p class="text-gray-900 font-bold text-xl">注入した時間</p>
                                                                     <input type="time" name="created_at" id="scheduled-time">
                                                                     <!--<input name="temperature" id="text-box" class="appearance-none block w-1/2 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white font-bold" type="text" placeholder="">-->
@@ -487,16 +521,7 @@
                                                                     <textarea id="result-speech" name="tube_bikou" class="w-3/4 max-w-lg font-bold" style="height: 200px;"></textarea>
                                                                 </div>
                                                                 
-                                                                <!--<div class="flex items-center justify-center ml-4">-->
-                                                                <!--    <p class="text-gray-900 font-bold text-xl">内服した時間</p>-->
-                                                                <!--    <input type="time" name="created_at_medicine" id="scheduled-time">-->
-                                                                    <!--<input name="temperature" id="text-box" class="appearance-none block w-1/2 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white font-bold" type="text" placeholder="">-->
-                                                                <!--</div>-->
-                                                                
-                                                                <!--<div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">-->
-                                                                <!--    <p class="text-gray-900 font-bold text-xl">備考</p>-->
-                                                                <!--    <textarea id="result-speech" name="medicine_bikou" class="w-3/4 max-w-lg font-bold" style="height: 200px;"></textarea>-->
-                                                                <!--</div>-->
+                                                               
                                                             <div class="my-2" style="display: flex; justify-content: center; align-items: center; max-width: 300px;">
                                                               <button type="submit" class="inline-flex items-center px-6 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
                                                                 送信
@@ -513,7 +538,7 @@
                                                          <summary class="text-red-500 font-bold text-xl">登録する</summary>
                                                         @csrf
                                                             <input type="hidden" name="people_id" value="{{ $person->id }}">
-                                                                <div class="flex items-center justify-center ml-4">
+                                                                <div class="flex flex-col items-center justify-center ml-4">
                                                                     <p class="text-gray-900 font-bold text-xl">注入した時間</p>
                                                                     <input type="time" name="created_at" id="scheduled-time">
                                                                     <!--<input name="temperature" id="text-box" class="appearance-none block w-1/2 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white font-bold" type="text" placeholder="">-->
@@ -524,16 +549,6 @@
                                                                     <textarea id="result-speech" name="tube_bikou" class="w-3/4 max-w-lg font-bold" style="height: 200px;"></textarea>
                                                                 </div>
                                                                 
-                                                                <!--<div class="flex items-center justify-center ml-4">-->
-                                                                <!--    <p class="text-gray-900 font-bold text-xl">内服した時間</p>-->
-                                                                <!--    <input type="time" name="created_at_medicine" id="scheduled-time">-->
-                                                                    <!--<input name="temperature" id="text-box" class="appearance-none block w-1/2 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white font-bold" type="text" placeholder="">-->
-                                                                <!--</div>-->
-                                                                
-                                                                <!--<div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">-->
-                                                                <!--    <p class="text-gray-900 font-bold text-xl">備考</p>-->
-                                                                <!--    <textarea id="result-speech" name="medicine_bikou" class="w-3/4 max-w-lg font-bold" style="height: 200px;"></textarea>-->
-                                                                <!--</div>-->
                                                             <div class="my-2" style="display: flex; justify-content: center; align-items: center; max-width: 300px;">
                                                               <button type="submit" class="inline-flex items-center px-6 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
                                                                 送信
@@ -612,11 +627,11 @@
                                                                 <p class="text-gray-900 font-bold text-xl">備考</p>
                                                                 <textarea id="result-speech" name="bikou" class="w-3/4 max-w-lg font-bold" style="height: 200px;"></textarea>
                                                             </div>
-                                                        <div class="my-2" style="display: flex; justify-content: center; align-items: center; max-width: 300px;">
-                                                          <button type="submit" class="inline-flex items-center px-6 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
-                                                            送信
-                                                          </button>
-                                                        </div>
+                                                            <div class="my-2" style="display: flex; justify-content: center; align-items: center; max-width: 300px;">
+                                                              <button type="submit" class="inline-flex items-center px-6 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+                                                                送信
+                                                              </button>
+                                                            </div>
                                                     </details>
                                                 </form>
                                                 <!--</div>-->

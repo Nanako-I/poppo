@@ -194,19 +194,119 @@
                                     </div>
                                 </div>
 
-                                          
+                                <!-- 最終体温登録↓ -->
+                        　    　 <div class="border-2 p-2 rounded-lg bg-white m-2">
+                                    <div class="flex justify-start items-center">
+                                        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+                                        <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
+                                        <i class="fa-solid fa-thermometer text-sky-600" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>
+                                        <p class="font-bold text-xl ml-2">体温</p>
+                                    </div>
+                                    
+                                  
+                                   <div class="flex items-center justify-center p-4">
+                                        @if (!is_null($person) && !is_null($person->child_temperatures) && count($person->child_temperatures) > 0)
+                                        @php
+                                           $lastTemperature = $person->child_temperatures->last();
+                                        @endphp
+                                            @if ($lastTemperature && $lastTemperature->created_at->isToday())
+                                            
+                                            <!-- 体温表示 -->
+                                                <div class="flex justify-evenly">
+                                                    <a href="{{ url('childtemperaturechange/'.$person->id) }}" class="relative ml-2 flex items-center">
+                                                         @csrf
+                                                        <div class="flex items-center justify-around">
+                                                    　　　　    <div class="px-2">
+                                                    　　　　        <p class="text-gray-900 font-bold text-base">最終計測時間:</p>
+                                                                <p class="text-gray-900 font-bold text-2xl">
+                                                                   {{ \Carbon\Carbon::parse($lastTemperature->created_at)->format('m/d H:i') }}
+                                                                 </p>
+                                                            </div>
+                                                            <div class="px-2">
+                                                    　　　　        <p class="text-gray-900 font-bold text-base">体温:</p>
+                                                                <p class="text-gray-900 font-bold text-2xl">{{ $lastTemperature->temperature}}℃</p>
+                                                            </div>
+                                                       
+                                                            <div class="px-2">
+                                                                <i class="fa-solid fa-pencil text-stone-500" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s; vertical-align: middle;"></i>
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                               </div>
+                                            @else
+                                              <div style="display: flex; flex-direction: column; align-items: center;">
+                                                    <form action="{{ route('childtemperature.post', $person->id) }}" method="POST">
+                                                        <details class="justify-center">
+                                                        <summary class="text-red-500 font-bold text-xl">登録してください</summary>
+                                                        @csrf
+                                                        <input type="hidden" name="people_id" value="{{ $person->id }}">
+                                                         <div style="display: flex; flex-direction: column; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
+                                                            <div class="flex-direction: column; justify-center ml-4">
+                                                                <h3 class="text-gray-900 font-bold text-xl">最終計測時間</h3>
+                                                                    <div style="display: flex; flex-direction: column; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
+                                                                        <input type="datetime-local" name="created_at" id="scheduled-time">
+                                                                    </div>
+                                                            </div>    
+                                                            <div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">
+                                                                <h3 class="text-gray-900 font-bold text-xl">体温</h3>
+                                                                <input name="temperature" id="text-box" class="appearance-none block w-1/2 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white font-bold" type="text" placeholder="">
+                                                                <p class="text-gray-900 font-bold text-xl">℃</p>
+                                                            </div>
+                                                            
+                                                        <div class="my-2" style="display: flex; justify-content: center; align-items: center; max-width: 300px;">
+                                                          <button type="submit" class="inline-flex items-center px-6 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+                                                            送信
+                                                          </button>
+                                                        </div>
+                                                    </details>
+                                                </form>
+                                                <!--</div>-->
+                                                </div>  
+                                            @endif
+                                        @else
+                                            <div style="display: flex; flex-direction: column; align-items: center;">
+                                                    <form action="{{ route('childtemperature.post', $person->id) }}" method="POST">
+                                                        <details class="justify-center">
+                                                        <summary class="text-red-500 font-bold text-xl">登録してください</summary>
+                                                        @csrf
+                                                        <input type="hidden" name="people_id" value="{{ $person->id }}">
+                                                         <div style="display: flex; flex-direction: column; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
+                                                            <div class="flex items-center justify-center ml-4">
+                                                                <h3 class="text-gray-900 font-bold text-xl">最終計測時間</h3>
+                                                                    <div style="display: flex; flex-direction: column; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
+                                                                        <input type="datetime-local" name="created_at" id="scheduled-time">
+                                                                    </div>
+                                                            </div>    
+                                                            <div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">
+                                                                <h3 class="text-gray-900 font-bold text-xl">体温</h3>
+                                                                <input name="temperature" id="text-box" class="appearance-none block w-1/2 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white font-bold" type="text" placeholder="">
+                                                                <p class="text-gray-900 font-bold text-xl">℃</p>
+                                                            </div>
+                                                            
+                                                        <div class="my-2" style="display: flex; justify-content: center; align-items: center; max-width: 300px;">
+                                                          <button type="submit" class="inline-flex items-center px-6 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+                                                            送信
+                                                          </button>
+                                                        </div>
+                                                    </details>
+                                                </form>
+                                                <!--</div>-->
+                                                </div>  
+                                        @endif
+                                    </div>
+                                </div>          
                   
                                         
                                 <!-- 最終食事・おやつ登録↓ -->
                         　    　 <div class="border-2 p-2 rounded-lg bg-white m-2">
-                                     <div class="flex justify-start items-center">
+                                    <div class="flex justify-start items-center">
                                         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
                                         <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
                                         <i class="fa-solid fa-bowl-rice text-emerald-700" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>
                                         <p class="font-bold text-xl ml-2">食事</p>
                                     </div>
                                     
-                                    <!-- people.blade.php -->
+                                  
                                    <div class="flex items-center justify-center p-4">
                                         @if (!is_null($person) && !is_null($person->child_foods) && count($person->child_foods) > 0)
                                         @php
@@ -229,7 +329,6 @@
                                                         <div class="px-2">
                                                 　　　　        <p class="text-gray-900 font-bold text-base">おやつの有無:</p>
                                                             <p class="text-gray-900 font-bold text-2xl">{{ $lastFood->oyatsu}}</p>
-                                                           
                                                         </div>
                                                    
                                                     <div class="px-2">

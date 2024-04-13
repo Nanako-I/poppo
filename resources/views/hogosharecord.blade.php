@@ -5,7 +5,7 @@
 <body>
   <div class="flex items-center justify-center" style="padding: 20px 0;">
     <div class="flex flex-col items-center">
-      <form method="get" action="{{ route('record.edit', $person->id) }}">
+      <form method="get" action="{{ route('hogosharecord.edit', $person->id) }}">
      <!--<form action="{{ url('people' ) }}" method="POST" class="w-full max-w-lg">-->
                         @method('PATCH')
                         @csrf
@@ -66,7 +66,7 @@
           }
           
           .icon-container::after {
-            content: "ご家族とチャットする";
+            content: "職員とチャットする";
             position: absolute;
             top: 100%;
             left: 50%;
@@ -101,6 +101,7 @@
         </div>
       </div>
         <label for="selected_date"  class="text-gray-900 font-bold text-xl">日付選択：</label>
+          <!--<input type="date" name="selected_date" id="selected_date">-->
           <input type="date" name="selected_date" id="selected_date" value="{{ $selectedDate }}">
           <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
             表示
@@ -139,6 +140,27 @@
   <div class="container px-5 pb-24 mx-auto flex flex-wrap" _msthidden="10">
     
     <div class="flex flex-col flex-wrap lg:py-6 -mb-10 lg:w-1/2 lg:pl-12 lg:text-left text-center" _msthidden="9">
+      
+      
+      <div class="flex flex-col mb-10 lg:items-start items-center" _msthidden="3">
+        <div class="w-12 h-12 inline-flex items-center justify-center rounded-full bg-indigo-100 text-indigo-500 mb-5">
+         
+            <i class="fa-solid fa-face-smile text-gray-700" style="font-size: 1.5em; transition: transform 0.2s;"></i>
+         </div>
+        <div class="flex-grow p-4" _msthidden="3">
+          <h2 class="text-gray-900 text-lg title-font font-medium mb-3" _msttexthash="204971" _msthidden="1" _msthash="743">今日の体調</h2>
+          
+          @if($lastChildCondition)
+            <div class="flex justify-around text-left items-start">
+                <p class="text-gray-900 font-bold text-xl px-3">{{ $lastChildCondition->condition}}</p>
+            </div>
+          @endif
+          
+        </div>
+        <hr style="border: 1px solid #666; margin: 0 auto; width: 100%;">
+      </div>
+      
+      
       <div class="flex flex-col mb-10 lg:items-start items-center" _msthidden="3">
         <div class="w-12 h-12 inline-flex items-center justify-center rounded-full bg-indigo-100 text-indigo-500 mb-5">
             <i class="fa-solid fa-thermometer text-gray-700" style="font-size: 1.5em; transition: transform 0.2s;"></i>
@@ -146,17 +168,13 @@
           
         </div>
         <div class="flex-grow" _msthidden="3">
-          <h2 class="text-gray-900 text-lg title-font font-medium mb-3" _msttexthash="232921" _msthidden="1" _msthash="740">体温</h2>
-          @if($lastTemperature)
+          <h2 class="text-gray-900 text-lg title-font font-medium mb-3" _msttexthash="232921" _msthidden="1" _msthash="740">最終体温計測時間</h2>
+          @if($lastChildTemperature)
             <div class="flex justify-around text-left items-start">
-              <p class="text-gray-900 font-bold text-xl px-3">{{ $lastTemperature->created_at->format('H:i') }}</p>
-              <p class="text-gray-900 font-bold text-xl px-3">{{ $lastTemperature->temperature }}℃</p>
+              <p class="text-gray-900 font-bold text-xl px-3">{{ $lastChildTemperature->created_at->format('H:i') }}</p>
+              <p class="text-gray-900 font-bold text-xl px-3">{{ $lastChildTemperature->temperature }}℃</p>
             </div>
-          
-              @if($lastTemperature->bikou !== null)
-                <p class="text-gray-900 font-bold text-xl px-3">{{ $lastTemperature->bikou }}</p>
-              @endif
-         @endif
+          @endif
           
         </div>
        <hr style="border: 1px solid #666; margin: 0 auto; width: 100%;">
@@ -170,17 +188,16 @@
             <i class="fa-solid fa-bowl-rice text-gray-700" style="font-size: 1.5em; transition: transform 0.2s;"></i>
          </div>
         <div class="flex-grow p-4" _msthidden="3">
-          <h2 class="text-gray-900 text-lg title-font font-medium mb-3" _msttexthash="204971" _msthidden="1" _msthash="743">食事</h2>
+          <h2 class="text-gray-900 text-lg title-font font-medium mb-3" _msttexthash="204971" _msthidden="1" _msthash="743">最終食事時間</h2>
           
-          @if($lastFood)
+          @if($lastChildFood)
             <div class="flex justify-around text-left items-start">
-                <p class="text-gray-900 font-bold text-xl px-3">{{ $lastFood->lunch == 'あり' ? '昼食' : ($lastFood->lunch != 'なし' ? $lastFood->lunch : '') }}</p>
-                <p class="text-gray-900 font-bold text-xl px-3">{{ $lastFood->lunch_bikou }}</p>
+                <p class="text-gray-900 font-bold text-xl px-3">{{ $lastChildFood->created_at->format('H:i')  }}</p>
             </div>
             
             <div class="flex justify-around text-left items-start">
-                <p class="text-gray-900 font-bold text-xl px-3">{{ $lastFood->oyatsu == 'あり' ? '間食' : ($lastFood->oyatsu != 'なし' ? $lastFood->oyatsu : '') }}</p>
-                <p class="text-gray-900 font-bold text-xl px-3">{{ $lastFood->oyatsu_bikou }}</p>
+                <p class="text-gray-900 font-bold text-xl px-3">おやつの持参</p>
+                <p class="text-gray-900 font-bold text-xl px-3">{{ $lastChildFood->oyatsu == 'あり' ? 'あり' : ($lastChildFood->lunch != 'なし' ? $lastChildFood->lunch : 'なし') }} </p>
             </div>
           @endif
           
@@ -196,19 +213,20 @@
         <div class="flex-grow p-4" _msthidden="3">
           <h2 class="text-gray-900 text-lg title-font font-medium mb-3" _msttexthash="96746" _msthidden="1" _msthash="746">トイレ</h2>
           
-          @if($lastToilet)
+          @if($lastChildToilet)
           <div class="flex justify-around text-left items-start">
-                <p class="text-gray-900 font-bold text-xl px-3">尿</p>
-                <p class="text-gray-900 font-bold text-xl px-3">{{ $lastToilet->urine }}</p>
+                <p class="text-gray-900 font-bold text-xl px-3">最終排尿時間</p>
+                <p class="text-gray-900 font-bold text-xl px-3">{{ \Carbon\Carbon::parse($lastChildToilet->urine_created_at)->format('H:i') }}</p>
+          </div>
+            
+            <div class="flex justify-around text-left items-start">
+                <p class="text-gray-900 font-bold text-xl px-3">最終排便時間</p>
+                <p class="text-gray-900 font-bold text-xl px-3">{{ \Carbon\Carbon::parse($lastChildToilet->ben_created_at)->format('H:i') }}</p>
             </div>
             
             <div class="flex justify-around text-left items-start">
-                <p class="text-gray-900 font-bold text-xl px-3">便</p>
-                <p class="text-gray-900 font-bold text-xl px-3">{{ $lastToilet->ben }}</p>
+                <p class="text-gray-900 font-bold text-xl px-3">{{ $lastChildToilet->ben_condition }}</p>
             </div>
-                @if($lastToilet->bikou !== null)
-                <p class="text-gray-900 font-bold text-xl px-3">{{ $lastToilet->bikou }}</p>
-                @endif
           @endif  
           </div>
         <hr style="border: 1px solid #666; margin: 0 auto; width: 100%;">
@@ -216,68 +234,16 @@
       
       <div class="flex flex-col mb-10 lg:items-start items-center" _msthidden="3">
         <div class="w-12 h-12 inline-flex items-center justify-center rounded-full bg-indigo-100 text-indigo-500 mb-5">
-            <i class="fa-solid fa-glass-water text-gray-700" style="font-size: 1.5em; transition: transform 0.2s;"></i>
+            <i class="fa-solid fa-bath text-gray-700" style="font-size: 1.5em; transition: transform 0.2s;"></i>
         </div>
         <div class="flex-grow p-4" _msthidden="3">
-          <h2 class="text-gray-900 text-lg title-font font-medium mb-3" _msttexthash="204971" _msthidden="1" _msthash="743">水分</h2>
+          <h2 class="text-gray-900 text-lg title-font font-medium mb-3" _msttexthash="204971" _msthidden="1" _msthash="743">入浴の希望</h2>
             <div class="flex justify-around text-left items-start">
-               @if($lastWater)
-            <div class="flex justify-around text-left items-start">
-              <p class="text-gray-900 font-bold text-xl px-3">{{ $lastWater->created_at->format('H:i') }}</p>
-            </div>
-          
-              @if($lastWater->water_bikou !== null)
-                <p class="text-gray-900 font-bold text-xl px-3">{{ $lastWater->water_bikou }}</p>
-              @endif
-         @endif
-          
-            </div>
-        </div>
-        <hr style="border: 1px solid #666; margin: 0 auto; width: 100%;">
-        </div>
-      
-      <div class="flex flex-col mb-10 lg:items-start items-center" _msthidden="3">
-        <div class="w-12 h-12 inline-flex items-center justify-center rounded-full bg-indigo-100 text-indigo-500 mb-5">
-            <i class="fa-solid fa-prescription-bottle-medical text-gray-700" style="font-size: 1.5em; transition: transform 0.2s;"></i>
-        </div>
-        <div class="flex-grow p-4" _msthidden="3">
-          <h2 class="text-gray-900 text-lg title-font font-medium mb-3" _msttexthash="204971" _msthidden="1" _msthash="743">内服</h2>
-            <div class="flex justify-around text-left items-start">
-               @if($lastMedicine)
-            <div class="flex justify-around text-left items-start">
-              <p class="text-gray-900 font-bold text-xl px-3">{{ $lastMedicine->created_at->format('H:i') }}</p>
-            </div>
-          
-              @if($lastMedicine->medicine_bikou !== null)
-                <p class="text-gray-900 font-bold text-xl px-3">{{ $lastMedicine->medicine_bikou }}</p>
-              @endif
-         @endif
-          
-            </div>
-        </div>
-        <hr style="border: 1px solid #666; margin: 0 auto; width: 100%;">
-        </div>
-        
-                
-      
-      
-      <div class="flex flex-col mb-10 lg:items-start items-center" _msthidden="3">
-        <div class="w-12 h-12 inline-flex items-center justify-center rounded-full bg-indigo-100 text-indigo-500 mb-5">
-            <i class="fa-solid fa-droplet text-gray-700" style="font-size: 1.5em; transition: transform 0.2s;"></i>
-        </div>
-        <div class="flex-grow p-4" _msthidden="3">
-          <h2 class="text-gray-900 text-lg title-font font-medium mb-3" _msttexthash="204971" _msthidden="1" _msthash="743">吸引</h2>
-            <div class="flex justify-around text-left items-start">
-               @if($lastKyuuin)
-            <div class="flex justify-around text-left items-start">
-              <p class="text-gray-900 font-bold text-xl px-3">{{ $lastKyuuin->created_at->format('H:i') }}</p>
-              
-            </div>
-          
-              @if($lastKyuuin->bikou !== null)
-                <p class="text-gray-900 font-bold text-xl px-3">{{ $lastKyuuin->bikou }}</p>
-              @endif
-         @endif
+            @if($Bathkibou)
+              <div class="flex justify-around text-left items-start">
+                <p class="text-gray-900 font-bold text-xl px-3">{{ $Bathkibou->kibou == 'あり' ? 'あり' : ($Bathkibou->kibou != 'なし' ? $Bathkibou->kibou : 'なし')}}</p>
+              </div>
+            @endif
           
             </div>
         </div>
@@ -285,52 +251,6 @@
         </div>
       
       
-      
-      <div class="flex flex-col mb-10 lg:items-start items-center" _msthidden="3">
-        <div class="w-12 h-12 inline-flex items-center justify-center rounded-full bg-indigo-100 text-indigo-500 mb-5">
-            <i class="fa-solid fa-prescription-bottle-medical text-gray-700" style="font-size: 1.5em; transition: transform 0.2s;"></i>
-        </div>
-        <div class="flex-grow p-4" _msthidden="3">
-          <h2 class="text-gray-900 text-lg title-font font-medium mb-3" _msttexthash="204971" _msthidden="1" _msthash="743">注入</h2>
-            <div class="flex justify-around text-left items-start">
-               @if($lastTube)
-            <div class="flex justify-around text-left items-start">
-              <p class="text-gray-900 font-bold text-xl px-3">{{ $lastTube->created_at->format('H:i') }}</p>
-            </div>
-          
-              @if($lastTube->tube_bikou !== null)
-                <p class="text-gray-900 font-bold text-xl px-3">{{ $lastTube->tube_bikou }}</p>
-              @endif
-         @endif
-          
-            </div>
-        </div>
-        <hr style="border: 1px solid #666; margin: 0 auto; width: 100%;">
-        </div>
-        
-        <div class="flex flex-col mb-10 lg:items-start items-center" _msthidden="3">
-        <div class="w-12 h-12 inline-flex items-center justify-center rounded-full bg-indigo-100 text-indigo-500 mb-5">
-            <i class="fa-solid fa-circle-exclamation text-gray-700" style="font-size: 1.5em; transition: transform 0.2s;"></i>
-        </div>
-        <div class="flex-grow p-4" _msthidden="3">
-          <h2 class="text-gray-900 text-lg title-font font-medium mb-3" _msttexthash="204971" _msthidden="1" _msthash="743">発作</h2>
-            <div class="flex justify-around text-left items-start">
-               @if($lastHossa)
-            <div class="flex justify-around text-left items-start">
-              <p class="text-gray-900 font-bold text-xl px-3">{{ $lastHossa->created_at->format('H:i') }}</p>
-          
-            </div>
-          
-              @if($lastHossa->hossa_bikou !== null)
-                <p class="text-gray-900 font-bold text-xl px-3">{{ $lastHossa->hossa_bikou }}</p>
-              @endif
-         @endif
-          
-            </div>
-        </div>
-        <hr style="border: 1px solid #666; margin: 0 auto; width: 100%;">
-        </div>
-        
         
     
     </div>

@@ -2,48 +2,42 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ChildCondition;
+use App\Models\ChildTemperature;
 use App\Models\Person;
 use Illuminate\Http\Request;
 
-class ChildConditionController extends Controller
+class ChildTemperatureController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index() {
+     public function index() {
    //** ↓ 下をコピー ↓ **    
     
 		
-    $childconditions = ChildCondition::orderBy('created_at', 'asc')->get();
+    $childtemperatures = ChildTemperature::orderBy('created_at', 'asc')->get();
 
-    return view('hogosha', ['childconditions' => $childconditions]);
+    return view('hogosha', ['childtemperatures' => $childtemperatures]);
     
-    //** ↑ 上をコピー ↑ **
+   
 }
-    // public function index()
-    // {
-    // // 
-    //     $food = Food::all();
-      
-    //     return view('people',compact('food'));
-    // }
+   
 
     /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
      */
-//   public function create(Request $request)
-// {
-//     $people = Person::all(); // Personモデルからデータを取得して$people変数に代入
+   public function create(Request $request)
+{
+    $people = Person::all(); // Personモデルからデータを取得して$people変数に代入
   
-//     $person = ChildCondition::findOrFail($request->people_id);
+    $person = ChildTemperature::findOrFail($request->people_id);
   
-//     return view('people', compact('people')); // $people変数をビューに渡す
-// }
+    return view('people', compact('people')); // $people変数をビューに渡す
+}
 
 
     /**
@@ -59,13 +53,14 @@ class ChildConditionController extends Controller
         ]);
         // バリデーションした内容を保存する↓
         
-        $childconditions = ChildCondition::create([
+        $childtemperatures = ChildTemperature::create([
         'people_id' => $request->people_id,
-        'condition' => $request->condition,
+        'temperature' => $request->temperature,
+        
     ]);
     
     $people = Person::all();
-    return view('hogosha', compact('childconditions', 'people'));
+    return view('hogosha', compact('childtemperatures', 'people'));
     }
 
     /**
@@ -80,13 +75,9 @@ class ChildConditionController extends Controller
 public function change(Request $request, $people_id)
     {
         //** ↓ 下をコピー ↓ **
-        
-      
         $person = Person::findOrFail($people_id);
-        // dd($person->foods);
-        $lastCondition = $person->child_conditions->last();
-       
-        return view('conditionchange', compact('person', 'lastCondition'));
+        $lastTemperature = $person->child_temperatures->last();
+        return view('childtemperaturechange', compact('person', 'lastTemperature'));
     }
 
 
@@ -98,13 +89,16 @@ public function change(Request $request, $people_id)
      */
     public function edit(Request $request, $people_id)
 {
-    
   $people = Person::all(); // Personモデルからデータを取得して$people変数に代入
-  
   $person = Person::findOrFail($people_id);
-  $lastCondition = $person->child_conditions->last();
-       
-    return view('hogosha',  ['id' => $person->id],compact('people', 'lastCondition')); // $people変数をビューに渡す
+  $lastTemperature = null;
+if (!is_null($person->child_temperatures)) {
+    $lastTemperature = $person->child_temperatures->isEmpty() ? null : $person->child_temperatures->last();
+}
+
+
+    // return view('hogosha',  ['id' => $person->id],compact('people', 'lastFoodTime', 'lastOyatsu'));
+    return view('hogosha',  ['id' => $person->id],compact('people', 'lastTemperature'));
 }
 
 
@@ -115,18 +109,23 @@ public function change(Request $request, $people_id)
      * @param  \App\Models\Food  $food
      * @return \Illuminate\Http\Response
      */
-     public function update(Request $request, ChildCondition $childcondition)
+     public function update(Request $request, ChildTemperature $childtemperature)
     {
-    
+        $validated = $request->validate([
+            // 'kibou' => 'required', // この行でkibouが必須であることを指定
+            // 他のフィールドのバリデーションルールもここに追加
+        ]);
+        
         //データ更新
         $person = Person::find($request->people_id);
-        $childcondition->people_id = $person->id;
-        $childcondition->condition = $request->condition;
-        $childcondition->save();
+        $childtemperature->people_id = $person->id;
+        $childtemperature->temperature = $request->temperature;
+       
+        $childtemperature->save();
         
         $people = Person::all();
         
-        return view('hogosha', compact('childcondition', 'people'));
+        return view('hogosha', compact('childtemperature', 'people'));
     }
     
    

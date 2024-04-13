@@ -22,11 +22,13 @@
           }
       </style>
       <div class="mx-1.5">
-        <h2>{{$person->person_name}}さんのトイレ情報</h2>
+        <h2>{{$person->person_name}}さんの入浴希望</h2>
         @php
-           $lastToilet = $person->child_toilets->last();
+           $lastBath = $person->baths->last();
         @endphp
-        
+        @if(!is_null($lastBath))
+            （{{$lastBath->created_at->format('n/jG：i')}}に登録した内容）
+        @endif
       </div>
     </form>
    </div>
@@ -36,13 +38,13 @@
         <!-- バリデーションエラーの表示に使用-->
        <!-- resources/views/components/errors.blade.php -->
        
-<form action="{{ url('childtoiletchange/'.$person->id) }}" method="POST">
+<form action="{{ url('childbathchange/'.$person->id) }}" method="POST">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet">
     @csrf
  <body>                    
 <div style="display: flex; flex-direction: column;">
-     <style>
+    <style>
      body {
           font-family: 'Noto Sans JP', sans-serif; /* フォントをArialに設定 */
           background: linear-gradient(135deg, rgb(253, 219, 146,0), rgb(209, 253, 255,1));
@@ -53,36 +55,21 @@
           /*font-weight: bold;*/
           text-decoration: underline;
         }
-        </style>
+    </style>
         
-        <div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">
-            <h3>最終排尿</h3>
-            <div style="display: flex; flex-direction: column; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
-                <input type="datetime-local" name="urine_created_at" id="scheduled-time" value="{{ $lastToilet->urine_created_at}}">
-            </div>
-        </div>
-        
-        <div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">
-            <h3>最終排便</h3>
-            <div style="display: flex; flex-direction: column; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
-                <input type="datetime-local" name="ben_created_at" id="scheduled-time" value="{{ $lastToilet->ben_created_at}}">
-            </div>
-        </div>
-        
-        <div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">
-        <h3>便の状態</h3>
-          <select name="ben_condition" class="mx-1 my-1.5" style="width: 6rem;">
-            <option value="{{ $lastToilet->ben_condition }}">{{ $lastToilet->ben_condition }}</option>
-            <option value="硬便">硬便</option>
-            <option value="普通便">普通便</option>
-            <option value="軟便">軟便</option>
-            <option value="泥状便">泥状便</option>
-            <option value="水様便">水様便</option>
-          </select>
-      </div>
+    <div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">
+        <h3>入浴</h3>
+        <select name="kibou" class="mx-1 my-1.5" style="width: 6rem;">
+            <option value="{{ $lastBath->kibou }}">{{ $lastBath->kibou }}</option>
+            <option value="希望する">希望する</option>
+            <option value="希望しない">希望しない</option>
+        </select>
+    </div>
+    
       
-    
-    
+      
+  　
+    <!--<div style="display: flex; align-items: center; margin-left: auto; margin-right: auto; max-width: 300px; my-2">-->
     <div style="display: flex; align-items: center; margin-left: auto; margin-right: auto; max-width: 300px;" class="my-2">
       <button type="submit" class="inline-flex items-center px-6 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
         修正
