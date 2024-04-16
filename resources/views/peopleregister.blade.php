@@ -39,7 +39,7 @@
         
       <body>
              <!--<form action="{{ url('peopleregister') }}" method="POST" class="w-full" enctype="multipart/form-data">-->
-             <!--           @csrf-->
+             <!--@csrf-->
                <form action="{{ url('peopleregister') }}" method="POST" class="w-full" enctype="multipart/form-data">
                         @csrf
                 <!--<br>-->

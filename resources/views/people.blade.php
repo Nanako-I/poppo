@@ -357,7 +357,6 @@
                                                                     <textarea id="result-speech" name="water_bikou" class="w-3/4 max-w-lg font-bold" style="height: 200px;"></textarea>
                                                                 </div>
                                                                 
-                                                                
                                                             <div class="my-2" style="display: flex; justify-content: center; align-items: center; max-width: 300px;">
                                                               <button type="submit" class="inline-flex items-center px-6 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
                                                                 送信
@@ -413,7 +412,6 @@
                                                                     <p class="text-gray-900 font-bold text-xl">備考</p>
                                                                     <textarea id="result-speech" name="medicine_bikou" class="w-3/4 max-w-lg font-bold" style="height: 200px;"></textarea>
                                                                 </div>
-                                                                
                                                             <div class="my-2" style="display: flex; justify-content: center; align-items: center; max-width: 300px;">
                                                               <button type="submit" class="inline-flex items-center px-6 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
                                                                 送信
@@ -786,67 +784,89 @@
                                  <div class="flex items-center justify-center p-4">
                                             @if (!is_null($person) && count($person->kyuuins) > 0)
                                             @php
-                                               $lastKyuuin = $person->kyuuins->last();
+                                               $today = \Carbon\Carbon::now()->toDateString();
+                                               $todaysKyuuins = $person->kyuuins()
+                                                ->where('created_at', '>=', $today)
+                                                ->where('created_at', '<', $today . ' 23:59:59')
+                                                ->orderBy('created_at', 'asc') // 昇順に並べ替え
+                                                ->get();
                                             @endphp
-                                                @if ($lastKyuuin && $lastKyuuin->created_at->isToday())
-                                                    <!-- 検温フォーム -->
-                                                   <style>
-                                                        summary::-webkit-details-marker {
-                                                            display: inline-block;
-                                                            content: '▼'; /* アイコンの文字を指定 */
-                                                            margin-right: 5px; /* 適宜調整してください */
-                                                        }
-                                                        summary {
-                                                            display: list-item;
-                                                            cursor: pointer;
-                                                            list-style: none;
-                                                            font-weight: bold;
-                                                            text-align: center; /* 検温してくださいを中央に配置するためのスタイル */
-                                                        }
-                                                        summary::-moz-list-bullet {
-                                                            display: inline-block;
-                                                            content: '▼'; /* アイコンの文字を指定 */
-                                                            margin-right: 5px; /* 適宜調整してください */
-                                                        }
-                                                    
-                                                        summary::marker {
-                                                            display: inline-block;
-                                                            content: '▼'; /* アイコンの文字を指定 */
-                                                            margin-right: 5px; /* 適宜調整してください */
-                                                        }
-                                                    </style>
-                                                  <!-- 直近の吸引結果表示 -->
-                                                    <a href="{{ url('kyuuinchange/'.$person->id) }}" class="relative ml-2 flex items-center">
-                                                         @csrf
-                                                         <!--<p class="text-gray-900 font-bold text-2xl">吸引した時間</p>-->
-                                                        <p class="text-gray-900 font-bold text-2xl">{{ $lastKyuuin->created_at->format('H:i')  }}</p>
-                                                        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
-                                                        <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
-                                                        <i class="fa-solid fa-pencil text-stone-500" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>
-                                                    </a>
+                                            
+                                                @if ($todaysKyuuins->count() > 0)
+                                                <div class="flex flex-col">
+                                                    <!--<div style="display: flex; align-items: center; justify-content: center; flex-direction: column;">-->
+                                                        <p class="text-gray-900 font-bold text-lg">吸引した時間</p>
+                                                        <!-- 今日の吸引時間リスト -->
+                                                        @foreach ($todaysKyuuins as $kyuuin)
+                                                            <div class="flex-row items-center justify-between p-2 border-b border-gray-300">
+                                                                <p class="text-gray-900 font-bold text-lg">{{ $kyuuin->created_at->format('H:i') }}</p>
+                                                            </div>
+                                                        @endforeach
+                                                            <a href="{{ url('kyuuinedit/' . $person->id) }}" class="text-stone-500">
+                                                                <i class="fa-solid fa-pencil" style="font-size: 1.5em;"></i>
+                                                            </a>
+                                                        <div style="display: flex; flex-direction: column; align-items: center;">
+                                                                <form action="{{ route('kyuuin.store', $person->id) }}" method="POST" enctype="multipart/form-data">
+                                                                    <details class="justify-center"> 
+                                                                
+                                                                    <summary class="text-red-500 font-bold text-xl">登録する</summary>
+                                                                    @csrf
+                                                                    
+                                                                    <input type="hidden" name="people_id" value="{{ $person->id }}">
+                                                                    <div style="display: flex; align-items: center; justify-content: center; flex-direction: column;">
+                                                                        <div class="flex flex-col items-center justify-center">
+                                                                            <p class="text-gray-900 font-bold text-xl">吸引した時間</p>
+                                                                            <input type="time" name="created_at" id="scheduled-time">
+                                                                        </div>
+                                                                        
+                                                                        <div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">
+                                                                            <p class="text-gray-900 font-bold text-xl">備考</p>
+                                                                            <textarea id="result-speech" name="bikou" class="w-3/4 max-w-lg font-bold" style="height: 200px;"></textarea>
+                                                                        </div>
+                                                                        <label class="block text-lg font-bold text-gray-700">写真を登録する</label>
+                                                                            <div style="margin-left: 10px;">
+                                                                                <input name="filename" id="filename" type="file" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm text-lg border-gray-300 rounded-md ml-20">
+                                                                            </div>
+                                                                        <div class="my-2" style="display: flex; justify-content: center; align-items: center; max-width: 300px;">
+                                                                          <button type="submit" class="inline-flex items-center px-6 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+                                                                            送信
+                                                                          </button>
+                                                                        </div>
+                                                                    </div>
+                                                                    </details>
+                                                                </form>
+                                                            
+                                                        </div>
+                                                    </div>
                                                     
                                                 @else
                                                   <div style="display: flex; flex-direction: column; align-items: center;">
-                                                        <form action="{{ route('kyuuin.store', $person->id) }}" method="POST">
+                                                        <form action="{{ route('kyuuin.store', $person->id) }}" method="POST" enctype="multipart/form-data">
                                                             <details class="justify-center"> <!-- この行を追加 -->
                                                         
                                                             <summary class="text-red-500 font-bold text-xl">登録する</summary>
                                                             @csrf
                                                             <input type="hidden" name="people_id" value="{{ $person->id }}">
-                                                                <div class="flex items-center justify-center ml-4">
+                                                            <div style="display: flex; align-items: center; justify-content: center; flex-direction: column;">
+                                                                <div class="flex flex-col items-center justify-center">
                                                                     <p class="text-gray-900 font-bold text-xl">吸引した時間</p>
                                                                     <input type="time" name="created_at" id="scheduled-time">
-                                                                    <!--<input name="temperature" id="text-box" class="appearance-none block w-1/2 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white font-bold" type="text" placeholder="">-->
                                                                 </div>
                                                                 
                                                                 <div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">
                                                                     <p class="text-gray-900 font-bold text-xl">備考</p>
                                                                     <textarea id="result-speech" name="bikou" class="w-3/4 max-w-lg font-bold" style="height: 200px;"></textarea>
                                                                 </div>
-                                                            <div class="my-2" style="display: flex; justify-content: center; align-items: center; max-width: 300px;">
-                                                              <button type="submit" class="inline-flex items-center px-6 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
-                                                                送信
-                                                              </button>
+                                                                <label class="block text-lg font-bold text-gray-700">写真を登録する</label>
+                                                                    <div style="margin-left: 10px;">
+                                                                        <input name="filename" id="filename" type="file" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm text-lg border-gray-300 rounded-md ml-20">
+                                                                    </div>
+                                                                    
+                                                                <div class="my-2" style="display: flex; justify-content: center; align-items: center; max-width: 300px;">
+                                                                  <button type="submit" class="inline-flex items-center px-6 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+                                                                    送信
+                                                                  </button>
+                                                                </div>
                                                             </div>
                                                         </details>
                                                     </form>
@@ -854,25 +874,30 @@
                                                     </div>  
                                                 @endif
                                             @else
-                                                <form action="{{ route('kyuuin.store', $person->id) }}" method="POST">
+                                                <form action="{{ route('kyuuin.store', $person->id) }}" method="POST" enctype="multipart/form-data">
                                                     <details>
                                                          <summary class="text-red-500 font-bold text-xl">登録する</summary>
                                                         @csrf
                                                             <input type="hidden" name="people_id" value="{{ $person->id }}">
-                                                                <div class="flex items-center justify-center ml-4">
+                                                            <div style="display: flex; align-items: center; justify-content: center; flex-direction: column;">
+                                                                <div class="flex items-center justify-center">
                                                                     <p class="text-gray-900 font-bold text-xl">吸引した時間</p>
                                                                     <input type="time" name="created_at" id="scheduled-time">
-                                                                    <!--<input name="temperature" id="text-box" class="appearance-none block w-1/2 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white font-bold" type="text" placeholder="">-->
                                                                 </div>
                                                                 
                                                                 <div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">
                                                                     <p class="text-gray-900 font-bold text-xl">備考</p>
                                                                     <textarea id="result-speech" name="bikou" class="w-3/4 max-w-lg font-bold" style="height: 200px;"></textarea>
                                                                 </div>
-                                                            <div class="my-2" style="display: flex; justify-content: center; align-items: center; max-width: 300px;">
-                                                              <button type="submit" class="inline-flex items-center px-6 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
-                                                                送信
-                                                              </button>
+                                                                <label class="block text-lg font-bold text-gray-700">写真を登録する</label>
+                                                                    <div style="margin-left: 10px;">
+                                                                        <input name="filename" id="filename" type="file" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm text-lg border-gray-300 rounded-md ml-20">
+                                                                    </div>
+                                                                <div class="my-2" style="display: flex; justify-content: center; align-items: center; max-width: 300px;">
+                                                                  <button type="submit" class="inline-flex items-center px-6 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+                                                                    送信
+                                                                  </button>
+                                                                </div>
                                                             </div>
                                                     </details>
                                                 </form>

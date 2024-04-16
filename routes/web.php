@@ -97,7 +97,6 @@ Route::get('temperature/{people_id}/edit', [TemperatureController::class, 'edit'
 // プルダウンで登録させるバージョン↓
 Route::post('temperatures/{people_id}', [TemperatureController::class, 'store'])->name('temperatures.store');
 Route::get('temperatures/{people_id}', [TemperatureController::class, 'show'])->name('temperatures.show');
-// Route::get('temperatures/{people_id}', [PersonController::class, 'index'])->name('temperatures.show');
 Route::get('temperature/{people_id}/edit', [TemperatureController::class, 'edit'])->name('temperature.edit');
 
 // 体温編集↓
@@ -106,8 +105,6 @@ Route::post('temperaturechange/{people_id}',[TemperatureController::class,'updat
 // プルダウンで登録させるバージョン↓
 Route::post('bloodpressures/{people_id}', [BloodpressureController::class, 'store'])->name('bloodpressures.store');
 Route::get('bloodpressures/{people_id}', [BloodpressureController::class, 'show'])->name('bloodpressures.show');
-// Route::get('bloodpressure/{people_id}', [BloodpressureController::class, 'edit'])->name('bloodpressure.edit');
-
 Route::get('bloodpressures/{people_id}/edit', [BloodpressureController::class, 'edit'])->name('bloodpressures.edit');
 
 // 血圧編集↓
@@ -124,7 +121,6 @@ Route::get('toilets/{id}', [ToiletController::class, 'show'])->name('toilets.sho
 Route::get('toilet/{people_id}/edit', [ToiletController::class, 'edit'])->name('toilet.edit');
 Route::post('toilet/{people_id}/edit', [ToiletController::class,'store'])->name('toilet.post');
 
-// プルダウンで登録させるバージョン↓
 // トイレ編集↓
 Route::get('toiletchange/{people_id}', [ToiletController::class, 'change'])->name('toilet.change');
 Route::post('toiletchange/{people_id}',[ToiletController::class,'update'])->name('toilet_update');
@@ -141,11 +137,12 @@ Route::post('medicinechange/{people_id}',[MedicineController::class,'update'])->
 // プルダウンで登録させるバージョン↓
 Route::post('kyuuin/{people_id}', [KyuuinController::class, 'store'])->name('kyuuin.store');
 Route::get('kyuuin/{people_id}', [KyuuinController::class, 'show'])->name('kyuuin.show');
-Route::get('kyuuin/{people_id}/edit', [KyuuinController::class, 'edit'])->name('kyuuin.edit');
+Route::get('kyuuinedit/{people_id}', [KyuuinController::class, 'edit'])->name('kyuuin.edit');
 
 // 吸引編集↓
-Route::get('kyuuinchange/{people_id}', [KyuuinController::class, 'change'])->name('kyuuin.change');
-Route::post('kyuuinchange/{people_id}',[KyuuinController::class,'update'])->name('kyuuin_update');
+Route::get('kyuuinchange/{people_id}/{id}', [KyuuinController::class, 'change'])->name('kyuuin.change');
+Route::post('kyuuinchange/{people_id}/{id}',[KyuuinController::class,'update'])->name('kyuuin_update');
+Route::post('kyuuindestroy/{id}',[KyuuinController::class,'destroy'])->name('kyuuin.delete');
 
 // プルダウンで登録させるバージョン↓
 Route::post('tube/{people_id}', [TubeController::class, 'store'])->name('tube.store');
@@ -159,14 +156,12 @@ Route::post('tubechange/{people_id}',[TubeController::class,'update'])->name('tu
 // プルダウンで登録させるバージョン↓
 Route::post('water/{people_id}', [WaterController::class, 'store'])->name('water.store');
 Route::get('water/{people_id}', [WaterController::class, 'show'])->name('water.show');
-// Route::get('water/{people_id}/edit', [WaterController::class, 'edit'])->name('water.edit');
 Route::get('wateredit/{people_id}', [WaterController::class, 'edit'])->name('water.edit');
 
 // 水編集↓
 Route::get('waterchange/{people_id}/{id}', [WaterController::class, 'change'])->name('water.change');
 Route::post('waterchange/{people_id}/{id}',[WaterController::class,'update'])->name('water_update');
-// Route::get('waterchange/{people_id}', [WaterController::class, 'change'])->name('water.change');
-// Route::post('waterchange/{people_id}',[WaterController::class,'update'])->name('water_update');
+Route::post('waterdestroy/{id}',[WaterController::class,'destroy'])->name('water.delete');
 
 // プルダウンで登録させるバージョン↓
 Route::post('hossa/{people_id}', [HossaController::class, 'store'])->name('hossa.store');

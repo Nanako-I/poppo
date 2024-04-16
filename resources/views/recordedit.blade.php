@@ -134,17 +134,15 @@
         text-align: left; /* セル内のテキストを左寄せにする */
       }
     </style>
-      
+  <div class ="flex items-center justify-center"  style="padding: 20px 0;">
+    <div class="flex flex-col items-center">
     <section class="text-gray-600 body-font mx-auto" _msthidden="10">
-  <div class="container px-5 pb-24 mx-auto flex flex-wrap" _msthidden="10">
-    
-    <div class="flex flex-col flex-wrap lg:py-6 -mb-10 lg:w-1/2 lg:pl-12 lg:text-left text-center" _msthidden="9">
-      <div class="flex flex-col mb-10 lg:items-start items-center" _msthidden="3">
-        <div class="w-12 h-12 inline-flex items-center justify-center rounded-full bg-indigo-100 text-indigo-500 mb-5">
-            <i class="fa-solid fa-thermometer text-gray-700" style="font-size: 1.5em; transition: transform 0.2s;"></i>
-         
-          
-        </div>
+      <div class="container px-5 pb-24 mx-auto flex flex-wrap" _msthidden="10">
+        <div class="flex flex-col flex-wrap lg:py-6 -mb-10 lg:w-1/2 lg:pl-12 lg:text-left text-center" _msthidden="9">
+          <div class="flex flex-col mb-10 lg:items-start items-center" _msthidden="3">
+            <div class="w-12 h-12 inline-flex items-center justify-center rounded-full bg-indigo-100 text-indigo-500 mb-5">
+                <i class="fa-solid fa-thermometer text-gray-700" style="font-size: 1.5em; transition: transform 0.2s;"></i>
+            </div>
         <div class="flex-grow" _msthidden="3">
           <h2 class="text-gray-900 text-lg title-font font-medium mb-3" _msttexthash="232921" _msthidden="1" _msthash="740">体温</h2>
           @if($lastTemperature)
@@ -331,7 +329,8 @@
         <hr style="border: 1px solid #666; margin: 0 auto; width: 100%;">
         </div>
         
-        
+      </div>
+        </div>  
     
     </div>
   </div>

@@ -6,6 +6,8 @@ use App\Models\Person;
 use App\Models\User;
 use App\Models\Water;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
+
 
 class WaterController extends Controller
 {
@@ -91,38 +93,29 @@ class WaterController extends Controller
      * @param  \App\Models\Food  $food
      * @return \Illuminate\Http\Response
      */
+
     public function edit(Request $request, $people_id)
 {
-    // $person = Person::findOrFail($people_id);
-    // return view('wateredit', ['id' => $person->id],compact('person'));
+   
     $person = Person::findOrFail($people_id);
     $today = \Carbon\Carbon::now()->toDateString();
-    $todaysWaters = $person->waters->where('created_at', '>=', $today)
-                                               ->where('created_at', '<', $today . ' 23:59:59');
-        
-    return view('wateredit', compact('person', 'todaysWaters'));
+    $selectedDate = $request->input('selected_date', Carbon::now()->toDateString());
+    $selectedDateStart = Carbon::parse($selectedDate)->startOfDay();
+    $selectedDateEnd = Carbon::parse($selectedDate)->endOfDay();
+
+    $watersOnSelectedDate = $person->waters->whereBetween('created_at', [$selectedDateStart, $selectedDateEnd]);
+    return view('wateredit', compact('person', 'selectedDate', 'watersOnSelectedDate'));
 }
+
 
 public function change(Request $request, $people_id, $id)
     {
         $person = Person::findOrFail($people_id);
         $water = Water::findOrFail($id);
-        
         return view('waterchange', compact('person', 'water'));
     }
     
-    // public function change(Request $request, $people_id)
-    // {
-    //     $person = Person::findOrFail($people_id);
-    //     $water = Water::findOrFail($id);
-    //     $lastWater = $person->waters->last();
-    //     $today = \Carbon\Carbon::now()->toDateString();
-    //     $todaysWaters = $person->waters->where('created_at', '>=', $today)
-    //                                           ->where('created_at', '<', $today . ' 23:59:59');
-        
-    //     return view('waterchange', compact('person', 'lastWater'));
-    // }
-    
+   
     /**
      * Update the specified resource in storage.
      *
@@ -130,23 +123,7 @@ public function change(Request $request, $people_id, $id)
      * @param  \App\Models\Food  $food
      * @return \Illuminate\Http\Response
      */
-    // public function update(Request $request, Water $water)
-    // {
-    // //データ更新
-    
-    //     $person = Person::find($request->people_id);
-    //     $user_water = User::find($request->user_id_water);
-    //     $water->people_id = $person->id;
-    //     $water->water = $request->water;
-    //     $water->water_bikou = $request->water_bikou;
-    //     $water->created_at = $request->created_at;
-    //     $water->save();
-        
-    //     $people = Person::all();
-    //     // 二重送信防止
-    //     $request->session()->regenerateToken();
-    //     return view('people', compact('water', 'people'));
-    // }
+  
 
     public function update(Request $request, Water $water)
     {
@@ -169,8 +146,17 @@ public function change(Request $request, $people_id, $id)
      * @param  \App\Models\Food  $food
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Food $food)
+        /**
+     * 削除処理
+     */
+    public function destroy($id)
     {
-        //
+       
+        $water = Water::find($id);
+    if ($water) {
+        $water->delete();
     }
+        return redirect()->route('people.index');
+    }
+
 }

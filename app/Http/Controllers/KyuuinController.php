@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Person;
+use App\Models\User;
 use App\Models\Kyuuin;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class KyuuinController extends Controller
 {
@@ -46,27 +49,37 @@ class KyuuinController extends Controller
        $storeData = $request->validate([
             
         ]);
+         //   画像保存
+        $directory = 'public/sample/kyuuin_photo';
+        $filename = null;
+        $filepath = null;
+    
+        if ($request->hasFile('filename')) {
+            $request->validate([
+                'filename' => 'image|max:2048',
+            ]);
+            $filename = uniqid() . '.' . $request->file('filename')->getClientOriginalExtension();
+            $filename = $request->file('filename')->getClientOriginalName();	
+            $request->file('filename')->storeAs($directory, $filename);
+            $filepath = $directory . '/' . $filename;
+        }
+    
         // バリデーションした内容を保存する↓
         
         $kyuuin = Kyuuin::create([
         'people_id' => $request->people_id,
-        // 'urine_one' => $request->input('urine_one'), // チェックボックスの値ではなく、テキスト入力フィールドの値を保存
-        // 'urine_two' => $request->urine_two,
-        // 'urine_three' => $request->urine_three,
-       
-        // 'urine_amount' => $request->urine_amount,
         'kyuuin' => $request->kyuuin,
         'bikou' => $request->bikou,
-        // 'bentsuu' => $request->bentsuu,
         'created_at' => $request->created_at,
         'updated_at' => $request->updated_at,
+        'filename' => $filename,
+        // ファイル名は $filename という変数に保存されているので、それを利用して filename カラムに保存する
+        'path' => $filepath,
         
-         
     ]);
-    // return redirect('people/{id}/edit');
+
      $people = Person::all();
-//   $person = Person::findOrFail($request->people_id);
-    // return redirect()->route('toilet.edit', ['people_id' => $person->id]); //
+     $request->session()->regenerateToken();
     return view('people', compact('kyuuin', 'people'));
     }
 
@@ -98,15 +111,20 @@ class KyuuinController extends Controller
     public function edit(Request $request, $people_id)
 {
     $person = Person::findOrFail($people_id);
-    return view('kyuuinedit', ['id' => $person->id],compact('person'));
+    $today = \Carbon\Carbon::now()->toDateString();
+    $selectedDate = $request->input('selected_date', Carbon::now()->toDateString());
+    $selectedDateStart = Carbon::parse($selectedDate)->startOfDay();
+    $selectedDateEnd = Carbon::parse($selectedDate)->endOfDay();
+
+    $kyuuinsOnSelectedDate = $person->kyuuins->whereBetween('created_at', [$selectedDateStart, $selectedDateEnd]);
+    return view('kyuuinedit', compact('person', 'selectedDate', 'kyuuinsOnSelectedDate'));
 }
 
-public function change(Request $request, $people_id)
+public function change(Request $request, $people_id, $id)
     {
         $person = Person::findOrFail($people_id);
-        $lastKyuuin = $person->kyuuins->last();
-        
-        return view('kyuuinchange', compact('person', 'lastKyuuin'));
+        $kyuuin = Kyuuin::findOrFail($id);
+        return view('kyuuinchange', compact('person', 'kyuuin'));
     }
     /**
      * Update the specified resource in storage.
@@ -115,20 +133,55 @@ public function change(Request $request, $people_id)
      * @param  \App\Models\Food  $food
      * @return \Illuminate\Http\Response
      */
+   
     public function update(Request $request, Kyuuin $kyuuin)
     {
     //データ更新
-        $person = Person::find($request->people_id);
-        $kyuuin->people_id = $person->id;
-        $kyuuin->kyuuin = $request->kyuuin;
-        $kyuuin->bikou = $request->bikou;
-        $kyuuin->created_at = $request->created_at;
-        $kyuuin->save();
-        
+        $kyuuin = Kyuuin::find($request->id);
+        $form = $request->all();
+        $kyuuin->fill($form)->save();
+    
+        $request->session()->regenerateToken();
+    
         $people = Person::all();
-        
+        // 二重送信防止
+        $request->session()->regenerateToken();
         return view('people', compact('kyuuin', 'people'));
     }
+//     public function update(Request $request, Kyuuin $kyuuin)
+//     {
+//     //データ更新
+//         $kyuuin = Kyuuin::find($request->id);
+//         // 画像がアップロードされているかチェック
+//         if ($request->hasFile('filename')) {
+//             $request->validate([
+//                 'filename' => 'image|max:2048', // ファイルのバリデーション
+//             ]);
+    
+//             $directory = 'public/sample/kyuuin_photo';
+//             $filename = uniqid() . '.' . $request->file('filename')->getClientOriginalExtension();
+//             $request->file('filename')->storeAs($directory, $filename);
+//             $filepath = $directory . '/' . $filename;
+    
+//             // 更新されたファイル名とパスをセット
+//             $kyuuin->filename = $filename;
+//             $kyuuin->path = $filepath;
+            
+//     }
+//         // 他のデータを更新
+//     $kyuuin->fill($request->except(['filename', '_token', 'path']));
+//     $kyuuin->save();
+
+//     // セッショントークンを再生成
+//     $request->session()->regenerateToken();
+
+//     $people = Person::all();
+
+//     return view('people', compact('kyuuin', 'people'));
+// }
+
+
+    
 
     /**
      * Remove the specified resource from storage.
@@ -136,8 +189,12 @@ public function change(Request $request, $people_id)
      * @param  \App\Models\Food  $food
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Food $food)
+    public function destroy($id)
     {
-        //
+        $kyuuin = Kyuuin::find($id);
+    if ($kyuuin) {
+        $kyuuin->delete();
+    }
+        return redirect()->route('people.index');
     }
 }

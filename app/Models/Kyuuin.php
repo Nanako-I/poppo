@@ -9,7 +9,7 @@ class Kyuuin extends Model
 {
     use HasFactory;
     protected $table = 'kyuuins';
-    protected $fillable = ['people_id','kyuuin','bikou'];
+    protected $fillable = ['people_id','kyuuin','bikou','filename','path','created_at'];
     
     public function person()
     {
