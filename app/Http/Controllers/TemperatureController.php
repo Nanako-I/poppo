@@ -48,54 +48,25 @@ class TemperatureController extends Controller
      */
     public function store(Request $request)
     {
-
-
-        $storeData = $request->validate([
-        'temperature' => 'required|max:255',
-    ]);
-
-        $temperature = Temperature::create([
-        'temperature' => $request->temperature,
-        'people_id' => $request->people_id,
-        'bikou' => $request->bikou,
-    ]);
-
-    // return redirect()->route('temperatures.show', $temperature->id);
-    // $people 変数を取得
-    $people = Person::all();
-
-    // ビューにデータを渡す
-    return view('people', compact('temperature', 'people'));
-        // return view('people', compact('temperature'));
-        // フォームの値を受け取る
-        // $temperatureValue = $request->input('temperature');
-
-        // // ユーザーを特定する方法に応じて、ユーザーのインスタンスを取得する
-        // $person = Auth::user(); // 例: ログインしているユーザーを取得する
-
-        // // ユーザーと体温の関連付けを利用して、体温データを登録する
-        // $temperature = new Temperature;
-        // $temperature->person_id = $person->id; // ユーザーのIDを設定
-        // $temperature->temperature = $temperatureValue;
-        // $temperature->save();
-
-        // 登録完了後のリダイレクト先などの処理を記述
-
-    // 画面遷移コード↓
-//          $storeData = $request->validate([
-//             'temperature' => 'required|max:255',
-//             // 'people_id' => 'required|exists:people,id',
-//         ]);
-//         // バリデーションした内容を保存する↓
+       $storeData = $request->validate([
+            
+        ]);
+        // バリデーションした内容を保存する↓
         
-//         $temperature = Temperature::create([
-//         'temperature' => $request->temperature,
-//     'people_id' => $request->people_id,
-         
-//     ]);
-//     // return redirect('people/{id}/edit');
-//   $person = Person::findOrFail($request->people_id);
-//     return redirect()->route('temperature.edit', ['people_id' => $person->id]);
+        $temperature = Temperature::create([
+        'people_id' => $request->people_id,	
+        'temperature' => $request->temperature,
+        'bikou' => $request->bikou,
+        'created_at' => $request->created_at,
+        
+    ]);
+    // return redirect('people/{id}/edit');
+     $people = Person::all();
+     
+     // 二重送信防止
+     $request->session()->regenerateToken();
+
+    return view('people', compact('temperature', 'people'));
     }
 
     /**
@@ -135,18 +106,22 @@ class TemperatureController extends Controller
 
 public function edit(Request $request, $people_id)
 {
+   
     $person = Person::findOrFail($people_id);
-    return view('temperatureedit', ['id' => $person->id],compact('person'));
+    $today = \Carbon\Carbon::now()->toDateString();
+    $selectedDate = $request->input('selected_date', Carbon::now()->toDateString());
+    $selectedDateStart = Carbon::parse($selectedDate)->startOfDay();
+    $selectedDateEnd = Carbon::parse($selectedDate)->endOfDay();
+
+    $temperaturesOnSelectedDate = $person->temperatures->whereBetween('created_at', [$selectedDateStart, $selectedDateEnd]);
+    return view('temperatureedit', compact('person', 'selectedDate', 'temperaturesOnSelectedDate'));
 }
 
 public function change(Request $request, $people_id)
     {
         $person = Person::findOrFail($people_id);
-        $lastTemperature = $person->temperatures->last();
-        // $food = Food::all();
-      
-        // return view('foodchange', ['id' => $person->id, 'foods' => $foods], compact('person'));
-        return view('temperaturechange', compact('person', 'lastTemperature'));
+        $temperature = Temperature::findOrFail($id);
+        return view('temperaturechange', compact('person', 'temperature'));
     }
     /**
      * Update the specified resource in storage.
@@ -157,18 +132,16 @@ public function change(Request $request, $people_id)
      */
     public function update(Request $request, Temperature $temperature)
     {
-    //  public function update(PostRequest $request, Post $post)
-    // {
-        //データ更新
-        $person = Person::find($request->people_id);
-        $temperature->people_id = $person->id;
-        $temperature->temperature = $request->temperature;
-        $temperature->bikou = $request->bikou;
-        
-        $temperature->save();
-        
+    //データ更新
+        $temperature = Temperature::find($request->id);
+        $form = $request->all();
+        $water->fill($form)->save();
+    
+        $request->session()->regenerateToken();
+    
         $people = Person::all();
-        
+        // 二重送信防止
+        $request->session()->regenerateToken();
         return view('people', compact('temperature', 'people'));
     }
 
@@ -178,8 +151,13 @@ public function change(Request $request, $people_id)
      * @param  \App\Models\temperature  $temperature
      * @return \Illuminate\Http\Response
      */
-    public function destroy(temperature $temperature)
+    public function destroy($id)
     {
-        //
+       
+        $temperature = Temperature::find($id);
+    if ($temperature) {
+        $temperature->delete();
+    }
+        return redirect()->route('people.index');
     }
 }

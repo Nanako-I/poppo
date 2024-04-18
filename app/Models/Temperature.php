@@ -34,7 +34,7 @@ use Illuminate\Database\Eloquent\Model;
 class Temperature extends Model
 {
     protected $table = 'temperature';
-    protected $fillable = ['people_id','temperature', 'bikou'];
+    protected $fillable = ['people_id','temperature', 'bikou','created_at'];
     // リレーションシップを定義するときに外部キーのカラム名を指定する
     public function person()
     {

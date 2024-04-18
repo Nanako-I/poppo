@@ -19,7 +19,7 @@
             </div>
         </form>
          
-            <form action="{{ url('kyuuinchange/' . $person->id . '/' . $kyuuin->id) }}" method="POST">
+            <form action="{{ url('kyuuinchange/' . $person->id . '/' . $kyuuin->id) }}" method="POST"  enctype="multipart/form-data">
 
                 @csrf
              

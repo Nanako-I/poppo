@@ -134,54 +134,50 @@ public function change(Request $request, $people_id, $id)
      * @return \Illuminate\Http\Response
      */
    
+    
     public function update(Request $request, Kyuuin $kyuuin)
     {
+      
     //データ更新
         $kyuuin = Kyuuin::find($request->id);
-        $form = $request->all();
-        $kyuuin->fill($form)->save();
+        // 画像がアップロードされているかチェック
+        if ($request->hasFile('filename')) {
+            $request->validate([
+                'filename' => 'image|max:2048', // ファイルのバリデーション
+            ]);
     
-        $request->session()->regenerateToken();
+            $directory = 'public/sample/kyuuin_photo';
+            $filename = uniqid() . '.' . $request->file('filename')->getClientOriginalExtension();
+            $filename = $request->file('filename')->getClientOriginalName();
+            $request->file('filename')->storeAs($directory, $filename);
+            $filepath = $directory . '/' . $filename;
     
-        $people = Person::all();
-        // 二重送信防止
-        $request->session()->regenerateToken();
-        return view('people', compact('kyuuin', 'people'));
-    }
-//     public function update(Request $request, Kyuuin $kyuuin)
-//     {
-//     //データ更新
-//         $kyuuin = Kyuuin::find($request->id);
-//         // 画像がアップロードされているかチェック
-//         if ($request->hasFile('filename')) {
-//             $request->validate([
-//                 'filename' => 'image|max:2048', // ファイルのバリデーション
-//             ]);
-    
-//             $directory = 'public/sample/kyuuin_photo';
-//             $filename = uniqid() . '.' . $request->file('filename')->getClientOriginalExtension();
-//             $request->file('filename')->storeAs($directory, $filename);
-//             $filepath = $directory . '/' . $filename;
-    
-//             // 更新されたファイル名とパスをセット
-//             $kyuuin->filename = $filename;
-//             $kyuuin->path = $filepath;
+            // 更新されたファイル名とパスをセット
+            $kyuuin->filename = $filename;
+            $kyuuin->path = $filepath;
+            // dd($kyuuin);
+            // ↑ここでは$filename　$filepathどちらも取れている
             
-//     }
-//         // 他のデータを更新
-//     $kyuuin->fill($request->except(['filename', '_token', 'path']));
-//     $kyuuin->save();
-
-//     // セッショントークンを再生成
-//     $request->session()->regenerateToken();
-
-//     $people = Person::all();
-
-//     return view('people', compact('kyuuin', 'people'));
-// }
-
-
+     }
+        // 他のデータを更新
+    $kyuuin->fill($request->except(['filename']));
+    // $kyuuin->fill($request->except(['filename', '_token', 'path']));
+    // $kyuuin->fill($request->all());
     
+    // $updateData = $request->only(['people_id','kyuuin','bikou','filename','filepath','created_at']);
+    // $kyuuin->fill() メソッドにデータを渡す
+    // $kyuuin->fill($updateData);
+
+    $kyuuin->save();
+
+    // セッショントークンを再生成
+    $request->session()->regenerateToken();
+
+    $people = Person::all();
+
+    return view('people', compact('kyuuin', 'people'));
+}
+
 
     /**
      * Remove the specified resource from storage.
