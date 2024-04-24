@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class User extends Authenticatable
 {
     // laravel permissionを使うための記述↓
-    use Notifiable,HasRoles;
+    // use Notifiable,HasRoles;
     
         
 public function people(): BelongsToMany
