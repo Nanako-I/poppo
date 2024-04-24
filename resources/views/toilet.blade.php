@@ -1,26 +1,33 @@
-  <x-app-layout>
+<x-app-layout>
 
     <!--ヘッダー[START]-->
+    
   <div class="flex items-center justify-center">
-    <div class="flex flex-col items-center">
-        <form action="{{ url('people' ) }}" method="POST" class="w-full max-w-lg">
-                            @method('PATCH')
-                            @csrf
-            <style>
-                h2 {
-                  font-family: Arial, sans-serif; /* フォントをArialに設定 */
-                  font-size: 20px; /* フォントサイズを20ピクセルに設定 */
-                }
-            </style>
-            <div class ="flex items-center justify-center"  style="padding: 20px 0;">
-                <div class="flex flex-col items-center">
-                    <h2>{{$person->person_name}}さんの体温記録</h2>
-                    
-                </div>
-            </div>
-        </form>
+   <div class="flex flex-col items-center">
+     <form action="{{ url('people' ) }}" method="POST" class="w-full max-w-lg">
+                        @method('PATCH')
+                        @csrf
+                        
+        <style>
+        h2 {
+          font-family: Arial, sans-serif; /* フォントをArialに設定 */
+          font-size: 20px; /* フォントサイズを20ピクセルに設定 */
+          font-weight: bold;
+          text-decoration: underline;
+        }
+      </style>
+      <div class="mx-1.5">
+        <h2>{{$person->person_name}}さんのトイレ記録</h2>
+      </div>
+    </form>
+   </div>
+  </div>
+    <!--ヘッダー[END]-->
+            
+        <!-- バリデーションエラーの表示に使用-->
+       <!-- resources/views/components/errors.blade.php -->
        
-<form action="{{ url('toiletchange/' . $person->id . '/' . $toilet->id) }}" method="POST"  enctype="multipart/form-data">
+<form action="{{ url('toilet/'.$person->id) }}" method="POST"  enctype="multipart/form-data">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet">
     @csrf
@@ -46,7 +53,7 @@
       <h3>トイレに行った時間</h3>
     </div>
     <div style="display: flex; flex-direction: column; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
-      <input type="time" name="created_at" id="scheduled-time" value="{{ $toilet->created_at }}">
+      <input type="time" name="created_at" id="scheduled-time">
     </div>
     <div style="display: flex; flex-direction: column; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
       <h3>尿の量</h3>
@@ -106,7 +113,7 @@
       
   　<div style="display: flex; flex-direction: column; align-items: center;">
   　  <!--多・普通など反映させるテキストボックス↓-->
-  　  <input name="urine_amount" type="text" id="urine_amount" value="{{ $toilet->urine_amount }}" class="h-8px flex-shrink-0 break-words mx-1" style="width: 4rem;">
+  　  <input name="urine_amount" type="text" id="urine_amount" class="h-8px flex-shrink-0 break-words mx-1" style="width: 4rem;">
     </div> 
     
   　<div style="display: flex; flex-direction: column; align-items: center; my-2;">
@@ -158,14 +165,14 @@
       
       </style>
     <div class="flex items-center justify-center">
-      <input name="ben_amount" type="text" id="ben_amount" value="{{ $toilet->ben_amount }}" class="h-8px flex-shrink-0 break-words mx-1 ml-px" style="width: 4rem;">
+      <input name="ben_amount" type="text" id="ben_amount" class="h-8px flex-shrink-0 break-words mx-1 ml-px" style="width: 4rem;">
     </div> 
     
     
     <div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">
         <h3>便の状態</h3>
-          <select name="ben_condition" value="{{ $toilet->ben_condition }}" class="mx-1 my-1.5" style="width: 6rem;">
-            <option value="selected">{{ $toilet->ben_condition }}</option>
+          <select name="ben_condition" class="mx-1 my-1.5" style="width: 6rem;">
+            <option value="回答なし">選択</option>
             <option value="硬便">硬便</option>
             <option value="普通便">普通便</option>
             <option value="軟便">軟便</option>
@@ -183,33 +190,28 @@
         margin-right: 8px;
       }
     </style>
-    
     <div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">
         <h3>便通処置</h3>
-          <select name="bentsuu"  value="{{ $toilet->bentsuu }}" class="mx-1 my-1.5" style="width: 6rem;">
-            <option value="回答なし">{{ $toilet->bentsuu }}</option>
+          <select name="bentsuu" class="mx-1 my-1.5" style="width: 6rem;">
+            <option value="回答なし">選択</option>
             <option value="なし">なし</option>
             <option value="浣腸">浣腸</option>
             <option value="下剤">下剤</option>
           </select>
     </div>
-    
+    <div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">
+      <label class="block text-lg font-bold text-gray-700">写真を登録する</label>
+      <input name="filename" id="filename" type="file" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm text-lg border-gray-300 rounded-md ml-20">
+    </div>
+                                                                            
     <div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">
     <h3>備考</h3>
-    <textarea id="result-speech" name="bikou" class="w-3/4 max-w-lg font-bold" style="height: 200px;">{{ $toilet->bikou }}</textarea>
+    <textarea id="result-speech" name="bikou" class="w-3/4 max-w-lg font-bold" style="height: 200px;"></textarea>
     </div>
-    @if($toilet->filename && $toilet->path)
-        <img alt="team" class="w-80 h-64" src="{{ asset('storage/sample/toilet_photo/' . $toilet->filename) }}">
-    @endif
-    <div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">
-      <label class="block text-lg font-bold text-gray-700">他の写真を登録する</label>
-        <div style="margin-left: 10px;">
-            <input name="filename" id="filename" type="file" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm text-lg border-gray-300 rounded-md ml-20">
-        </div>
-    </div>
+    
     <div style="display: flex; align-items: center; margin-left: auto; margin-right: auto; max-width: 300px;" class="my-2">
       <button type="submit" class="inline-flex items-center px-6 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
-        修正
+        送信
       </button>
     </div>
   </form>

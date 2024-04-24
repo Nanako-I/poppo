@@ -74,7 +74,7 @@
                 </table>
                 
              <div class="flex items-center justify-center m-2">
-             <p class="font-bold text-xl">音声で入力する場合、下のボタンを押してください</p>
+             <!--<p class="font-bold text-xl">音声で入力する場合、下のボタンを押してください</p>-->
             </div>
         </form>
         <style>
@@ -90,19 +90,15 @@
           <div class="flex items-center justify-center">
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
               <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
-                <i class="fa-solid fa-volume-high text-orange-400" style="font-size: 3em; padding: 0 5px;"></i>
+                <!--<i class="fa-solid fa-volume-high text-orange-400" style="font-size: 3em; padding: 0 5px;"></i>-->
          
-                <!--<button id="start-btn" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded-lg text-lg mx-1">-->
-                <!--  スタート-->
-                <!--</button>-->
+               
                 <!--amivoiceで話す前に押すボタン↓-->
-                <button id="resumePauseButton" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded-lg text-lg mx-1">
-                  音声で入力
-                </button>
-                
-                <!--<button id="stop-btn" class="bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-lg text-lg mx-1">-->
-                <!--  ストップ-->
+                <!--<button id="resumePauseButton" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded-lg text-lg mx-1">-->
+                <!--  音声で入力-->
                 <!--</button>-->
+                
+                
             <div id="result-div"></div>
           </div>
     <form action="{{ url('morningspeech/'.$person->id.'/edit') }}" method="POST">

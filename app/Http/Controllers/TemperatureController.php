@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Temperature;
 use App\Models\Person;
-
+use App\Models\User;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class TemperatureController extends Controller
 {
@@ -20,10 +21,7 @@ class TemperatureController extends Controller
     public function index()
     {
        $temperature = Temperature::all();
-        // ('people')に$peopleが代入される
-        
-        // 'people'はpeople.blade.phpの省略↓　// compact('people')で合っている↓
-        return view('people',compact('temperature'));
+       return view('people',compact('temperature'));
     }
 
 
@@ -78,17 +76,10 @@ class TemperatureController extends Controller
     public function show($people_id)
 {
     
-    // $person = Person::findOrFail($id);
-    // $temperature = $person->temperature;
-
-    // return view('people', compact('temperature', 'person'));
     $person = Person::findOrFail($people_id);
-    // $temperature = $person->temperatures()->latest()->first();
     $temperature = $person->temperatures;
 
-    // return view('people', compact('temperature', 'person'));
     
-    // return redirect()->route('temperatures.show', ['temperature','people_id' => $person->id]);
     return view('people',compact('temperature'));
 }
 
@@ -117,11 +108,18 @@ public function edit(Request $request, $people_id)
     return view('temperatureedit', compact('person', 'selectedDate', 'temperaturesOnSelectedDate'));
 }
 
-public function change(Request $request, $people_id)
+public function change(Request $request, $people_id, $id)
     {
+        // ユーザーを取得
+        $user = User::findOrFail($people_id);
+        // ユーザーが持つ体温の記録からユーザーIDを取得
+        $user_id = $user->id;
+    
+        // すべてのユーザーを取得
+        $users = User::all();
         $person = Person::findOrFail($people_id);
         $temperature = Temperature::findOrFail($id);
-        return view('temperaturechange', compact('person', 'temperature'));
+        return view('temperaturechange', compact('person', 'temperature','users'));
     }
     /**
      * Update the specified resource in storage.
@@ -135,7 +133,7 @@ public function change(Request $request, $people_id)
     //データ更新
         $temperature = Temperature::find($request->id);
         $form = $request->all();
-        $water->fill($form)->save();
+        $temperature->fill($form)->save();
     
         $request->session()->regenerateToken();
     

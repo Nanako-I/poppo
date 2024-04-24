@@ -30,6 +30,11 @@ public function people(): BelongsToMany
         ->using(Family::class);
     }
     
+    public function temperatures()
+    {
+        return $this->hasMany(Temperature::class,'user_id');
+    }
+    
     use HasApiTokens, HasFactory, Notifiable;
 
     /**
@@ -61,6 +66,8 @@ public function people(): BelongsToMany
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+    
+    
 }
 
 

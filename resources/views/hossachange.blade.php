@@ -14,13 +14,12 @@
             </style>
             <div class ="flex items-center justify-center"  style="padding: 20px 0;">
                 <div class="flex flex-col items-center">
-                    <h2>{{$person->person_name}}さんの体温記録</h2>
-                    
+                    <h2>{{$person->person_name}}さんの発作記録</h2>
                 </div>
             </div>
         </form>
          
-            <form action="{{ url('temperaturechange/' . $person->id . '/' . $temperature->id) }}" method="POST">
+            <form action="{{ url('hossachange/' . $person->id . '/' . $hossa->id) }}" method="POST"  enctype="multipart/form-data">
 
                 @csrf
              
@@ -35,38 +34,30 @@
                         font-weight: bold;
                       }
                     </style>
-                        <!--<div class="flex items-center justify-center my-2">-->
-                        <!--    <div class="flex items-center justify-between p-2 border-b border-gray-300">-->
-                        <!--        <p class="text-gray-900 font-bold text-lg mr-1.5">記録者</p>-->
-                        <!--        <select name="recorded_by" id="recorded_by" class="block w-full border-gray-300 focus:border-indigo-300">-->
-                        <!--            @foreach ($users as $user)-->
-                        <!--                <option value="{{ $user->id }}">{{ $user->name }}</option>-->
-                        <!--            @endforeach-->
-                        <!--        </select>-->
-                        <!--    </div>-->
-                        <!--</div>-->
                     
                         <div class="flex items-center justify-center">
                              <input type="hidden" name="people_id" value="{{ $person->id }}">
                         </div>
                         <div style="display: flex; flex-direction: column; align-items: center;">
                             <div class="flex items-center justify-center ml-4">
-                                <input type="datetime-local" name="created_at" id="scheduled-time" value="{{ $temperature->created_at}}">
+                                <input type="datetime-local" name="created_at" id="scheduled-time" value="{{ $hossa->created_at}}">
                             </div>
                         </div>
-                        
-                        <div class="flex flex-col items-center justify-center mt-2.5">
-                            <div class="flex items-center ml-32">
-                                <input name="temperature" id="text-box" class="appearance-none block w-1/2 text-gray-900 py-3 px-4 leading-tight focus:outline-none focus:bg-white font-bold" type="text" placeholder="" value="{{ $temperature->temperature}}">
-                                <span class="ml-1 text-gray-900 font-bold text-xl">℃</span>
-                            </div>
-                        </div>
-                                                                    
+
                         <div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">
                             <p class="text-gray-900 font-bold text-xl">備考<p>
-                            <textarea id="" name="bikou" class="w-full max-w-lg" style="height: 300px;">{{ $temperature->bikou }}</textarea>
+                            <textarea id="" name="bikou" class="w-full max-w-lg" style="height: 300px;">{{ $hossa->hossa_bikou }}</textarea>
                         </div>
-                         
+                        <div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">
+                            @if($hossa->filename && $hossa->path)
+                               <video controls class="h-64" src="{{ asset('storage/sample/hossa_photo/'.$hossa->filename) }}" muted class="contents_width"></video>
+                            @endif
+                        </div>
+                        <label class="block text-lg font-bold text-gray-700">他の動画を登録する</label>
+                        <div style="margin-left: 10px;">
+                            <input name="filename" id="filename" type="file" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm text-lg border-gray-300 rounded-md ml-20">
+                        </div>
+                                                                            
                         <button type="submit" class="inline-flex items-center px-6 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
                               修正
                         </button>

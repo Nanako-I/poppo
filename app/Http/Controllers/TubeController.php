@@ -6,6 +6,7 @@ use App\Models\Person;
 use App\Models\User;
 use App\Models\Tube;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class TubeController extends Controller
 {
@@ -19,9 +20,7 @@ class TubeController extends Controller
     //   / 全件データ取得して一覧表示する↓
         // $people は変数名　Person::でPersonモデルにアクセスする
         $tube = Tube::all();
-        // ('people')に$peopleが代入される
         
-        // 'people'はpeople.blade.phpの省略↓　// compact('people')で合っている↓
         return view('people',compact('tube'));
     }
 
@@ -44,9 +43,23 @@ class TubeController extends Controller
      */
     public function store(Request $request)
     {
-       $storeData = $request->validate([
+    //   $storeData = $request->validate([
+    //     ]);
+         //   画像保存
+        $directory = 'public/sample/tube_photo';
+        $filename = null;
+        $filepath = null;
+    
+        if ($request->hasFile('filename')) {
+            $request->validate([
+                'filename' => 'image|max:2048',
+            ]);
+            $filename = uniqid() . '.' . $request->file('filename')->getClientOriginalExtension();
+            $filename = $request->file('filename')->getClientOriginalName();	
+            $request->file('filename')->storeAs($directory, $filename);
+            $filepath = $directory . '/' . $filename;
             
-        ]);
+        }
         // バリデーションした内容を保存する↓
         
         $tube = Tube::create([
@@ -60,11 +73,15 @@ class TubeController extends Controller
         'medicine' => $request->medicine,
         'medicine_bikou' => $request->medicine_bikou,
         'updated_at' => $request->updated_at, 
+        'filename' => $filename,
+        // ファイル名は $filename という変数に保存されているので、それを利用して filename カラムに保存する
+        'path' => $filepath,
     ]);
+    // dd($tube);
     // return redirect('people/{id}/edit');
      $people = Person::all();
-//   $person = Person::findOrFail($request->people_id);
-    // return redirect()->route('toilet.edit', ['people_id' => $person->id]); //
+      // 二重送信防止
+    $request->session()->regenerateToken();
     return view('people', compact('tube', 'people'));
     }
 
@@ -95,16 +112,29 @@ class TubeController extends Controller
      */
     public function edit(Request $request, $people_id)
 {
+   
     $person = Person::findOrFail($people_id);
-    return view('tubeedit', ['id' => $person->id],compact('person'));
+    $today = \Carbon\Carbon::now()->toDateString();
+    $selectedDate = $request->input('selected_date', Carbon::now()->toDateString());
+    $selectedDateStart = Carbon::parse($selectedDate)->startOfDay();
+    $selectedDateEnd = Carbon::parse($selectedDate)->endOfDay();
+
+    $tubesOnSelectedDate = $person->tubes->whereBetween('created_at', [$selectedDateStart, $selectedDateEnd]);
+    return view('tubeedit', compact('person', 'selectedDate', 'tubesOnSelectedDate'));
 }
 
-public function change(Request $request, $people_id)
+public function change(Request $request, $people_id, $id)
     {
+        // ユーザーを取得
+        $user = User::findOrFail($people_id);
+        // ユーザーが持つ体温の記録からユーザーIDを取得
+        $user_id = $user->id;
+    
+        // すべてのユーザーを取得
+        $users = User::all();
         $person = Person::findOrFail($people_id);
-        $lastTube = $person->tubes->last();
-        
-        return view('tubechange', compact('person', 'lastTube'));
+        $tube = Tube::findOrFail($id);
+        return view('tubechange', compact('person', 'tube','users'));
     }
     /**
      * Update the specified resource in storage.
@@ -116,26 +146,36 @@ public function change(Request $request, $people_id)
     public function update(Request $request, Tube $tube)
     {
     //データ更新
-        $person = Person::find($request->people_id);
-        $user_tube = User::find($request->user_id_tube);
-        $user_medicine = User::find($request->user_id_medicine);
-        
-        $tube->people_id = $person->id;
-        $tube->user_id_tube = $user_tube->id;
-        $tube->created_at = $request->created_at;
-        $tube->tube = $request->tube;
-        $tube->tube_bikou = $request->tube_bikou;
-        $tube->user_id_medicine = $user_medicine->id;
-        
-        $tube->medicine = $request->medicine;
-        $tube->medicine_bikou = $request->medicine_bikou;
-        $tube->created_at = $request->created_at;
-        $tube->save();
-        
-        $people = Person::all();
-        
-        return view('people', compact('tube', 'people'));
-    }
+        $tube = Tube::find($request->id);
+        // 画像がアップロードされているかチェック
+        if ($request->hasFile('filename')) {
+            $request->validate([
+                'filename' => 'image|max:2048', // ファイルのバリデーション
+            ]);
+    
+            $directory = 'public/sample/tube_photo';
+            $filename = uniqid() . '.' . $request->file('filename')->getClientOriginalExtension();
+            $filename = $request->file('filename')->getClientOriginalName();
+            $request->file('filename')->storeAs($directory, $filename);
+            $filepath = $directory . '/' . $filename;
+    
+            // 更新されたファイル名とパスをセット
+            $tube->filename = $filename;
+            $tube->path = $filepath;
+            
+            
+     }
+        // 他のデータを更新
+    $tube->fill($request->except(['filename']));
+    $tube->save();
+
+    // セッショントークンを再生成
+    $request->session()->regenerateToken();
+
+    $people = Person::all();
+
+    return view('people', compact('tube', 'people'));
+}
 
     /**
      * Remove the specified resource from storage.
@@ -143,8 +183,13 @@ public function change(Request $request, $people_id)
      * @param  \App\Models\Food  $food
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Food $food)
+    public function destroy($id)
     {
-        //
+       
+        $tube = Tube::find($id);
+    if ($tube) {
+        $tube->delete();
+    }
+        return redirect()->route('people.index');
     }
 }

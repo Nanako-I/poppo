@@ -1,297 +1,137 @@
-<x-app-layout>
+  <x-app-layout>
 
     <!--ヘッダー[START]-->
-    
-  <div class="flex items-center justify-center">
-   <div class="flex flex-col items-center">
-     <form action="{{ url('people' ) }}" method="POST" class="w-full max-w-lg">
-                        @method('PATCH')
-                        @csrf
-                        
-        <style>
-        h2 {
-          font-family: Arial, sans-serif; /* フォントをArialに設定 */
-          font-size: 20px; /* フォントサイズを20ピクセルに設定 */
-          font-weight: bold;
-          text-decoration: underline;
-        }
-      </style>
-      <div class="mx-1.5">
-        <h2>{{$person->person_name}}さんのトイレ記録</h2>
-      </div>
+      　<div class="flex items-center justify-center" style="padding: 20px 0;">
+            <div class="flex flex-col items-center">
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+                <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
+                <form method="get" action="{{ route('toilet.edit', $person->id) }}">
+                <!--<form action="{{ url('people' ) }}" method="POST" class="w-full max-w-lg">-->
+                                    @method('PATCH')
+                                    @csrf
+                <style>
+                    h2 {
+                      font-family: Arial, sans-serif; /* フォントをArialに設定 */
+                      font-size: 20px; /* フォントサイズを20ピクセルに設定 */
+                    }
+                </style>
+                <div class="flex items-center justify-center" style="padding: 20px 0;">
+                    <div class="flex flex-col items-center">
+                        <h2>{{$person->person_name}}さん</h2>
+                        <h3 class="text-gray-900 font-bold text-xl">{{ $selectedDate }}の体温記録</h3>
+                    </div>
+                </div>
+                <input type="date" name="selected_date" id="selected_date" value="{{ $selectedDate }}">
+                  <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+                    表示
+                  </button>
+            </div>
+        </div>
     </form>
-   </div>
+                    @php
+                       $today = \Carbon\Carbon::now()->toDateString();
+                       $todaysToilets = $person->toilets->where('created_at', '>=', $today)
+                       ->where('created_at', '<', $today . ' 23:59:59');
+                    @endphp
+                    @if ($todaysToilets->count() > 0)
+                  
+                    <div class ="flex items-center justify-center"  style="padding: 20px 0;">
+                        <div class="flex flex-col items-center">
+                            <h4 class="text-gray-900 font-bold text-lg">トイレの時間</h>
+                            <!-- 日ごとの体温リスト -->
+                            @foreach ($toiletsOnSelectedDate as $toilet)
+                                    <div class="flex-row items-center justify-between p-2 border-b border-gray-300">
+                                <p class="text-gray-900 font-bold text-lg">{{ $toilet->created_at->format('H:i') }}</p>
+                            </div>
+                            <div class="flex-row items-center justify-between p-2 border-b border-gray-300">
+                            <div class="flex items-center justify-around">
+                        　　　　    <div class="px-2">
+                        　　　　        <p class="text-gray-900 font-bold text-base">尿量:</p>
+                                    <p class="text-gray-900 font-bold text-2xl">{{ $toilet->urine_amount }}</p>
+                                </div>
+                                <div class="px-2">
+                        　　　　        <p class="text-gray-900 font-bold text-base">便量:</p>
+                                    <p class="text-gray-900 font-bold text-2xl">{{ $toilet->ben_amount }}</p>
+                                </div>
+                                <div class="px-2">
+                        　　　　        <p class="text-gray-900 font-bold text-base">便状態:</p>
+                                    <p class="text-gray-900 font-bold text-2xl">{{ $toilet->ben_condition }}</p>
+                                </div>
+                            </div>
+                                @if($toilet->filename && $toilet->path)
+                                    <img alt="team" class="w-80 h-64" src="{{ asset('storage/sample/toilet_photo/' . $toilet->filename) }}">
+                                @endif
+                                <a href="{{ route('toilet.change', ['people_id' => $person->id, 'id' => $toilet->id]) }}" class="text-stone-500">
+                                  <i class="fa-solid fa-pencil" style="font-size: 1.5em;"></i>
+                                </a>
+                                <form action="{{ route('toilet.delete', ['id'=>$toilet->id]) }}" method="POST">
+                                @csrf
+                                    <button type="button" class="text-stone-500 delete-btn" data-id="{{ $toilet->id }}" data-toggle="modal" data-target="#confirmDeleteModal">
+                                       <i class="fa-solid fa-trash-can" style="font-size: 1.5em;"></i>
+                                    </button>
+                                </form>
+                            </div>
+                            </div>       
+                            @endforeach
+                        @endif
+                        </div>
+                    </div>
+            </div>
+    
+          <!-- モーダルダイアログ -->
+<div class="modal fixed w-full h-full top-0 left-0 flex items-center justify-center hidden" id="confirmDeleteModal">
+  <div class="modal-overlay absolute w-full h-full bg-gray-600 opacity-50"></div>
+
+  <!--<div class="modal-container bg-white w-11/12 md:max-w-md mx-auto rounded shadow-lg z-50 overflow-y-auto">-->
+    <div class="modal-container bg-white w-full max-w-xs mx-auto rounded shadow-lg z-50 overflow-y-auto">
+    <!-- Add margin if you want to see some of the overlay behind the modal-->
+    <div class="modal-content py-4 text-left px-6">
+      <!--Title-->
+      <div class="flex justify-between items-center pb-3">
+        <p class="text-2xl font-bold">本当に削除しますか？</p>
+        <div class="modal-close cursor-pointer z-50" data-dismiss="modal">
+          <svg class="fill-current text-black" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18">
+            <path d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"></path>
+          </svg>
+        </div>
+      </div>
+
+      <!--Body-->
+      <p class="font-bold">削除したデータは復元できません。</p>
+
+      <!--Footer-->
+      <div class="flex justify-end pt-2">
+        <button type="button" class="px-4 bg-blue-800 p-3 rounded-lg text-white hover:bg-blue-400 mr-2" data-dismiss="modal">キャンセル</button>
+        <button type="button" class="px-4 bg-red-500 p-3 rounded-lg text-white hover:bg-red-400" id="deleteBtn">削除</button>
+      </div>
+    </div>
   </div>
-    <!--ヘッダー[END]-->
-            
-        <!-- バリデーションエラーの表示に使用-->
-       <!-- resources/views/components/errors.blade.php -->
-       
-<form action="{{ url('toilet/'.$person->id.'/edit') }}" method="POST">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
-      rel="stylesheet">
-    @csrf
-                        
-                    
-<body>                    
-<div style="display: flex; flex-direction: column;">
-     <style>
-     body {
-          font-family: 'Noto Sans JP', sans-serif; /* フォントをArialに設定 */
-          background: linear-gradient(135deg, rgb(253, 219, 146,0), rgb(209, 253, 255,1));
-          }
-     h3 {
-          font-family: Arial, sans-serif; /* フォントをArialに設定 */
-          font-size: 20px; /* フォントサイズを20ピクセルに設定 */
-          /*font-weight: bold;*/
-          text-decoration: underline;
-        }
-        </style>
-        
-    <div style="display: flex; flex-direction: column; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
-      <!--<input type="datetime-local" name="created_at">-->
-      <h3>トイレに行った時間</h3>
-    </div>
-    <div style="display: flex; flex-direction: column; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
-      <input type="time" name="created_at" id="scheduled-time">
-    </div>
-    <div style="display: flex; flex-direction: column; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
-      <h3>尿の量</h3>
-    </div>
-    
-      <!--<div style="display: flex; justify-content: center; align-items: center; margin-top: 10px;">-->
-      <!--      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />-->
-      <!--      <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>-->
-      <!--     <i class="fa-solid fa-circle text-gray-300" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>-->
-      <!--</div>-->
-     <div style="max-width: 350px; margin: 1.5rem auto;">
-        <input type="range" id ="urine_range" class="urine-range" name="foo" min="0" max="3" oninput="oninput_urine()">
-    </div>
-      
-    <style>
-      /*// リセットCSS（すでに指定済なら不要）*/
-      /** {*/
-      /*  box-sizing: border-box;*/
-      /*}*/
-      
-      /*// 🚩：重要なポイント*/
-      
-      .urine-range {
-        -webkit-appearance: none;
-        appearance: none;
-        cursor: pointer;
-        background: #8acdff;
-        height: 14px;
-        width: 100%; 
-        border-radius: 10px; 
-        border: solid 3px #dff1ff; 
-        outline: 0; /* アウトラインを消して代わりにfocusのスタイルをあてる */
-        &:focus {
-          box-shadow: 0 0 3px rgb(0, 161, 255);
-        }
-        /*// -webkit-向けのつまみ*/
-        &::-webkit-slider-thumb {
-          -webkit-appearance: none; 
-          background: #53aeff; 
-          width: 24px; 
-          height: 24px; 
-          border-radius: 50%;
-          box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.15);
-        }
-        /*// -moz-向けのつまみ*/
-        &::-moz-range-thumb {
-          background: #53aeff;
-          width: 24px;
-          height: 24px;
-          border-radius: 50%;
-          box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.15);
-          border: none; 
-        }
-        /*// Firefoxで点線が周りに表示されてしまう問題の解消*/
-        &::-moz-focus-outer {
-          border: 0;
-        }
-        /*// つまみをドラッグしているときのスタイル*/
-        &:active::-webkit-slider-thumb {
-          box-shadow: 0px 5px 10px -2px rgba(0, 0, 0, 0.3);
-        }
-      </style>
-      
-  　<div style="display: flex; flex-direction: column; align-items: center;">
-  　  <!--多・普通など反映させるテキストボックス↓-->
-  　  <input name="urine_amount" type="text" id="urine_amount" class="h-8px flex-shrink-0 break-words mx-1" style="width: 4rem;">
-    </div> 
-    
-  　<div style="display: flex; flex-direction: column; align-items: center; my-2;">
-      <h3>便の量</h3>
-    </div>
-    <div style="max-width: 350px; margin: 1.5rem auto;">
-      <input type="range" id ="ben_range" class="ben-range" name="foo" min="0" max="3" oninput="oninput_ben()">
-    </div>
-    <style>
-      .ben-range {
-        -webkit-appearance: none;
-        appearance: none;
-        cursor: pointer;
-        background: #8acdff;
-        height: 14px;
-        width: 100%; 
-        border-radius: 10px; 
-        border: solid 3px #dff1ff; 
-        outline: 0; /* アウトラインを消して代わりにfocusのスタイルをあてる */
-        &:focus {
-          box-shadow: 0 0 3px rgb(0, 161, 255);
-        }
-        /*// -webkit-向けのつまみ*/
-        &::-webkit-slider-thumb {
-          -webkit-appearance: none; 
-          background: #53aeff; 
-          width: 24px; 
-          height: 24px; 
-          border-radius: 50%;
-          box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.15);
-        }
-        /*// -moz-向けのつまみ*/
-        &::-moz-range-thumb {
-          background: #53aeff;
-          width: 24px;
-          height: 24px;
-          border-radius: 50%;
-          box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.15);
-          border: none; 
-        }
-        /*// Firefoxで点線が周りに表示されてしまう問題の解消*/
-        &::-moz-focus-outer {
-          border: 0;
-        }
-        /*// つまみをドラッグしているときのスタイル*/
-        &:active::-webkit-slider-thumb {
-          box-shadow: 0px 5px 10px -2px rgba(0, 0, 0, 0.3);
-        }
-      
-      </style>
-    <div class="flex items-center justify-center">
-      <input name="ben_amount" type="text" id="ben_amount" class="h-8px flex-shrink-0 break-words mx-1 ml-px" style="width: 4rem;">
-    </div> 
-    
-    
-    <div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">
-        <h3>便の状態</h3>
-          <select name="ben_condition" class="mx-1 my-1.5" style="width: 6rem;">
-            <option value="selected">選択</option>
-            <option value="硬便">硬便</option>
-            <option value="普通便">普通便</option>
-            <option value="軟便">軟便</option>
-            <option value="泥状便">泥状便</option>
-            <option value="水様便">水様便</option>
-          </select>
-    </div>
- 
-    <style>
-      .checkbox-container {
-        display: flex;
-        align-items: center;
-      }
-      input[type="checkbox"] {
-        margin-right: 8px;
-      }
-    </style>
-    
-    <div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">
-    <h3>備考</h3>
-    <textarea id="result-speech" name="bikou" class="w-3/4 max-w-lg font-bold" style="height: 200px;"></textarea>
-    </div>
-    
-    <!--<div style="display: flex; align-items: center; margin-left: auto; margin-right: auto; max-width: 300px; my-2">-->
-    <div style="display: flex; align-items: center; margin-left: auto; margin-right: auto; max-width: 300px;" class="my-2">
-      <button type="submit" class="inline-flex items-center px-6 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
-        送信
-      </button>
-    </div>
-  </form>
-    
 </div>
- <!--全エリア[END]-->
- <script>
 
-function oninput_urine(){
-  
-  // スクロールバーの値を取得
-    var rangeValue = document.getElementById("urine_range").value;
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var deleteForm; // 削除するフォームを保存する変数
 
-    // テキストボックスに反映
-    var textBox = document.getElementById("urine_amount");
-    switch (rangeValue) {
-        // urine_rangeの値が0だったらなしを表示させる
-        case "0":
-            textBox.value = "なし";
-            break;
-        case "1":
-            textBox.value = "少";
-            break;
-        case "2":
-            textBox.value = "普通";
-            break;
-        case "3":
-            textBox.value = "多";
-            break;
-        default:
-            textBox.value = ""; // エラー処理など
-            break;
-    }
-};
-  // var urine_range = document.getElementById('urine_range');
-  // const urine_amount = document.getElementById("urine_amount");
-  // urine_amount.value = urine_range.value;
+    document.querySelectorAll('.delete-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            deleteForm = this.closest('form'); // フォームを取得して保存
+            document.getElementById('confirmDeleteModal').classList.remove('hidden');
+        });
+    });
 
-function oninput_ben(){
-  
-  // スクロールバーの値を取得
-    var rangeValue = document.getElementById("ben_range").value;
+    document.getElementById('deleteBtn').addEventListener('click', function() {
+        deleteForm.submit(); // モーダルの削除ボタンがクリックされたらフォームを送信
+        document.getElementById('confirmDeleteModal').classList.add('hidden');
+    });
 
-    // テキストボックスに反映
-    var textBox = document.getElementById("ben_amount");
-    switch (rangeValue) {
-        // ben_rangeの値が0だったらなしを表示させる
-        case "0":
-            textBox.value = "なし";
-            break;
-        case "1":
-            textBox.value = "少";
-            break;
-        case "2":
-            textBox.value = "普通";
-            break;
-        case "3":
-            textBox.value = "多";
-            break;
-        default:
-            textBox.value = ""; // エラー処理など
-            break;
-    }
-};
-
-// function oninput_ben(){
-//   var ben_range = document.getElementById('ben_range');
-//   const ben_amount = document.getElementById("ben_amount");
-//   ben_amount.value = ben_range.value;
-// };
-
-// スクロールイベント↓
-
-  // function countScroll() {
-  // var target = document.getElementById('target');
-  // var x = target.scrollLeft;
-  // document.getElementById('output').innerHTML = x;
-  
-
-// スクロールイベントの監視
-var target = document.getElementById('target');
-target.addEventListener('scroll', countScroll);
-
-
-
+    document.querySelectorAll('[data-dismiss="modal"]').forEach(button => {
+        button.addEventListener('click', function() {
+            document.getElementById('confirmDeleteModal').classList.add('hidden');
+        });
+    });
+});
 
 </script>
-</body> 
+
+
 </x-app-layout>

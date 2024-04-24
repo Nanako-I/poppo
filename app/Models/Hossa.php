@@ -9,7 +9,7 @@ class Hossa extends Model
 {
     use HasFactory;
     protected $table = 'hossas';
-    protected $fillable = ['people_id','user_id_hossa','created_at','hossa','hossa_bikou'];
+    protected $fillable = ['people_id','user_id_hossa','created_at','hossa','hossa_bikou','filename','path',];
     
     public function person()
     {

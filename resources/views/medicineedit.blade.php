@@ -5,7 +5,7 @@
             <div class="flex flex-col items-center">
                 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
                 <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
-                <form method="get" action="{{ route('temperature.edit', $person->id) }}">
+                <form method="get" action="{{ route('medicine.edit', $person->id) }}">
                 <!--<form action="{{ url('people' ) }}" method="POST" class="w-full max-w-lg">-->
                                     @method('PATCH')
                                     @csrf
@@ -18,7 +18,7 @@
                 <div class="flex items-center justify-center" style="padding: 20px 0;">
                     <div class="flex flex-col items-center">
                         <h2>{{$person->person_name}}さん</h2>
-                        <h3 class="text-gray-900 font-bold text-xl">{{ $selectedDate }}の体温記録</h3>
+                        <h3 class="text-gray-900 font-bold text-xl">{{ $selectedDate }}の内服記録</h3>
                     </div>
                 </div>
                 <input type="date" name="selected_date" id="selected_date" value="{{ $selectedDate }}">
@@ -30,29 +30,28 @@
     </form>
                     @php
                        $today = \Carbon\Carbon::now()->toDateString();
-                       $todaysTemperatures = $person->temperatures->where('created_at', '>=', $today)
+                       $todaysMedicines = $person->medicines()->where('created_at', '>=', $today)
                        ->where('created_at', '<', $today . ' 23:59:59');
                     @endphp
-                    @if ($todaysTemperatures->count() > 0)
+                    @if ($todaysMedicines->count() > 0)
                   
-                    <div class ="flex items-center justify-center"  style="padding: 20px 0;">
+                    <div class ="flex items-center justify-center" style="padding: 20px 0;">
                         <div class="flex flex-col items-center">
-                            <h4 class="text-gray-900 font-bold text-lg">体温計測した時間</h>
-                            <!-- 日ごとの体温リスト -->
-                            @foreach ($temperaturesOnSelectedDate as $temperature)
+                            <h4 class="text-gray-900 font-bold text-lg">内服した時間</h>
+                            <!-- 日ごとの吸引リスト -->
+                            @foreach ($medicinesOnSelectedDate as $medicine)
                                     <div class="flex-row items-center justify-between p-2 border-b border-gray-300">
                                         <div class="flex items-center justify-between p-2 border-b border-gray-300">
-                                            <p class="text-gray-900 font-bold text-lg">{{ $temperature->created_at->format('H:i') }}</p>
-                                            <p class="text-gray-900 font-bold text-2xl ml-3">{{ $temperature->temperature }}℃</p>
+                                            <p class="text-gray-900 font-bold text-lg">{{ $medicine->created_at->format('H:i') }}</p>
                                         </div>
-                                        <p class="text-gray-900 font-bold text-lg">{{ $temperature->bikou }}</p>
+                                        <p class="text-gray-900 font-bold text-lg">{{ $medicine->medicine_bikou }}</p>
                                         
-                                        <a href="{{ route('temperature.change', ['people_id' => $person->id, 'id' => $temperature->id]) }}" class="text-stone-500">
+                                        <a href="{{ route('medicine.change', ['people_id' => $person->id, 'id' => $medicine->id]) }}" class="text-stone-500">
                                             <i class="fa-solid fa-pencil" style="font-size: 1.5em;"></i>
                                         </a>
-                                        <form action="{{ route('temperature.delete', ['id'=>$temperature->id]) }}" method="POST">
+                                        <form action="{{ route('medicine.delete', ['id'=>$medicine->id]) }}" method="POST">
                                         @csrf
-                                            <button type="button" class="text-stone-500 delete-btn" data-id="{{ $temperature->id }}" data-toggle="modal" data-target="#confirmDeleteModal">
+                                            <button type="button" class="text-stone-500 delete-btn" data-id="{{ $medicine->id }}" data-toggle="modal" data-target="#confirmDeleteModal">
                                                 <i class="fa-solid fa-trash-can" style="font-size: 1.5em;"></i>
                                             </button>
                                         </form>

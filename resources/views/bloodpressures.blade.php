@@ -46,10 +46,10 @@
         }
         </style>
         
-    <!--<div style="display: flex; flex-direction: column; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">-->
-      <!--<input type="datetime-local" name="created_at">-->
-    <!--  <h3>トイレに行った時間</h3>-->
-    <!--</div>-->
+    <div class="flex flex-col items-center justify-center">
+        <p class="text-gray-900 font-bold text-xl">計測時間</p>
+        <input type="time" name="created_at" id="scheduled-time">
+    </div>
     
     <div style="display: flex; flex-direction: column; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
         <p class="text-gray-900 font-bold text-xl">血圧（上）</p>

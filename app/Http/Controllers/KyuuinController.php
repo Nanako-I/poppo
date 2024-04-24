@@ -77,7 +77,6 @@ class KyuuinController extends Controller
         'path' => $filepath,
         
     ]);
-
      $people = Person::all();
      $request->session()->regenerateToken();
     return view('people', compact('kyuuin', 'people'));

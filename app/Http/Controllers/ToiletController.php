@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Toilet;
 use App\Models\Person;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class ToiletController extends Controller
 {
@@ -44,33 +45,40 @@ class ToiletController extends Controller
     public function store(Request $request)
     {
        $storeData = $request->validate([
-            // 'food' => 'required|max:255',
-            // 'staple_food' => 'required|max:255',
-            // 'side_dish' => 'required|max:255',
-            // 'medicine' => 'required|max:255',
+            
         ]);
-        // バリデーションした内容を保存する↓
+         //   画像保存
+        $directory = 'public/sample/toilet_photo';
+        $filename = null;
+        $filepath = null;
+    
+        if ($request->hasFile('filename')) {
+            $request->validate([
+                'filename' => 'image|max:2048',
+            ]);
+            $filename = uniqid() . '.' . $request->file('filename')->getClientOriginalExtension();
+            $filename = $request->file('filename')->getClientOriginalName();	
+            $request->file('filename')->storeAs($directory, $filename);
+            $filepath = $directory . '/' . $filename;
+        }
         
         $toilet = Toilet::create([
         'people_id' => $request->people_id,
-        'urine_one' => $request->input('urine_one'), // チェックボックスの値ではなく、テキスト入力フィールドの値を保存
-        'urine_two' => $request->urine_two,
-        'urine_three' => $request->urine_three,
-       
+        
         'urine_amount' => $request->urine_amount,
         'ben_condition' => $request->ben_condition,
         'ben_amount' => $request->ben_amount,
         'bentsuu' => $request->bentsuu,
         'created_at' => $request->created_at,
         'updated_at' => $request->updated_at,
-        'filename' => $request->filename,
-        'bikou' => $request->bikou,
+        'filename' => $filename,
+        // ファイル名は $filename という変数に保存されているので、それを利用して filename カラムに保存する
+        'path' => $filepath,
          
     ]);
     // return redirect('people/{id}/edit');
      $people = Person::all();
-//   $person = Person::findOrFail($request->people_id);
-    // return redirect()->route('toilet.edit', ['people_id' => $person->id]); //
+    $request->session()->regenerateToken();
     return view('people', compact('toilet', 'people'));
     }
 
@@ -80,17 +88,13 @@ class ToiletController extends Controller
      * @param  \App\Models\Food  $food
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($people_id)
 {
-    
-    $person = Person::findOrFail($id);
-    $toilets = $person->toilets;
+    $person = Person::findOrFail($people_id);
+    $toilet = $person->toilets;
 
-    return view('people', compact('toilets'));
-    
-    // $temperature = Temperature::findOrFail($id);
-
-    // return view('temperaturelist', compact('temperature'));
+    $people = Person::all(); // ここで $people を取得
+    return view('toilet', ['id' => $person->id],compact('person'));
 }
 
     /**
@@ -101,16 +105,22 @@ class ToiletController extends Controller
      */
     public function edit(Request $request, $people_id)
 {
+   
     $person = Person::findOrFail($people_id);
-    return view('toiletedit', ['id' => $person->id],compact('person'));
+    $today = \Carbon\Carbon::now()->toDateString();
+    $selectedDate = $request->input('selected_date', Carbon::now()->toDateString());
+    $selectedDateStart = Carbon::parse($selectedDate)->startOfDay();
+    $selectedDateEnd = Carbon::parse($selectedDate)->endOfDay();
+
+    $toiletsOnSelectedDate = $person->toilets->whereBetween('created_at', [$selectedDateStart, $selectedDateEnd]);
+    return view('toiletedit', compact('person', 'selectedDate', 'toiletsOnSelectedDate'));
 }
 
-public function change(Request $request, $people_id)
+public function change(Request $request, $people_id, $id)
     {
         $person = Person::findOrFail($people_id);
-        $lastToilets = $person->toilets->last();
-        
-        return view('toiletchange', compact('person', 'lastToilets'));
+        $toilet = Toilet::findOrFail($id);
+        return view('toiletchange', compact('person', 'toilet'));
     }
     /**
      * Update the specified resource in storage.
@@ -121,21 +131,39 @@ public function change(Request $request, $people_id)
      */
     public function update(Request $request, Toilet $toilet)
     {
+      
     //データ更新
-        $person = Person::find($request->people_id);
-        $toilet->people_id = $person->id;
-        $toilet->urine_amount = $request->urine_amount;
-        $toilet->ben_condition = $request->ben_condition;
-        $toilet->ben_amount = $request->ben_amount;
-        $toilet->bentsuu = $request->bentsuu;
-        $toilet->bikou = $request->bikou;
-        $toilet->created_at = $request->created_at;
-        $toilet->save();
-        
-        $people = Person::all();
-        
-        return view('people', compact('toilet', 'people'));
-    }
+        $toilet = Toilet::find($request->id);
+        // 画像がアップロードされているかチェック
+        if ($request->hasFile('filename')) {
+            $request->validate([
+                'filename' => 'image|max:2048', // ファイルのバリデーション
+            ]);
+    
+            $directory = 'public/sample/toilet_photo';
+            $filename = uniqid() . '.' . $request->file('filename')->getClientOriginalExtension();
+            $filename = $request->file('filename')->getClientOriginalName();
+            $request->file('filename')->storeAs($directory, $filename);
+            $filepath = $directory . '/' . $filename;
+    
+            // 更新されたファイル名とパスをセット
+            $toilet->filename = $filename;
+            $toilet->path = $filepath;
+            // dd($kyuuin);
+            // ↑ここでは$filename　$filepathどちらも取れている
+            
+     }
+        // 他のデータを更新
+    $toilet->fill($request->except(['filename']));
+    $toilet->save();
+
+    // セッショントークンを再生成
+    $request->session()->regenerateToken();
+
+    $people = Person::all();
+
+    return view('people', compact('toilet', 'people'));
+}
 
     /**
      * Remove the specified resource from storage.
@@ -143,8 +171,13 @@ public function change(Request $request, $people_id)
      * @param  \App\Models\Food  $food
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Food $food)
+    public function destroy($id)
     {
-        //
+       
+        $toilet = Toilet::find($id);
+    if ($toilet) {
+        $toilet->delete();
+    }
+        return redirect()->route('people.index');
     }
 }

@@ -97,19 +97,22 @@ Route::get('temperature/{people_id}/edit', [TemperatureController::class, 'edit'
 // プルダウンで登録させるバージョン↓
 Route::post('temperatures/{people_id}', [TemperatureController::class, 'store'])->name('temperatures.store');
 Route::get('temperatures/{people_id}', [TemperatureController::class, 'show'])->name('temperatures.show');
-Route::get('temperature/{people_id}/edit', [TemperatureController::class, 'edit'])->name('temperature.edit');
+Route::get('temperatureedit/{people_id}', [TemperatureController::class, 'edit'])->name('temperature.edit');
 
 // 体温編集↓
-Route::get('temperaturechange/{people_id}', [TemperatureController::class, 'change'])->name('temperature.change');
-Route::post('temperaturechange/{people_id}',[TemperatureController::class,'update'])->name('temperature_update');
+Route::get('temperaturechange/{people_id}/{id}', [TemperatureController::class, 'change'])->name('temperature.change');
+Route::post('temperaturechange/{people_id}/{id}',[TemperatureController::class,'update'])->name('temperature_update');
+Route::post('temperaturedestroy/{id}',[TemperatureController::class,'destroy'])->name('temperature.delete');
+
 // プルダウンで登録させるバージョン↓
 Route::post('bloodpressures/{people_id}', [BloodpressureController::class, 'store'])->name('bloodpressures.store');
 Route::get('bloodpressures/{people_id}', [BloodpressureController::class, 'show'])->name('bloodpressures.show');
-Route::get('bloodpressures/{people_id}/edit', [BloodpressureController::class, 'edit'])->name('bloodpressures.edit');
+Route::get('bloodpressuresedit/{people_id}', [BloodpressureController::class, 'edit'])->name('bloodpressures.edit');
 
 // 血圧編集↓
-Route::get('bloodpressurechange/{people_id}', [BloodpressureController::class, 'change'])->name('bloodpressure.change');
-Route::post('bloodpressurechange/{people_id}',[BloodpressureController::class,'update'])->name('bloodpressure_update');
+Route::get('bloodpressurechange/{people_id}/{id}', [BloodpressureController::class, 'change'])->name('bloodpressure.change');
+Route::post('bloodpressurechange/{people_id}/{id}',[BloodpressureController::class,'update'])->name('bloodpressure_update');
+Route::post('bloodpressuredestroy/{id}',[BloodpressureController::class,'destroy'])->name('bloodpressure.delete');
 
 Route::get('foods/{id}', 'FoodController@show')->name('foods.show');
 Route::get('food/{people_id}/edit', [FoodController::class, 'edit'])->name('food.edit');
@@ -117,22 +120,24 @@ Route::post('food/{people_id}/edit', [FoodController::class,'store'])->name('foo
 Route::get('foodchange/{people_id}',[FoodController::class,'change'])->name('food.change'); 
 Route::post('foodchange/{people_id}',[FoodController::class,'update'])->name('food_update');
 
-Route::get('toilets/{id}', [ToiletController::class, 'show'])->name('toilets.show');
-Route::get('toilet/{people_id}/edit', [ToiletController::class, 'edit'])->name('toilet.edit');
-Route::post('toilet/{people_id}/edit', [ToiletController::class,'store'])->name('toilet.post');
+Route::post('toilet/{people_id}', [ToiletController::class, 'store'])->name('toilet.store');
+Route::get('toilet/{people_id}', [ToiletController::class, 'show'])->name('toilet.show');
+Route::get('toiletedit/{people_id}', [ToiletController::class, 'edit'])->name('toilet.edit');
 
-// トイレ編集↓
-Route::get('toiletchange/{people_id}', [ToiletController::class, 'change'])->name('toilet.change');
-Route::post('toiletchange/{people_id}',[ToiletController::class,'update'])->name('toilet_update');
+// 血圧編集↓
+Route::get('toiletchange/{people_id}/{id}', [ToiletController::class, 'change'])->name('toilet.change');
+Route::post('toiletchange/{people_id}/{id}',[ToiletController::class,'update'])->name('toilet_update');
+Route::post('toiletdestroy/{id}',[ToiletController::class,'destroy'])->name('toilet.delete');
 
 // プルダウンで登録させるバージョン↓
 Route::post('medicine/{people_id}', [MedicineController::class, 'store'])->name('medicine.store');
 Route::get('medicine/{people_id}', [MedicineController::class, 'show'])->name('medicine.show');
-Route::get('medicine/{people_id}/edit', [MedicineController::class, 'edit'])->name('medicine.edit');
+Route::get('medicineedit/{people_id}', [MedicineController::class, 'edit'])->name('medicine.edit');
 
 // 内服編集↓
-Route::get('medicinechange/{people_id}', [MedicineController::class, 'change'])->name('medicine.change');
-Route::post('medicinechange/{people_id}',[MedicineController::class,'update'])->name('medicine_update');
+Route::get('medicinechange/{people_id}/{id}', [MedicineController::class, 'change'])->name('medicine.change');
+Route::post('medicinechange/{people_id}/{id}',[MedicineController::class,'update'])->name('medicine_update');
+Route::post('medicinedestroy/{id}',[MedicineController::class,'destroy'])->name('medicine.delete');
 
 // プルダウンで登録させるバージョン↓
 Route::post('kyuuin/{people_id}', [KyuuinController::class, 'store'])->name('kyuuin.store');
@@ -147,11 +152,12 @@ Route::post('kyuuindestroy/{id}',[KyuuinController::class,'destroy'])->name('kyu
 // プルダウンで登録させるバージョン↓
 Route::post('tube/{people_id}', [TubeController::class, 'store'])->name('tube.store');
 Route::get('tube/{people_id}', [TubeController::class, 'show'])->name('tube.show');
-Route::get('tube/{people_id}/edit', [TubeController::class, 'edit'])->name('tube.edit');
+Route::get('tubeedit/{people_id}', [TubeController::class, 'edit'])->name('tube.edit');
 
 // 注入編集↓
-Route::get('tubechange/{people_id}', [TubeController::class, 'change'])->name('tube.change');
-Route::post('tubechange/{people_id}',[TubeController::class,'update'])->name('tube_update');
+Route::get('tubechange/{people_id}/{id}', [TubeController::class, 'change'])->name('tube.change');
+Route::post('tubechange/{people_id}/{id}',[TubeController::class,'update'])->name('tube_update');
+Route::post('tubedestroy/{id}',[TubeController::class,'destroy'])->name('tube.delete');
 
 // プルダウンで登録させるバージョン↓
 Route::post('water/{people_id}', [WaterController::class, 'store'])->name('water.store');
@@ -166,11 +172,12 @@ Route::post('waterdestroy/{id}',[WaterController::class,'destroy'])->name('water
 // プルダウンで登録させるバージョン↓
 Route::post('hossa/{people_id}', [HossaController::class, 'store'])->name('hossa.store');
 Route::get('hossa/{people_id}', [HossaController::class, 'show'])->name('hossa.show');
-Route::get('hossa/{people_id}/edit', [HossaController::class, 'edit'])->name('hossa.edit');
+Route::get('hossaedit/{people_id}', [HossaController::class, 'edit'])->name('hossa.edit');
 
 // 発作編集↓
-Route::get('hossachange/{people_id}', [HossaController::class, 'change'])->name('hossa.change');
-Route::post('hossachange/{people_id}',[HossaController::class,'update'])->name('hossa_update');
+Route::get('hossachange/{people_id}/{id}', [HossaController::class, 'change'])->name('hossa.change');
+Route::post('hossachange/{people_id}/{id}',[HossaController::class,'update'])->name('hossa_update');
+Route::post('hossadestroy/{id}',[HossaController::class,'destroy'])->name('hossa.delete');
 
 Route::get('morningspeech/{people_id}/edit', [SpeechController::class, 'show'])->name('morningspeech.show');
 Route::post('morningspeech/{people_id}/edit', [SpeechController::class,'store'])->name('morningspeech.post');

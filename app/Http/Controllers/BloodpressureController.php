@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Bloodpressure;
 use App\Models\Person;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class BloodpressureController extends Controller
 {
@@ -52,12 +53,12 @@ class BloodpressureController extends Controller
         'min_blood' => $request->min_blood,
         'pulse' => $request->pulse,
         'spo2' => $request->spo2,
-         'bikou' => $request->bikou,
+        'bikou' => $request->bikou,
+        'created_at' => $request->created_at,
     ]);
     
-  $people = Person::all();
-//   $person = Person::findOrFail($request->people_id);
-//     return redirect()->route('bloodpressure.edit', ['people_id' => $person->id]); 
+    $people = Person::all();
+    $request->session()->regenerateToken();
     return view('people', compact('bloodpressure', 'people'));
     
     }
@@ -68,22 +69,13 @@ class BloodpressureController extends Controller
      * @param  \App\Models\Speech  $speech
      * @return \Illuminate\Http\Response
      */
-    public function show($people_id)
+     public function show($people_id)
 {
     $person = Person::findOrFail($people_id);
-
-    
-    // $person = Person::findOrFail($id);
-    // $bloodpressures = $person->bloodpressures;
     $bloodpressure = $person->bloodpressures;
-    $people = Person::all(); // ここで $people を取得
-    // @dd($bloodpressures);
-    return view('people', compact('bloodpressure'));
-    
-    
-    // $temperature = Temperature::findOrFail($id);
 
-    // return view('temperaturelist', compact('temperature'));
+    $people = Person::all(); // ここで $people を取得
+    return view('bloodpressures', ['id' => $person->id],compact('person'));
 }
 
     /**
@@ -92,21 +84,24 @@ class BloodpressureController extends Controller
      * @param  \App\Models\Speech  $speech
      * @return \Illuminate\Http\Response
      */
-     public function edit($people_id)
+     public function edit(Request $request, $people_id)
 {
+   
     $person = Person::findOrFail($people_id);
-    $bloodpressure = $person->bloodpressures;
+    $today = \Carbon\Carbon::now()->toDateString();
+    $selectedDate = $request->input('selected_date', Carbon::now()->toDateString());
+    $selectedDateStart = Carbon::parse($selectedDate)->startOfDay();
+    $selectedDateEnd = Carbon::parse($selectedDate)->endOfDay();
 
-    $people = Person::all(); // ここで $people を取得
-    return view('bloodpressureedit', ['id' => $person->id],compact('person'));
+    $bloodpressuresOnSelectedDate = $person->bloodpressures->whereBetween('created_at', [$selectedDateStart, $selectedDateEnd]);
+    return view('bloodpressuresedit', compact('person', 'selectedDate', 'bloodpressuresOnSelectedDate'));
 }
 
-public function change(Request $request, $people_id)
+public function change(Request $request, $people_id, $id)
     {
         $person = Person::findOrFail($people_id);
-        $lastBloodpressures = $person->bloodpressures->last();
-        
-        return view('bloodpressurechange', compact('person', 'lastBloodpressures'));
+        $bloodpressure = Bloodpressure::findOrFail($id);
+        return view('bloodpressurechange', compact('person', 'bloodpressure'));
     }
 
     /**
@@ -119,18 +114,15 @@ public function change(Request $request, $people_id)
     public function update(Request $request, Bloodpressure $bloodpressure)
     {
     //データ更新
-        $person = Person::find($request->people_id);
-        $bloodpressure->people_id = $person->id;
-        $bloodpressure->max_blood = $request->max_blood;
-        $bloodpressure->min_blood = $request->min_blood;
-        $bloodpressure->pulse = $request->pulse;
-        $bloodpressure->spo2 = $request->spo2;
-        $bloodpressure->bikou = $request->bikou;
-        
-        $bloodpressure->save();
-        
+        $bloodpressure = Bloodpressure::find($request->id);
+        $form = $request->all();
+        $bloodpressure->fill($form)->save();
+    
+        $request->session()->regenerateToken();
+    
         $people = Person::all();
-        
+        // 二重送信防止
+        $request->session()->regenerateToken();
         return view('people', compact('bloodpressure', 'people'));
     }
 
@@ -140,8 +132,13 @@ public function change(Request $request, $people_id)
      * @param  \App\Models\Speech  $speech
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Speech $speech)
+    public function destroy($id)
     {
-        //
+       
+        $bloodpressure = Bloodpressure::find($id);
+    if ($bloodpressure) {
+        $bloodpressure->delete();
+    }
+        return redirect()->route('people.index');
     }
 }

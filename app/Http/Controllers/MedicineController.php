@@ -6,6 +6,7 @@ use App\Models\Person;
 use App\Models\User;
 use App\Models\Medicine;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class MedicineController extends Controller
 {
@@ -52,15 +53,16 @@ class MedicineController extends Controller
         $medicine = Medicine::create([
         'people_id' => $request->people_id,
         'user_id_medicine' => $request->user_id_medicine,
-        'created_at_medicine' => $request->created_at_medicine,
+        'created_at' => $request->created_at,
         'medicine' => $request->medicine,
         'medicine_bikou' => $request->medicine_bikou,
         'updated_at' => $request->updated_at, 
     ]);
     // return redirect('people/{id}/edit');
-     $people = Person::all();
-//   $person = Person::findOrFail($request->people_id);
-    // return redirect()->route('toilet.edit', ['people_id' => $person->id]); //
+    $people = Person::all();
+     // 二重送信防止
+    $request->session()->regenerateToken();
+
     return view('people', compact('medicine', 'people'));
     }
 
@@ -78,9 +80,7 @@ class MedicineController extends Controller
 
     return view('people', compact('medicines'));
     
-    // $temperature = Temperature::findOrFail($id);
-
-    // return view('temperaturelist', compact('temperature'));
+    
 }
 
     /**
@@ -91,16 +91,29 @@ class MedicineController extends Controller
      */
     public function edit(Request $request, $people_id)
 {
+   
     $person = Person::findOrFail($people_id);
-    return view('medicineedit', ['id' => $person->id],compact('person'));
+    $today = \Carbon\Carbon::now()->toDateString();
+    $selectedDate = $request->input('selected_date', Carbon::now()->toDateString());
+    $selectedDateStart = Carbon::parse($selectedDate)->startOfDay();
+    $selectedDateEnd = Carbon::parse($selectedDate)->endOfDay();
+
+    $medicinesOnSelectedDate = $person->medicines->whereBetween('created_at', [$selectedDateStart, $selectedDateEnd]);
+    return view('medicineedit', compact('person', 'selectedDate', 'medicinesOnSelectedDate'));
 }
 
-public function change(Request $request, $people_id)
+public function change(Request $request, $people_id, $id)
     {
+        // ユーザーを取得
+        $user = User::findOrFail($people_id);
+        // ユーザーが持つ体温の記録からユーザーIDを取得
+        $user_id = $user->id;
+    
+        // すべてのユーザーを取得
+        $users = User::all();
         $person = Person::findOrFail($people_id);
-        $lastMedicine = $person->medicines->last();
-        
-        return view('medicinechange', compact('person', 'lastMedicine'));
+        $medicine = Medicine::findOrFail($id);
+        return view('medicinechange', compact('person', 'medicine','users'));
     }
     /**
      * Update the specified resource in storage.
@@ -112,17 +125,15 @@ public function change(Request $request, $people_id)
     public function update(Request $request, Medicine $medicine)
     {
     //データ更新
-        $person = Person::find($request->people_id);
-        $user_medicine = User::find($request->user_id_medicine);
-        $medicine->people_id = $person->id;
-        $medicine->user_id_medicine = $user_medicine->id;
-        $medicine->medicine = $request->medicine;
-        $medicine->medicine_bikou = $request->medicine_bikou;
-        $medicine->created_at_medicine = $request->created_at_medicine;
-        $medicine->save();
-        
+        $medicine = Medicine::find($request->id);
+        $form = $request->all();
+        $medicine->fill($form)->save();
+    
+        $request->session()->regenerateToken();
+    
         $people = Person::all();
-        
+        // 二重送信防止
+        $request->session()->regenerateToken();
         return view('people', compact('medicine', 'people'));
     }
 
@@ -132,8 +143,13 @@ public function change(Request $request, $people_id)
      * @param  \App\Models\Food  $food
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Food $food)
+    public function destroy($id)
     {
-        //
+       
+        $medicine = Medicine::find($id);
+    if ($medicine) {
+        $medicine->delete();
+    }
+        return redirect()->route('people.index');
     }
 }
