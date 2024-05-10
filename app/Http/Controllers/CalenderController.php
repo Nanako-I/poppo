@@ -3,12 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Calender\CalenderDeleteRequest;
+use App\Http\Requests\Calender\CalenderEditRequest;
 use App\Http\Requests\Calender\CalenderRegisterRequest;
+use App\Http\Requests\Calender\CalenderScheduledVisitDetailRequest;
 use App\Http\Traits\MessageTrait;
 use App\Models\Person;
 use App\Models\ScheduledVisit;
 use App\Models\VisitType;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
@@ -92,6 +93,32 @@ class CalenderController extends Controller
     }
 
     /**
+     * 特定の訪問予定を取得
+     *
+     * @param CalenderScheduledVisitDetailRequest $request
+     * @return JsonResponse
+     */
+    public function getScheduledVisitDetail(CalenderScheduledVisitDetailRequest $request)
+    {
+        $array = CalenderScheduledVisitDetailRequest::getOnlyRequest($request);
+
+        try {
+            $schedule = ScheduledVisit::find($array['scheduled_visit_id']);
+            if (!$schedule) {
+                $response = self::returnMessageNodataArray();
+                $status = Response::HTTP_NO_CONTENT;
+            }
+            $response = self::returnMessageIndex($schedule);
+            $status = Response::HTTP_OK;
+        } catch (\Exception $e) {
+            $message = $e->getMessage();
+            $response = self::messageErrorStatusText($message);
+            $status = Response::HTTP_INTERNAL_SERVER_ERROR;
+        }
+        return response()->json($response, $status);
+    }
+
+    /**
      * カレンダーに利用者の訪問予定を登録する
      *
      * @param CalenderRegisterRequest $request
@@ -121,6 +148,38 @@ class CalenderController extends Controller
         }
         return response()->json($response, $status);
     }
+
+    /**
+     * カレンダーに利用者の訪問予定をを編集する
+     *
+     * @param CalenderEditRequest $request
+     * @return JsonResponse
+     */
+    public function edit(CalenderEditRequest $request)
+    {
+        $array = CalenderEditRequest::getOnlyRequest($request);
+
+        // nullでない値のみを抽出
+        $updateData = array_filter($array, function ($value) {
+            return !is_null($value);
+        });
+
+        DB::beginTransaction();
+        try {
+            ScheduledVisit::where('people_id', $array['people_id'])
+                ->update($updateData);
+            DB::commit();
+            $response = self::returnMessageIndex(true);
+            $status = Response::HTTP_OK;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $message = $e->getMessage();
+            $response = self::messageErrorStatusText($message);
+            $status = Response::HTTP_INTERNAL_SERVER_ERROR;
+        }
+        return response()->json($response, $status);
+    }
+
 
     /**
      * カレンダーの訪問予定を削除する

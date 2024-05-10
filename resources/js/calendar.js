@@ -15,13 +15,19 @@ document.addEventListener("DOMContentLoaded", function () {
         initialView: "dayGridMonth",
         eventColor: "blue",
         headerToolbar: {
-            center: "addEventButton",
+            center: "backEventButton addEventButton",
         },
         customButtons: {
             addEventButton: {
                 text: "来訪予定登録",
                 click: function () {
                     openModal();
+                },
+            },
+            backEventButton: {
+                text: "戻る",
+                click: function () {
+                    window.location.href = "/people";
                 },
             },
         },
@@ -37,7 +43,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     return dayjs(dateString).format("MM-DD HH:mm");
                 }
             }
-            console.log(formatDate(info.event.end));
 
             var tooltip = new bootstrap.Tooltip(info.el, {
                 title: `${info.event.title}
@@ -132,11 +137,14 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
     // フォームの送信
+    let originalData = {};
     function registerSchedule() {
         document
             .getElementById("eventForm")
             .addEventListener("submit", function (e) {
                 e.preventDefault();
+                const isEdit = submitButton.textContent === "編集する";
+                const url = isEdit ? "/calendar/edit" : "/calendar/register";
 
                 // フォームのデータを取得
                 const peopleId = document.getElementById("selectPeople").value;
@@ -154,50 +162,99 @@ document.addEventListener("DOMContentLoaded", function () {
                     ? document.getElementById("exit-time").value
                     : "00:00";
                 const exitDateTime = `${exitDate} ${exitTime}:00`;
-                // 備考は使いたいけどツールチップでの表示が上手くいってないため一旦コメントアウト
-                // const notes = document.getElementById("notes").value
-                //     ? document.getElementById("notes").value
-                //     : null;
+
+                // 編集では変更があった項目のみを送信データに含める
+                const dataToSend = {
+                    people_id: peopleId,
+                };
+                if (isEdit) {
+                    dataToSend.visit_type_id =
+                        visitTypeId !== originalData.visit_type_id
+                            ? visitTypeId
+                            : null;
+                    dataToSend.arrival_datetime =
+                        arrivalDateTime !== originalData.arrival_datetime
+                            ? arrivalDateTime
+                            : null;
+                    dataToSend.exit_datetime =
+                        exitDateTime !== originalData.exit_datetime
+                            ? exitDateTime
+                            : null;
+                    dataToSend.notes = null;
+                } else {
+                    dataToSend.visit_type_id = visitTypeId;
+                    dataToSend.arrival_datetime = arrivalDateTime;
+                    dataToSend.exit_datetime = exitDateTime;
+                    dataToSend.notes = null;
+                }
 
                 axios
-                    .post(
-                        "/calendar/register",
-                        {
-                            people_id: peopleId,
-                            visit_type_id: visitTypeId,
-                            arrival_datetime: arrivalDateTime,
-                            exit_datetime: exitDateTime,
-                            notes: null,
+                    .post(url, dataToSend, {
+                        headers: {
+                            "X-CSRF-TOKEN": document
+                                .querySelector('meta[name="csrf-token"]')
+                                .getAttribute("content"),
                         },
-                        {
-                            headers: {
-                                "X-CSRF-TOKEN": document
-                                    .querySelector('meta[name="csrf-token"]')
-                                    .getAttribute("content"),
-                            },
-                        }
-                    )
+                    })
                     .then(() => {
                         alert("登録しました");
                         calendar.refetchEvents();
                     })
                     .catch((error) => {
-                        // バリデーションエラーなど
                         alert("登録に失敗しました");
                     });
 
-                // モーダルを閉じる
                 closeModal();
             });
     }
 
     calendar.setOption("eventClick", function (info) {
-        // 削除モーダルを表示
-        openDeleteModal();
-        // 削除確認ボタンにイベントハンドラを設定
-        document.getElementById("confirmDelete").onclick = function () {
-            deleteEvent(info.event.id);
-        };
+        axios
+            .get("/calendar/scheduled_visit_detail/", {
+                params: {
+                    scheduled_visit_id: info.event.id,
+                },
+            })
+            .then((response) => {
+                const schedule = response.data.contents;
+                // オプション選択モーダルを表示
+                document
+                    .getElementById("optionModal")
+                    .classList.remove("hidden");
+                // 編集ボタンのイベントハンドラ
+                document.getElementById("editButton").onclick = function () {
+                    const eventData = {
+                        person_id: schedule.people_id,
+                        visit_type_id: schedule.visit_type_id,
+                        start: info.event.start.toISOString(),
+                        end: info.event.end.toISOString(),
+                    };
+                    // 編集モーダルを開く
+                    openModal(true, eventData);
+                    document
+                        .getElementById("optionModal")
+                        .classList.add("hidden");
+                };
+
+                // 削除ボタンのイベントハンドラ
+                document.getElementById("deleteButton").onclick = function () {
+                    openDeleteModal();
+                    document
+                        .getElementById("optionModal")
+                        .classList.add("hidden");
+                    document.getElementById("confirmDelete").onclick =
+                        function () {
+                            deleteEvent(info.event.id);
+                            document
+                                .getElementById("optionModal")
+                                .classList.add("hidden");
+                        };
+                };
+            })
+            .catch((error) => {
+                console.error("Error fetching event details:", error);
+                alert("イベントデータの取得に失敗しました。");
+            });
     });
 
     // 削除メソッド
@@ -235,14 +292,40 @@ function getScrollbarWidth() {
     return window.innerWidth - document.documentElement.clientWidth;
 }
 
-// 登録モーダルを開く関数
-function openModal() {
+// 予定登録・編集用のモーダル開く
+function openModal(edit = false, eventData = null) {
     const scrollbarWidth = getScrollbarWidth();
     document.body.style.overflow = "hidden";
     document.body.style.paddingRight = `${scrollbarWidth}px`; // スクロールバーの幅を補正
-    // モーダルの要素を取得
     const modal = document.getElementById("modalBackdrop");
-    // モーダルを表示
+    const modalTitle = document.getElementById("modalTitle");
+    const submitButton = document.getElementById("submitButton");
+    if (edit) {
+        modalTitle.textContent = "予定を編集";
+        submitButton.textContent = "編集する";
+        // ここでフォームに既存のデータをセットする
+        document.getElementById("selectPeople").value = eventData.person_id;
+        document.getElementById("selectVisitType").value =
+            eventData.visit_type_id;
+        document.getElementById("arrival-date").value = dayjs(
+            eventData.start
+        ).format("YYYY-MM-DD");
+        document.getElementById("arrival-time").value = dayjs(
+            eventData.start
+        ).format("HH:mm");
+        document.getElementById("exit-date").value = dayjs(
+            eventData.end
+        ).format("YYYY-MM-DD");
+        document.getElementById("exit-time").value = dayjs(
+            eventData.end
+        ).format("HH:mm");
+    } else {
+        modalTitle.textContent = "来訪日登録";
+        submitButton.textContent = "登録";
+        // フォームの値をクリア
+        document.getElementById("eventForm").reset();
+    }
+
     modal.classList.remove("hidden");
 }
 
@@ -254,13 +337,26 @@ function closeModal() {
     modal.classList.add("hidden");
 }
 
-// 削除モーダルを開く関数
+// 削除モーダル
 function openDeleteModal() {
     document.getElementById("deleteModal").classList.remove("hidden");
 }
-document.getElementById("cancelDelete").addEventListener("click", function () {
-    document.getElementById("deleteModal").classList.add("hidden");
-});
+const cancelDelete = document.getElementById("cancelDelete");
+if (cancelDelete) {
+    document
+        .getElementById("cancelDelete")
+        .addEventListener("click", function () {
+            document.getElementById("deleteModal").classList.add("hidden");
+        });
+}
+const cancelOption = document.getElementById("cancelOption");
+if (cancelOption) {
+    document
+        .getElementById("cancelOption")
+        .addEventListener("click", function () {
+            document.getElementById("optionModal").classList.add("hidden");
+        });
+}
 
 function closeDeleteModal() {
     document.body.style.overflow = "";

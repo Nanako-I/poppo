@@ -43,7 +43,7 @@
       <!-- 備考使うならh-3/4必要 -->
       <!-- <div class="bg-white w-2/4 h-3/4 rounded-lg shadow-xl z-50 overflow-auto"> -->
       <div class="flex justify-between items-center p-6 border-b">
-        <h3 class="text-lg font-semibold">来訪日登録</h3>
+        <h3 class="text-lg font-semibold" id="modalTitle">来訪日登録</h3> <!-- modalTitle の ID を追加 -->
         <button type="button" class="text-gray-400 hover:text-gray-500 focus:outline-none modal-close-btn">
           <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -86,7 +86,7 @@
           <label for="notes" class="block text-sm font-medium text-gray-700">備考</label>
           <textarea id="notes" name="notes" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500" rows="2"></textarea>
         </div> -->
-        <button type="submit" class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">登録</button>
+        <button type="submit" id="submitButton" class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 -700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">登録</button> <!-- submitButton の ID を追加 -->
       </form>
     </div>
   </div>
@@ -97,6 +97,17 @@
       <div class="mt-4 flex justify-end space-x-3">
         <button id="cancelDelete" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">キャンセル</button>
         <button id="confirmDelete" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">削除する</button>
+      </div>
+    </div>
+  </div>
+  <!-- オプション選択モーダル -->
+  <div id="optionModal" class="fixed inset-0 z-50 bg-gray-600 bg-opacity-50 flex items-center justify-center p-6 hidden">
+    <div class="bg-white w-1/4 rounded-lg shadow-xl z-50 overflow-auto p-6">
+      <h3 class="text-lg font-semibold">予定の操作</h3>
+      <div class="mt-4 flex justify-end space-x-3">
+        <button id="cancelOption" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">キャンセル</button>
+        <button id="editButton" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">編集</button>
+        <button id="deleteButton" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">削除</button>
       </div>
     </div>
   </div>
