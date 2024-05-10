@@ -109,8 +109,7 @@
                       </div>
                       <!--</a>-->
                       
-                       
-                                    
+                   @can('role')            
                                 <!--連絡事項↓ -->
                         　    　<div class="border-2 p-2 rounded-lg bg-white m-2">
                                     <div class="flex justify-start items-center">
@@ -192,7 +191,7 @@
                                         <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
                                         <a href="{{ url('food/'.$person->id.'/edit') }}" class="relative">
                                         </a>
-                                        
+                       @endcan             
                         <!--水分登録↓-->
                             　<div class="border-2 p-2 rounded-lg bg-white m-2">
                                 <div class="flex justify-start items-center">
@@ -1282,7 +1281,6 @@
 
 </body>
 </html>
-
 <script>
 
 

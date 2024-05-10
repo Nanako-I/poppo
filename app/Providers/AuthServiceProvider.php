@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use App\Models\User;
+use App\Models\Role;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -24,10 +26,31 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
 {
     $this->registerPolicies();
+    Gate::define('role', function($user) {
+    // ユーザーが持つ役割を取得します
+    $roles = $user->roles;
+    
+    // 役割の中に"staff"があるかどうかをチェックします
+    return $roles->contains('name', 'staff');
+});
+    // Gate::define('role', function(User $user, Role $role) {
+        // return $user->id==$role->user_id;
+    
+    // Gate::define('role',function($user){
 
-    // プレミア（カンパニー）会員用のみ許可（flagが1の人のみ許可）
-    Gate::define('company', function ($user) {
-        return ($user->flag == 1);
-    });
+        //   return $user->role == 'staff';
+        // $roles = $user->roles;
+        
+        // return $roles->contains('name', 'staff');
+        
+//     Gate::define('role', function($user) {
+//     // ユーザーのIDを使用して中間テーブルから行を取得します
+//     $userRole = User::where('id', $user->id)->where('role_id', 'staff')->first();
+    
+//     // 中間テーブルの行が見つかった場合は true を返します
+//     return $userRole !== null;
+// // }
+// });
+    
 }
 }

@@ -8,26 +8,43 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
-
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable
 {
     // laravel permissionを使うための記述↓
-    // use Notifiable,HasRoles;
+     use Notifiable,HasRoles;
+     use HasApiTokens, HasFactory, Notifiable;
+     
+// public function roles(): BelongsToMany
+//     {
+//         return $this->belongsToMany(Person::class,'user_roles', 'user_id', 'role_id')
+//         ->withTimestamps();
+//     }    
     
-        
-public function people(): BelongsToMany
+public function people_family(): BelongsToMany
     {
-        // return $this->belongsToMany('App\Models\Person');
-        
-        // 関連づけられたモデルのクラス名（Person::class）が渡される　'families'という中間テーブルの名前を指定↓
-        return $this->belongsToMany(Person::class, 'families')
-        
-        // relationshipという名前の中間テーブルの追加のカラムを指定↓
-        ->withPivot('relationship')
-        // 中間テーブルに関連づけるためのFamilyモデルが指定↓
-        ->using(Family::class);
+        return $this->belongsToMany(Person::class, 'people_families', 'user_id', 'person_id')
+        ->withTimestamps();
+    }
+    
+    // FacilityとUserを紐づけた中間テーブルを取ってくる↓
+    public function facility_staffs(): BelongsToMany
+    {
+  //↓ belongsToMany('多対多の相手側のクラス名…ClassName::class','中間テーブルの名前',　'このモデルを参照する中間テーブルの外部キー名', '相手側のモデルを参照する中間テーブルの外部キー名')
+    return $this->belongsToMany(Facility::class, 'facility_staffs', 'staff_id','facility_id')
+    ->withTimestamps();
+    
+    }
+    
+   
+    public function user_roles(): BelongsToMany
+    {
+  //↓ belongsToMany('多対多の相手側のクラス名…ClassName::class','中間テーブルの名前',　'このモデルを参照する中間テーブルの外部キー名', '相手側のモデルを参照する中間テーブルの外部キー名')
+    return $this->belongsToMany(Role::class, 'user_roles', 'user_id','role_id')
+    ->withTimestamps();
+    
     }
     
     public function temperatures()
@@ -35,7 +52,7 @@ public function people(): BelongsToMany
         return $this->hasMany(Temperature::class,'user_id');
     }
     
-    use HasApiTokens, HasFactory, Notifiable;
+   
 
     /**
      * The attributes that are mass assignable.
@@ -46,6 +63,7 @@ public function people(): BelongsToMany
         'name',
         'email',
         'password',
+        // 'role',
     ];
 
     /**
@@ -69,6 +87,3 @@ public function people(): BelongsToMany
     
     
 }
-
-
-

@@ -8,6 +8,8 @@ use App\Http\Middleware\Authenticate;//追記
 use App\Http\Middleware\RedirectIfNotAuthenticated;//追記
 
 use App\Http\Controllers\PersonController;//追記
+use App\Http\Controllers\FacilityController;
+use App\Http\Controllers\HogoshaUserController;
 use App\Http\Controllers\PhotoController;//追記
 use App\Http\Controllers\TemperatureController;
 use App\Http\Controllers\BloodpressureController;
@@ -70,6 +72,11 @@ Route::get('/dashboard', function () {
   //Route::resource('people', PersonController::class);
   
 //});
+
+// Route::get('facilityregister', [FacilityController::class, 'edit']);
+Route::get('/facilityregister', [FacilityController::class, 'create'])->name('facilityregister.create');
+Route::post('facilityregister', [FacilityController::class, 'store'])->name('facilityregister.store');
+
 // Book用の一括ルーティング　本来使ってたルーティング↓
 Route::resource('people', PersonController::class);
 
@@ -89,6 +96,16 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+// 保護者のuser登録画面↓
+Route::get('/hogosharegister',[HogoshaUserController::class,'showRegister']);
+Route::post('/hogosharegister',[HogoshaUserController::class,'register']);
+
+Route::middleware('auth')->group(function (){
+    Route::get('/hogosha',[HogoshaUserController::class,'hogosha'])->name('hogosha');
+});
+
+Route::get('hogoshanumber', [HogoshaUserController::class, 'create'])->name('hogoshanumber.show');
+Route::post('hogoshanumber', [HogoshaUserController::class, 'numberregister'])->name('hogoshanumber.store');
 
 
 Route::get('temperaturelist', [PersonController::class, 'showtemperature'])->name('temperaturelist.edit');
@@ -101,6 +118,7 @@ Route::get('temperatureedit/{people_id}', [TemperatureController::class, 'edit']
 
 // 体温編集↓
 Route::get('temperaturechange/{people_id}/{id}', [TemperatureController::class, 'change'])->name('temperature.change');
+// Route::get('people', [TemperatureController::class, 'change'])->name('temperature.change');
 Route::post('temperaturechange/{people_id}/{id}',[TemperatureController::class,'update'])->name('temperature_update');
 Route::post('temperaturedestroy/{id}',[TemperatureController::class,'destroy'])->name('temperature.delete');
 
@@ -212,7 +230,10 @@ Route::post('notificationchange/{people_id}',[NotificationController::class,'upd
 // Route::post('hogoshachange/{people_id}',[HogoshaController::class,'update'])->name('hogosha');
 
 // 子どもの体調について　親からの報告↓
-Route::get('hogosha/{people_id}/edit', [ChildConditionController::class, 'edit'])->name('condition.edit');
+
+Route::get('hogosha', [ChildConditionController::class, 'edit'])->name('condition.edit');
+// Route::get('hogosha/{people_id}', [ChildConditionController::class, 'edit'])->name('condition.edit');
+// Route::get('hogosha/{people_id}/edit', [ChildConditionController::class, 'edit'])->name('condition.edit');
 Route::post('condition/{people_id}/edit', [ChildConditionController::class,'store'])->name('condition.post');
 
 // 編集↓

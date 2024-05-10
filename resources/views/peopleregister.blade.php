@@ -15,7 +15,12 @@
         @if (count($errors) > 0)
             <!-- Form Error List -->
             <div class="flex justify-between p-4 items-center bg-red-500 text-white rounded-lg border-2 border-white">
-                <div><strong>氏名・生年月日は入力必須です。</strong></div> 
+                @if ($errors->has('name') || $errors->has('date_of_birth'))
+                    <div><strong>氏名・生年月日は入力必須です。</strong></div> 
+                @endif
+                @if ($errors->has('jukyuusha_number'))
+                    <div><strong>受給者証番号は10桁で入力してください。</strong></div>
+                @endif
                 <div>
                     <ul>
                     @foreach ($errors->all() as $error)
@@ -25,7 +30,8 @@
                 </div>
             </div>
         @endif
-        <!-- バリデーションエラーの表示に使用-->
+
+
       <body class="h-full w-full">
  
     <div class="flex bg-gray-100">
@@ -64,10 +70,10 @@
         </div>
         <!--</div>-->
         
-      <!--<div class="form-group col-span-1">-->
-      <!--  <label class="block text-base font-bold text-gray-700">受給者番号</label>-->
-      <!--  <input name="jukyuusha_number" type="text" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="受給者番号">-->
-      <!--</div>-->
+      <div class="form-group mb-4 m-2 w-1/2 max-w-md md:w-1/6" style="display: flex; flex-direction: column; align-items: center;">
+        <label class="block text-lg font-bold text-gray-700">受給者証番号</label>
+        <input name="jukyuusha_number" type="text" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm text-xl font-bold border-gray-300 rounded-md" placeholder="受給者番号">
+      </div>
   
       <!--<div class="form-group col-span-1">-->
       <!--  <label class="block text-base font-bold text-gray-700">障害支援区分</label>-->

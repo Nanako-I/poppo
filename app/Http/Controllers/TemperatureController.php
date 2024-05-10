@@ -58,11 +58,19 @@ class TemperatureController extends Controller
         'created_at' => $request->created_at,
         
     ]);
-    // return redirect('people/{id}/edit');
-     $people = Person::all();
-     
-     // 二重送信防止
-     $request->session()->regenerateToken();
+        $user = auth()->user();
+        //  dd($user);
+        // facility_staffsメソッドからuserの情報をゲットする↓
+        $facilities = $user->facility_staffs()->get();
+        // dd($facilities);
+        $firstFacility = $facilities->first();
+    
+        // dd($firstFacility);
+        // ↑これで$facilityが取れている
+        $people= $firstFacility->people_facilities()->get();
+         
+         // 二重送信防止
+        $request->session()->regenerateToken();
 
     return view('people', compact('temperature', 'people'));
     }
@@ -94,7 +102,6 @@ class TemperatureController extends Controller
 //     $person = Person::findOrFail($request->people_id);
 //     return view('temperature.edit', ['id' => $person->id],compact('person'));
 // }
-
 public function edit(Request $request, $people_id)
 {
    
@@ -107,6 +114,52 @@ public function edit(Request $request, $people_id)
     $temperaturesOnSelectedDate = $person->temperatures->whereBetween('created_at', [$selectedDateStart, $selectedDateEnd]);
     return view('temperatureedit', compact('person', 'selectedDate', 'temperaturesOnSelectedDate'));
 }
+
+// public function edit(Request $request, $people_id)
+// {
+//     $user = auth()->user();
+//     //  dd($user);
+//     // facility_staffsメソッドからuserの情報をゲットする↓
+//     $facilities = $user->facility_staffs()->get();
+//     // dd($facilities);
+//     $firstFacility = $facilities->first();
+
+//     // dd($firstFacility);
+//     // ↑これで$facilityが取れている
+//     $people = $firstFacility->people_facilities()->get();
+        
+//     $person = Person::findOrFail($people_id);
+//     $today = \Carbon\Carbon::now()->toDateString();
+//     $selectedDate = $request->input('selected_date', Carbon::now()->toDateString());
+//     $selectedDateStart = Carbon::parse($selectedDate)->startOfDay();
+//     $selectedDateEnd = Carbon::parse($selectedDate)->endOfDay();
+
+//     $temperaturesOnSelectedDate = $person->temperatures->whereBetween('created_at', [$selectedDateStart, $selectedDateEnd]);
+//     return view('temperatureedit', compact('people', 'selectedDate', 'temperaturesOnSelectedDate'));
+// }
+
+// public function change(Request $request, $people_id, $id)
+// {
+//     $user = auth()->user();
+//     // ユーザーに関連付けられている施設を取得
+//     $facilities = $user->facility_staffs()->get();
+//     // 最初の施設を取得
+//     $firstFacility = $facilities->first();
+
+//     // 特定のpeople_idに対応するpeopleを取得
+//     $person = $firstFacility->people_facilities()->where('people_facilities.id', $people_id)->firstOrFail();
+
+
+//     // すべてのユーザーを取得 (この行が不要な場合は削除)
+//     $users = User::all();
+
+//     // 指定されたidのTemperatureを取得
+//     $temperature = Temperature::findOrFail($id);
+
+//     // ビューにデータを渡す
+//     return view('temperaturechange', compact('person', 'temperature', 'users'));
+    
+// }
 
 public function change(Request $request, $people_id, $id)
     {
@@ -121,6 +174,28 @@ public function change(Request $request, $people_id, $id)
         $temperature = Temperature::findOrFail($id);
         return view('temperaturechange', compact('person', 'temperature','users'));
     }
+// public function change(Request $request, $people_id, $id)
+//     {
+//     $user = auth()->user();
+//     //  dd($user);
+//     // facility_staffsメソッドからuserの情報をゲットする↓
+//     $facilities = $user->facility_staffs()->get();
+//     // dd($facilities);
+//     $firstFacility = $facilities->first();
+
+//     // dd($firstFacility);
+//     // ↑これで$facilityが取れている
+//     $people= $firstFacility->people_facilities()->get();
+//     // すべてのユーザーを取得
+//     $users = User::all();
+//     $person = Person::findOrFail($people_id);
+//     // dd($person);
+//     $temperature = Temperature::findOrFail($id);
+//     return view('temperaturechange', compact('person', 'temperature','users','people'));
+//     // return view('temperaturechange', compact('person', 'temperature'));
+//     // return view('people',compact('people'));
+
+//     }
     /**
      * Update the specified resource in storage.
      *
@@ -136,8 +211,17 @@ public function change(Request $request, $people_id, $id)
         $temperature->fill($form)->save();
     
         $request->session()->regenerateToken();
+        $user = auth()->user();
+        //  dd($user);
+        // facility_staffsメソッドからuserの情報をゲットする↓
+        $facilities = $user->facility_staffs()->get();
+        // dd($facilities);
+        $firstFacility = $facilities->first();
     
-        $people = Person::all();
+        // dd($firstFacility);
+        // ↑これで$facilityが取れている
+        $people= $firstFacility->people_facilities()->get();
+        // $people = Person::all();
         // 二重送信防止
         $request->session()->regenerateToken();
         return view('people', compact('temperature', 'people'));

@@ -15,15 +15,26 @@ class Person extends Model
     
     
     // usersテーブルと紐づける↓
-    public function users(): BelongsToMany
+    public function roles(): BelongsToMany
     {
-  
-        // familiesという中間テーブルを指定する↓
-        return $this->belongsToMany(User::class, 'families')
-        ->withPivot('relationship')
-        ->using(Family::class);
-        
-        // （hasManyは、一対多（One-to-Many）のリレーションシップを表現）
+      //↓ belongsToMany('多対多の相手側のクラス名…ClassName::class','中間テーブルの名前',　'このモデルを参照する中間テーブルの外部キー名', '相手側のモデルを参照する中間テーブルの外部キー名')
+    return $this->belongsToMany(User::class, 'user_roles', 'user_id', 'role_id')
+    ->withTimestamps();
+       
+    }
+    
+    public function people_family(): BelongsToMany
+    {
+  //↓ belongsToMany('多対多の相手側のクラス名…ClassName::class','中間テーブルの名前',　'このモデルを参照する中間テーブルの外部キー名', '相手側のモデルを参照する中間テーブルの外部キー名')
+    return $this->belongsToMany(User::class, 'people_families', 'person_id','user_id')
+    ->withTimestamps();
+    }
+    
+    public function people_facilities(): BelongsToMany
+    {
+  //↓ belongsToMany('多対多の相手側のクラス名…ClassName::class','中間テーブルの名前',　'このモデルを参照する中間テーブルの外部キー名', '相手側のモデルを参照する中間テーブルの外部キー名')
+    return $this->belongsToMany(Facility::class, 'people_facilities', 'people_id', 'facility_id')
+    ->withTimestamps();
     }
 
     // Person モデルに追加

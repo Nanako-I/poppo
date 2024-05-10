@@ -18,7 +18,9 @@ class ChildTemperatureController extends Controller
     
 		
     $childtemperatures = ChildTemperature::orderBy('created_at', 'asc')->get();
-
+// ログインユーザーに関連する人物の情報を取得
+        $user = auth()->user();
+        $people = $user->people()->get();
     return view('hogosha', ['childtemperatures' => $childtemperatures]);
     
    
@@ -32,10 +34,13 @@ class ChildTemperatureController extends Controller
      */
    public function create(Request $request)
 {
-    $people = Person::all(); // Personモデルからデータを取得して$people変数に代入
+    // $people = Person::all(); // Personモデルからデータを取得して$people変数に代入
   
     $person = ChildTemperature::findOrFail($request->people_id);
-  
+    
+  // ログインユーザーに関連する人物の情報を取得
+        $user = auth()->user();
+        $people = $user->people()->get();
     return view('people', compact('people')); // $people変数をビューに渡す
 }
 
@@ -59,7 +64,9 @@ class ChildTemperatureController extends Controller
         
     ]);
     
-    $people = Person::all();
+     // ログインユーザーに関連する人物の情報を取得
+    $user = auth()->user();
+    $people = $user->people()->get();
     return view('hogosha', compact('childtemperatures', 'people'));
     }
 
@@ -77,6 +84,9 @@ public function change(Request $request, $people_id)
         //** ↓ 下をコピー ↓ **
         $person = Person::findOrFail($people_id);
         $lastTemperature = $person->child_temperatures->last();
+         // ログインユーザーに関連する人物の情報を取得
+        $user = auth()->user();
+        $people = $user->people()->get();
         return view('childtemperaturechange', compact('person', 'lastTemperature'));
     }
 
@@ -89,15 +99,16 @@ public function change(Request $request, $people_id)
      */
     public function edit(Request $request, $people_id)
 {
-  $people = Person::all(); // Personモデルからデータを取得して$people変数に代入
+//   $people = Person::all(); // Personモデルからデータを取得して$people変数に代入
   $person = Person::findOrFail($people_id);
   $lastTemperature = null;
 if (!is_null($person->child_temperatures)) {
     $lastTemperature = $person->child_temperatures->isEmpty() ? null : $person->child_temperatures->last();
 }
 
-
-    // return view('hogosha',  ['id' => $person->id],compact('people', 'lastFoodTime', 'lastOyatsu'));
+// ログインユーザーに関連する人物の情報を取得
+        $user = auth()->user();
+        $people = $user->people()->get();
     return view('hogosha',  ['id' => $person->id],compact('people', 'lastTemperature'));
 }
 
@@ -123,8 +134,10 @@ if (!is_null($person->child_temperatures)) {
        
         $childtemperature->save();
         
-        $people = Person::all();
-        
+        // $people = Person::all();
+        // ログインユーザーに関連する人物の情報を取得
+        $user = auth()->user();
+        $people = $user->people()->get();
         return view('hogosha', compact('childtemperature', 'people'));
     }
     

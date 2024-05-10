@@ -28,9 +28,44 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
 
         $request->session()->regenerate();
+         $user = Auth::user();
+// dd($user->roles()->pluck('role_id'));
+        
+       
+// rolesはUser.phpのrolesメソッドから取得
+        // role_idが 'staff' （1）の場合
+    $user_roles = $user->user_roles()->where('role_id', '1')->get();
 
-        return redirect()->intended(RouteServiceProvider::HOME);
+    if ($user_roles->isNotEmpty()) {
+        return redirect(RouteServiceProvider::HOME);
     }
+    
+    // role_idが 'family'（2） の場合
+    $user_roles = $user->user_roles()->where('role_id', '2')->get();
+    
+    if ($user_roles->isNotEmpty()) {
+        return redirect(RouteServiceProvider::HOMEFAMILY);
+    }
+
+    // 上記のいずれの条件にも該当しない場合のデフォルトのリダイレクト
+    return redirect()->route('login')->with('error', 'ログインできません。');
+}
+    
+    
+//     public function store(LoginRequest $request): RedirectResponse
+// {
+//     try {
+//         $request->authenticate();
+//         $request->session()->regenerate();
+
+//         Log::info('User logged in:', ['id' => Auth::id()]);
+//     } catch (\Exception $e) {
+//         Log::error('Login failed:', ['error' => $e->getMessage()]);
+//         // エラーメッセージをユーザーに返すなどの処理
+//     }
+
+//     return redirect()->intended(RouteServiceProvider::HOME);
+// }
 
     /**
      * Destroy an authenticated session.

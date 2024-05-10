@@ -47,10 +47,12 @@
         </style>
       <h1 class="sm:text-2xl text-3xl font-bold title-font mb-4 text-gray-900" _msttexthash="91611" _msthidden="1" _msthash="63"></h1>
     </div>
-    
+   
     <!-- 現在の本 -->
+ 
   <div class="flex flex-row justify-start w-screen overflow-x-auto">
     <div class="slider">
+        
     @csrf
         @if (!is_null($people) && count($people) > 0)
      <div class="flex flex-row justify-center tw-flex-row h-150 -m-2">
@@ -105,7 +107,7 @@
                         
                                     
                                 
-                                    
+                        @can('staff')            
                          <!-- 体調登録↓ -->
                         　    　 <div class="border-2 p-2 rounded-lg bg-white m-2">
                                      <div class="flex justify-start items-center">
@@ -296,7 +298,7 @@
                                     </div>
                                 </div>          
                   
-                                        
+                            @endcan            
                                 <!-- 最終食事・おやつ登録↓ -->
                         　    　 <div class="border-2 p-2 rounded-lg bg-white m-2">
                                     <div class="flex justify-start items-center">
@@ -688,7 +690,6 @@
 
 </body>
 </html>
-
 <script>
 
 

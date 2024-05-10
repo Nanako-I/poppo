@@ -59,27 +59,17 @@
                     </x-nav-link>
                 </div>
                 
-                <!--<div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex {{ request()->is('temperaturelist') ? 'bg-custom-pink text-black' : '' }} px-4 rounded-md text-xl font-bold hover:bg-custom-hover-pink items-center justify-center">-->
-                <!--     <i class="material-icons md-48" id="face">face</i>-->
-                <!--     <x-nav-link :href="url('temperaturelist')" :active="request()->is('temperaturelist')">-->
-                <!--        {{ __('体温登録') }}-->
-                <!--    </x-nav-link>-->
-                <!--</div>-->
-            
-                <!--<div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex {{ request()->is('foodlist') ? 'bg-custom-pink text-black' : '' }} px-4 rounded-md text-xl font-bold hover:bg-custom-hover-pink items-center justify-center">-->
-                <!--     <i class="material-icons md-48" id="face">face</i>-->
-                <!--     <x-nav-link :href="url('foodlist')" :active="request()->is('foodlist')">-->
-                <!--        {{ __('食事登録') }}-->
-                <!--    </x-nav-link>-->
-                <!--</div>-->
+                
             </div>
 
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ml-6">
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
-                        
-                        <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
+                       <div class="closemenu" id="closemenu">
+                            <span class="square_btn"></span>
+                        </div>
+                        <button id="toggleButton" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
                             <div>{{ Auth::user()->name }}</div>
 
                             <div class="ml-1">
@@ -233,7 +223,7 @@
         </style>
         
     <!-- Responsive Navigation Menu -->
-    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
+    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden"  id="responsiveMenu">
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
@@ -268,6 +258,33 @@
 </nav>
 <!-- JavaScript 部分 -->
 <script>
+// ボタンとメニュー要素を取得
+    const toggleButton = document.getElementById('toggleButton');
+    const menu = document.getElementById('responsiveMenu');
+    let closemenu = document.getElementById("closemenu");
+
+    // トグルボタンがクリックされた時の処理
+    toggleButton.addEventListener('click', function() {
+    // alert('クリック');
+        // メニューの表示状態を切り替える
+        menu.classList.toggle('show');
+        responsiveMenu.style.display = "flex";
+        
+        if (responsiveMenu.classList.contains('show')) {
+        responsiveMenu.style.display = "flex";
+    } else {
+        responsiveMenu.style.display = "none";
+    }
+});
+
+close.addEventListener('click', function () {
+    responsiveMenu.classList.remove('show');
+    responsiveMenu.style.display = "none"; // closeボタンが押されたら非表示にする
+    hamburger.style.display = "block";
+});
+
+    
+    
 // ハンバーガーメニュー↓
 
 let hamburger = document.getElementById("hamburger");

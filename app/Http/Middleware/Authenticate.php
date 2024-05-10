@@ -18,6 +18,7 @@ class Authenticate extends Middleware
         if (! $request->expectsJson()) {
             return route('login');
         }
+      
     }
 
     /**
@@ -30,9 +31,13 @@ class Authenticate extends Middleware
      */
     public function handle($request, Closure $next, ...$guards)
     {
-        if (! $request->expectsJson()) {
-            return redirect()->route('login'); // ログイン画面にリダイレクト
+        // if (! $request->user()) {
+        //     return redirect()->route('login'); // ログイン画面にリダイレクト
+        // }
+        if (! $request->route()->named('hogosharegister') || $request->user()) {
+            return parent::handle($request, $next, $guards);
         }
+
 
         return $next($request);
     }

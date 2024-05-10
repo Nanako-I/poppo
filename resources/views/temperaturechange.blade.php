@@ -35,16 +35,7 @@
                         font-weight: bold;
                       }
                     </style>
-                        <!--<div class="flex items-center justify-center my-2">-->
-                        <!--    <div class="flex items-center justify-between p-2 border-b border-gray-300">-->
-                        <!--        <p class="text-gray-900 font-bold text-lg mr-1.5">記録者</p>-->
-                        <!--        <select name="recorded_by" id="recorded_by" class="block w-full border-gray-300 focus:border-indigo-300">-->
-                        <!--            @foreach ($users as $user)-->
-                        <!--                <option value="{{ $user->id }}">{{ $user->name }}</option>-->
-                        <!--            @endforeach-->
-                        <!--        </select>-->
-                        <!--    </div>-->
-                        <!--</div>-->
+                        
                     
                         <div class="flex items-center justify-center">
                              <input type="hidden" name="people_id" value="{{ $person->id }}">

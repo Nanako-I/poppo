@@ -5,9 +5,10 @@ namespace App\Http\Controllers;
 // namespace App\Http\Livewire;
 //use Illuminate\Foundation\Auth\User; // 認証分岐のため追加
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\DB;
 // Personモデルを呼び出している↓
 use App\Models\User;
+use App\Models\Facility;
 use App\Models\Person;
 use App\Models\Speech;
 use App\Models\Toilets;
@@ -21,83 +22,122 @@ class PersonController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(User $user)
+    public function index()
     {
-        // ifどちらにも当てはまらない場合でもエラーが出ないようにする↓
-        $people = [];
-        $families = []; 
         // 全件データ取得して一覧表示する↓
         // $people は変数名　Person::でPersonモデルにアクセスする
         // $people = Person::all();
-        
-        
-        // 条件1　userがフラグ0（家族である）かつ　
-        if($user->flag===0){
-            $people = Person::all();
-            return view('people',compact('people'));
-           
-        }
-        else{
-            // userが家族である　中間テーブルを参照する
-            // $order = Order::find(1);
-
-            // foreach ($order->products as $product) {
-            // dd($product->pivot->quantity); // 1
-            
-            // 下記2行でuserの情報とfamiliesテーブルの情報が配列で出せる ↓
-           //Personモデルに定義された、関連するUserモデルとの関係を表すメソッドを呼び出し
-            //   $families = Person::find(1)->users()->get()->toArray();
-            //  dd($families);
-            
-            // 今ログインしてるuserのID
-            $userId = Auth::id();
-            // dd($userId);
-            //$user = User::find($userId);
-            // dd($user);いしだの事業所、いしだかぞくなど配列で出る
-            $user = User::with('people')->find($userId);
-            // dd($user);
-            //Personモデルのデータベーステーブルから、idが1のPersonモデルのレコードを取得
-            // $family = Person::find(1)->users;
-            // dd($family);　peopleテーブルのidが1の山田桃子が取ってこられて、関係するuser（やまだかぞく）が配列で出る
-            
-            //Userモデルのコレクション $family と、その中の最初のUserモデルに紐づく Peopleテーブルの情報を取得
-            // $familyPeople = $family->merge($family->first()->people); // Peopleテーブルの情報を取得
-           // dd($familyPeople->toArray());
-             
-             
-            // 現在ログインしているユーザーの ID を取得
-// $userId = Auth::id();
-
-// $user = User::find($userId);
-// dd($user);
-// $familyPeople = $user->people; // 中間テーブル families を介して Person モデルのデータを取得
-// if ($familyPeople !== null) {
+        // ログインしているユーザーの情報↓
+       
+        $user = auth()->user();
+    //   dd($user);
     
-// dd($familyPeople->toArray());
+    // $staffId = $user->facility_staffs()->first()->pivot->staff_id;
+    // dd($staffId);
+    $user->facility_staffs()->first();
+    // dd($user);
+    // $user->load('facility_staffs');
+        // facility_staffsメソッドからuserの情報をゲットする↓
+        $facilities = $user->facility_staffs()->get();
+        // dd($facilities);
+        $firstFacility = $facilities->first();
+        // dd($firstFacility);
+        if ($firstFacility) {
+            $people = $firstFacility->people_facilities()->get();
+        } else {
+            $people = [];// まだpeople（利用者が登録されていない時もエラーが出ないようにする）
+        }
+        // dd($firstFacility);
+        // ↑これで$facilityが取れている
+        // $people = $firstFacility->people_facilities()->get();
+        // $user = User::find(1); // IDが1のユーザーを取得
+        // $people = $user->people_facilities()->get(); // そのユーザーのすべてのロールを取得
+        // $people = $facilities->people_facilities()->get(); 
+        // dd($people);
+        //  ↑これで取れる
+//       $sql = $user->people_facilities()->toSql();
+// dd($sql);
 
-//     if ($familyPeople) {
-//         dd($familyPeople->toArray());
-//     } else {
-//         // $user に関連する people が見つからなかった場合の処理
-//     }
-// } else {
-//     // ユーザーが見つからなかった場合の処理
+// $people = collect(); // 空のコレクションを作成する
+
+// foreach ($facilities as $facility) {
+//     $peopleIds = $peopleIds->merge($facility->people_facilities()->pluck('people_id'));
 // }
 
-// $family にはログインしているユーザーに紐づいた Person モデルのコレクションが格納されます
-//dd($family->toArray());
+// すべての people_id を取得
+// $allPeopleIds = $peopleIds->unique();
+// dd($allPeopleIds);
+// $peopleIds = collect(); // 空のコレクションを作成
+// foreach ($facilities as $facility) {
+//     // $people = $people->merge($facility->people_facilities()->get());
+//     // $people = $people->merge($facility->people()->get());
+//     $peopleIds = $peopleIds->merge($facility->people_facilities()->pluck('facility_id'));
+// }
+// $oVisitLogs = Facility::where('facility_name',$facilities)->get();
+// // dd($oVisitLog);
 
-            //foreach ($user->people ?? [] as $person) {
-                
-              //   $pivotData = $person->pivot;
-             //dd($person->pivot->relationship); // 1
-            //  $people[] = $person; // データを $people 配列に格納
-             // 変数を初期化
-    // $people = [];
-    //         return view('people',compact('family'));
-    return view('people', ['user' => $user, 'people' => $user->people]);
-    //return view('people',compact('people'));
-       }
+// foreach($oVisitLogs as $l){
+//   foreach($l->people_facilities as $s){
+//      //スタッフの名前
+//      $s->facility_id;
+//      dd($s);
+//   }
+// }
+
+// $peopleFacilities = collect(); // 空のコレクションを作成する
+
+// foreach ($facilities as $facility) {
+//     $facilityPeople = $facility->people_facilities()->get();
+//     $peopleFacilities = $peopleFacilities->merge($facilityPeople);
+// }
+
+// dd($peopleFacilities);
+// // dd($people);
+// foreach ($facilities as $facility) {
+//     // dd($facility);
+//     // ↑これで$facilityが取れている
+//     // $people = $person->$facility->people_facilities()->get();
+//     // dd($people);
+    
+//     $facilityPeople = $facility->people_facilities()->get();
+//     $people = $people->merge($facilityPeople);
+    
+//     // echo "id:{$facility->id} name:{$member->name}";
+//     // $peopleFacilities = $peopleFacilities->merge($facility->people_facilities()->with('facility_staffs')->get());
+// }
+// dd($people);
+// foreach ($facilities as $facility) {
+//     // echo "id:{$facility->id} name:{$member->name}";
+//     // $peopleFacilities = $peopleFacilities->merge($facility->people_facilities()->with('facility_staffs')->get());
+// }
+
+// dd($peopleFacilities);
+// $peopleFacilities = $facilities->people_facilities()->with('people')->get();
+// dd($peopleFacilities);
+//         foreach ($facilities->$people as $person) {
+//     $people = $facility->people_facilities()->get();
+//     // foreach ($people as $person) {
+//         // ループの中で使用する処理を記述
+//         dd($people);
+    // }
+// }
+
+
+    //     $people = collect(); // 空のコレクションを作成
+        
+    //     foreach ($facilities as $facility) {
+    //     $people = $people->merge($facility->people_facilities()->get());
+    //      dd($people);
+    // }
+    // dd($people);
+    
+//     foreach ($people->people_facilities as $people_facility) {
+//     dd($people);
+// }
+        return view('people',compact('people'));
+        // APIのときは　return $people;などでJSONデータで返す
+   
+    }
 
             // 1対1の場合↓
         //   $people = Person::where('id',$user->people_id)->first();
@@ -115,7 +155,7 @@ class PersonController extends Controller
 
         // APIのときは　return $people;などでJSONデータで返す
    
-    }
+    
  //}
 
 // use Livewire\Component;
@@ -145,6 +185,7 @@ class PersonController extends Controller
     $storeData = $request->validate([
         'person_name' => 'required|max:255',
         'date_of_birth' => 'required|max:255',
+        'jukyuusha_number' => 'required|digits:10',
     ]);
 
     $directory = 'public/sample';
@@ -161,17 +202,37 @@ class PersonController extends Controller
         $filepath = $directory . '/' . $filename;
     }
 
-    $people = Person::create([
+    $newpeople = Person::create([
         'person_name' => $request->person_name,
         'date_of_birth' => $request->date_of_birth,
         'gender' => $request->gender,
-        'disability_name' => $request->disability_name,
+        'jukyuusha_number' => $request->jukyuusha_number,
         'filename' => $filename,
         'path' => $filepath,
 
     ]);
+    
+    $user = auth()->user();
+    
+    // dd($user);
+    // facility_staffsメソッドからuserの情報をゲットする↓
+    $facilities = $user->facility_staffs()->get();
+    // dd($facilities);
+    $firstFacility = $facilities->first();
+    // dd($firstFacility);
+    
+    // 現在ログインしているユーザーが属する施設にpeople（利用者）を紐づける↓
+    // syncWithoutDetaching＝完全重複以外は、重複OK
+    $newpeople->people_facilities()->syncWithoutDetaching($firstFacility->id);
+    
+    if ($firstFacility) {
+        $people = $firstFacility->people_facilities()->get();
+    } else {
+        $people = [];// まだpeople（利用者が登録されていない時もエラーが出ないようにする）
+    }
 
-    return redirect('people');
+    // return redirect('people');
+    return view('people',compact('people'));
 }
 
 //      public function templist()
