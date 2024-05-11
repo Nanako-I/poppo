@@ -24,151 +24,26 @@ class PersonController extends Controller
      */
     public function index()
     {
-        // 全件データ取得して一覧表示する↓
-        // $people は変数名　Person::でPersonモデルにアクセスする
-        // $people = Person::all();
-        // ログインしているユーザーの情報↓
+        
+   // ログインしているユーザーの情報↓
        
-        $user = auth()->user();
-    //   dd($user);
-    
-    // $staffId = $user->facility_staffs()->first()->pivot->staff_id;
-    // dd($staffId);
+    $user = auth()->user();
+
     $user->facility_staffs()->first();
-    // dd($user);
-    // $user->load('facility_staffs');
+    
         // facility_staffsメソッドからuserの情報をゲットする↓
         $facilities = $user->facility_staffs()->get();
-        // dd($facilities);
         $firstFacility = $facilities->first();
-        // dd($firstFacility);
         if ($firstFacility) {
             $people = $firstFacility->people_facilities()->get();
         } else {
             $people = [];// まだpeople（利用者が登録されていない時もエラーが出ないようにする）
         }
-        // dd($firstFacility);
-        // ↑これで$facilityが取れている
-        // $people = $firstFacility->people_facilities()->get();
-        // $user = User::find(1); // IDが1のユーザーを取得
-        // $people = $user->people_facilities()->get(); // そのユーザーのすべてのロールを取得
-        // $people = $facilities->people_facilities()->get(); 
-        // dd($people);
-        //  ↑これで取れる
-//       $sql = $user->people_facilities()->toSql();
-// dd($sql);
-
-// $people = collect(); // 空のコレクションを作成する
-
-// foreach ($facilities as $facility) {
-//     $peopleIds = $peopleIds->merge($facility->people_facilities()->pluck('people_id'));
-// }
-
-// すべての people_id を取得
-// $allPeopleIds = $peopleIds->unique();
-// dd($allPeopleIds);
-// $peopleIds = collect(); // 空のコレクションを作成
-// foreach ($facilities as $facility) {
-//     // $people = $people->merge($facility->people_facilities()->get());
-//     // $people = $people->merge($facility->people()->get());
-//     $peopleIds = $peopleIds->merge($facility->people_facilities()->pluck('facility_id'));
-// }
-// $oVisitLogs = Facility::where('facility_name',$facilities)->get();
-// // dd($oVisitLog);
-
-// foreach($oVisitLogs as $l){
-//   foreach($l->people_facilities as $s){
-//      //スタッフの名前
-//      $s->facility_id;
-//      dd($s);
-//   }
-// }
-
-// $peopleFacilities = collect(); // 空のコレクションを作成する
-
-// foreach ($facilities as $facility) {
-//     $facilityPeople = $facility->people_facilities()->get();
-//     $peopleFacilities = $peopleFacilities->merge($facilityPeople);
-// }
-
-// dd($peopleFacilities);
-// // dd($people);
-// foreach ($facilities as $facility) {
-//     // dd($facility);
-//     // ↑これで$facilityが取れている
-//     // $people = $person->$facility->people_facilities()->get();
-//     // dd($people);
-    
-//     $facilityPeople = $facility->people_facilities()->get();
-//     $people = $people->merge($facilityPeople);
-    
-//     // echo "id:{$facility->id} name:{$member->name}";
-//     // $peopleFacilities = $peopleFacilities->merge($facility->people_facilities()->with('facility_staffs')->get());
-// }
-// dd($people);
-// foreach ($facilities as $facility) {
-//     // echo "id:{$facility->id} name:{$member->name}";
-//     // $peopleFacilities = $peopleFacilities->merge($facility->people_facilities()->with('facility_staffs')->get());
-// }
-
-// dd($peopleFacilities);
-// $peopleFacilities = $facilities->people_facilities()->with('people')->get();
-// dd($peopleFacilities);
-//         foreach ($facilities->$people as $person) {
-//     $people = $facility->people_facilities()->get();
-//     // foreach ($people as $person) {
-//         // ループの中で使用する処理を記述
-//         dd($people);
-    // }
-// }
-
-
-    //     $people = collect(); // 空のコレクションを作成
-        
-    //     foreach ($facilities as $facility) {
-    //     $people = $people->merge($facility->people_facilities()->get());
-    //      dd($people);
-    // }
-    // dd($people);
-    
-//     foreach ($people->people_facilities as $people_facility) {
-//     dd($people);
-// }
+      
         return view('people',compact('people'));
-        // APIのときは　return $people;などでJSONデータで返す
-   
     }
 
-            // 1対1の場合↓
-        //   $people = Person::where('id',$user->people_id)->first();
-        // }
-        
-   
-    //   companyのuserを判断する
-        // $this->authorize('company', $user);
-        
-        
-        // $relationship = $people->pivot->relationship;
-    //   dd($relationship);
-        //return view('people', compact('people', 'familyPeople'));
-        //return view('people', ['user' => $user, 'people' => $user->people]);
-
-        // APIのときは　return $people;などでJSONデータで返す
-   
-    
- //}
-
-// use Livewire\Component;
-
-// class Birthday extends Component
-// {
-//     public $birthday;
-
-//     public function render()
-//     {
-//         return view('livewire.birthday');
-//     }
-// }
+       
     /**
      * Show the form for creating a new resource.
      *
@@ -214,12 +89,9 @@ class PersonController extends Controller
     
     $user = auth()->user();
     
-    // dd($user);
     // facility_staffsメソッドからuserの情報をゲットする↓
     $facilities = $user->facility_staffs()->get();
-    // dd($facilities);
     $firstFacility = $facilities->first();
-    // dd($firstFacility);
     
     // 現在ログインしているユーザーが属する施設にpeople（利用者）を紐づける↓
     // syncWithoutDetaching＝完全重複以外は、重複OK
@@ -231,26 +103,10 @@ class PersonController extends Controller
         $people = [];// まだpeople（利用者が登録されていない時もエラーが出ないようにする）
     }
 
-    // return redirect('people');
+
     return view('people',compact('people'));
 }
 
-//      public function templist()
-// {
-//     $people = Person::all();
-        // ('people')に$peopleが代入される
-        
-        // 'people'はpeople.blade.phpの省略↓　// compact('people')で合っている↓
-        // return view('temperaturelist',compact('people'));
-    // return view('temperaturelist');
-// }
-    // return view('peopleregister');
-
-        // $people = Person::create($storeData);
-        // // トップページに返す↓
-        // return redirect('/people');
-    
-    
 
     /**
      * Display the specified resource.
@@ -262,11 +118,7 @@ class PersonController extends Controller
     {
     return view('temperature.'.$person->id.'.edit');//
     }
-    
-    // public function showAmountFood(Person $person)
-    // {
-    // return view('food.'.$person->id.'.edit');//
-    // }
+
 
     /**
      * Show the form for editing the specified resource.

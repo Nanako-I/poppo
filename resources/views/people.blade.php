@@ -36,8 +36,7 @@
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet">
         
-           <!--<section class="text-gray-600 body-font" _msthidden="29">-->
-  <!--<div class="container px-5 py-24 mx-auto" _msthidden="29">-->
+           
    <div class="flex flex-col items-center justify-center w-full my-2">
         <style>
          @import url('https://fonts.googleapis.com/css2?family=Arial&display=swap');
@@ -52,7 +51,8 @@
 
 
 
-    <!-- 現在の本 -->
+ <!-- 利用者情報 -->
+@can('role') 
   <div class="flex flex-row justify-start w-screen overflow-x-auto">
     <div class="slider">
     @csrf
@@ -109,7 +109,7 @@
                       </div>
                       <!--</a>-->
                       
-                   @can('role')            
+                              
                                 <!--連絡事項↓ -->
                         　    　<div class="border-2 p-2 rounded-lg bg-white m-2">
                                     <div class="flex justify-start items-center">
@@ -191,7 +191,7 @@
                                         <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
                                         <a href="{{ url('food/'.$person->id.'/edit') }}" class="relative">
                                         </a>
-                       @endcan             
+                                    
                         <!--水分登録↓-->
                             　<div class="border-2 p-2 rounded-lg bg-white m-2">
                                 <div class="flex justify-start items-center">
@@ -1265,18 +1265,12 @@
         <!--        <button>download</button>-->
         <!--    </form>-->
         <!--</div>-->
+   
     </div>
   </div>
 <!--</section>-->
-
-
-   
-
-            　　
-   　　　　　　　　　　　　　
-    <!--右側エリア[END]--> 
-
 </div>
+ @endcan
  <!--全エリア[END]-->
 
 </body>

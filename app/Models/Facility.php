@@ -17,15 +17,15 @@ class Facility extends Model
         'bikou',
     ];
     
-    // userモデルと紐づける（people_facilitiesの中間テーブルを認識）↓
+    //中間テーブルfacility_staffsと紐づける
     public function facility_staffs(): BelongsToMany
     {
   //↓ belongsToMany('多対多の相手側のクラス名…ClassName::class','中間テーブルの名前',　'このモデルを参照する中間テーブルの外部キー名', '相手側のモデルを参照する中間テーブルの外部キー名'))
-    return $this->belongsToMany(User::class, 'facility_staffs', 'facility_id', 'staff_id')
+    return $this->belongsToMany(User::class, 'facility_staffs', 'facility_id', 'user_id')
     ->withTimestamps()
-    ->withPivot('staff_id');
+    ->withPivot('user_id');
     }
-     // Personモデルと紐づける（people_facilitiesの中間テーブルを認識）↓
+     // 中間テーブルpeople_facilitiesと紐づける
     public function people_facilities(): BelongsToMany
     {
   //↓ belongsToMany('多対多の相手側のクラス名…ClassName::class','中間テーブルの名前',　'このモデルを参照する中間テーブルの外部キー名', '相手側のモデルを参照する中間テーブルの外部キー名'))

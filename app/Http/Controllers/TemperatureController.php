@@ -59,21 +59,20 @@ class TemperatureController extends Controller
         
     ]);
         $user = auth()->user();
-        //  dd($user);
-        // facility_staffsメソッドからuserの情報をゲットする↓
+        
+        // Facility.phpのfacility_staffsメソッドからuserの情報をゲットする↓
         $facilities = $user->facility_staffs()->get();
-        // dd($facilities);
+        
+        // userに紐づく施設の情報を取る↓
         $firstFacility = $facilities->first();
-    
-        // dd($firstFacility);
-        // ↑これで$facilityが取れている
+        // Facility.phpのpeople_facilitiesメソッドから施設に紐づく利用者(people)の情報を取得する↓
         $people= $firstFacility->people_facilities()->get();
          
          // 二重送信防止
         $request->session()->regenerateToken();
 
-    return view('people', compact('temperature', 'people'));
-    }
+        return view('people', compact('temperature', 'people'));
+        }
 
     /**
      * Display the specified resource.

@@ -20,8 +20,7 @@ class FacilityController extends Controller
     public function create()
     {
         return view('facilityregister');
-//         $user = auth()->user();
-// dd($user);
+
     }
    
 
@@ -34,37 +33,25 @@ class FacilityController extends Controller
     public function store(Request $request)
     {
        $storeData = $request->validate([
-            // 'food' => 'required|max:255',
-            // 'staple_food' => 'required|max:255',
-            // 'side_dish' => 'required|max:255',
-            // 'medicine' => 'required|max:255',
+           
         ]);
         // バリデーションした内容を保存する↓
         
         $facility = Facility::create([
         'facility_name' => $request->facility_name,
         'bikou' => $request->bikou,
-        
-         
     ]);
     
-    // $facility->facility_staffs()->sync($request->get('facility_id', []));
     // 中間テーブルへの登録
-        // ログインしているユーザーのIDを取得して、関連付ける
+    // ログインしているユーザーのIDを取得して、関連付ける
     $user = auth()->user();
     $facility->facility_staffs()->attach($user->id);
     
     
-    $user->user_roles()->attach(1); // ここでrole_id＝1を紐づける
-        // DB::commit();
-    // auth()->user()->facility_staffs()->attach($request->facility_id);
-//$item->categories()->sync($request->get('category_ids', []));
-    // return redirect('people/{id}/edit');
-    // $people = Person::all();
+    $user->user_roles()->attach(1); // ここでrole_id＝1（staff）を紐づける
     // 二重送信防止
     $request->session()->regenerateToken();
     return redirect('/people'); 
-    // return redirect(RouteServiceProvider::HOME);
     }
 
     /**

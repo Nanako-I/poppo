@@ -14,7 +14,7 @@ class Person extends Model
     protected $fillable = ['person_name','date_of_birth' , 'gender','jukyuusha_number', 'kubun_number','profile_image','filename','path'];
     
     
-    // usersテーブルと紐づける↓
+    //中間テーブルuser_rolesテーブルと紐づける↓
     public function roles(): BelongsToMany
     {
       //↓ belongsToMany('多対多の相手側のクラス名…ClassName::class','中間テーブルの名前',　'このモデルを参照する中間テーブルの外部キー名', '相手側のモデルを参照する中間テーブルの外部キー名')
@@ -23,6 +23,7 @@ class Person extends Model
        
     }
     
+    // 中間テーブルpeople_familyと紐づける↓
     public function people_family(): BelongsToMany
     {
   //↓ belongsToMany('多対多の相手側のクラス名…ClassName::class','中間テーブルの名前',　'このモデルを参照する中間テーブルの外部キー名', '相手側のモデルを参照する中間テーブルの外部キー名')
@@ -30,6 +31,7 @@ class Person extends Model
     ->withTimestamps();
     }
     
+     // 中間テーブルpeople_facilitiesと紐づける↓
     public function people_facilities(): BelongsToMany
     {
   //↓ belongsToMany('多対多の相手側のクラス名…ClassName::class','中間テーブルの名前',　'このモデルを参照する中間テーブルの外部キー名', '相手側のモデルを参照する中間テーブルの外部キー名')
@@ -37,18 +39,7 @@ class Person extends Model
     ->withTimestamps();
     }
 
-    // Person モデルに追加
-// public function people()
-// {
-//     return $this->hasMany(Person::class, 'id'); // もし id 以外の外部キーがあれば変更する必要があります
-// }
-
-// public function people()
-// {
-//     //families テーブルの user_id カラムが users テーブルの外部キーに、person_id カラムが people テーブルの外部キー（テーブル同士を関連づけるためのキー（id））に対応
-//     return $this->belongsToMany(Person::class, 'families', 'user_id', 'person_id')
-//         ->withPivot('relationship');
-// }
+   
 
 // 体温一覧リスト↓
     public function temperatures()

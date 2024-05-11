@@ -19,7 +19,6 @@ class RouteServiceProvider extends ServiceProvider
      */
     public const HOME = '/people';
     public const HOMEFAMILY = '/hogosha';
-    
     public const FACILITYREGISTER = '/facilityregister';
 
     /**

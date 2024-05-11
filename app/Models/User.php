@@ -17,31 +17,26 @@ class User extends Authenticatable
      use Notifiable,HasRoles;
      use HasApiTokens, HasFactory, Notifiable;
      
-// public function roles(): BelongsToMany
-//     {
-//         return $this->belongsToMany(Person::class,'user_roles', 'user_id', 'role_id')
-//         ->withTimestamps();
-//     }    
-    
-public function people_family(): BelongsToMany
+     // 中間テーブルpeople_familyと紐づける↓
+    public function people_family(): BelongsToMany
     {
         return $this->belongsToMany(Person::class, 'people_families', 'user_id', 'person_id')
         ->withTimestamps();
     }
     
-    // FacilityとUserを紐づけた中間テーブルを取ってくる↓
+    // 中間テーブルfacility_staffsと紐づける↓
     public function facility_staffs(): BelongsToMany
     {
   //↓ belongsToMany('多対多の相手側のクラス名…ClassName::class','中間テーブルの名前',　'このモデルを参照する中間テーブルの外部キー名', '相手側のモデルを参照する中間テーブルの外部キー名')
-    return $this->belongsToMany(Facility::class, 'facility_staffs', 'staff_id','facility_id')
+    return $this->belongsToMany(Facility::class, 'facility_staffs', 'user_id','facility_id')
     ->withTimestamps();
     
     }
     
-   
+   // 中間テーブルuser_rolesと紐づける↓
     public function user_roles(): BelongsToMany
     {
-  //↓ belongsToMany('多対多の相手側のクラス名…ClassName::class','中間テーブルの名前',　'このモデルを参照する中間テーブルの外部キー名', '相手側のモデルを参照する中間テーブルの外部キー名')
+    //↓ belongsToMany('多対多の相手側のクラス名…ClassName::class','中間テーブルの名前',　'このモデルを参照する中間テーブルの外部キー名', '相手側のモデルを参照する中間テーブルの外部キー名')
     return $this->belongsToMany(Role::class, 'user_roles', 'user_id','role_id')
     ->withTimestamps();
     

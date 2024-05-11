@@ -10,6 +10,7 @@
      <!-- Name -->
         <div class="flex flex-col items-center justify-center">
         <p class="text-gray-900 font-bold text-xl">事業所名</p>
+        <!--事業所名を登録↓-->
         <textarea id="facility_name" name="facility_name" class="w-3/4 max-w-lg font-bold" style="height: 200px;"></textarea>
         </div>
         

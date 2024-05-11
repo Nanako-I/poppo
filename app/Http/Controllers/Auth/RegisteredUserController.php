@@ -45,7 +45,7 @@ class RegisteredUserController extends Controller
         event(new Registered($user));
 
         Auth::login($user);
-
+        // 職員が新規登録した後の遷移先をFACILITYREGISTER（facilityregister.blade.php）に指定
         return redirect(RouteServiceProvider::FACILITYREGISTER);
     }
 }
