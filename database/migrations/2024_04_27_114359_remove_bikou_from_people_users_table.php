@@ -14,7 +14,7 @@ class RemoveBikouFromPeopleUsersTable extends Migration
     public function up()
     {
         Schema::table('people_users', function (Blueprint $table) {
-            $table->dropColumn('bikou');
+            // $table->dropColumn('bikou');
         });
     }
 
