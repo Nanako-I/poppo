@@ -113,7 +113,7 @@
                                             <p class="text-gray-900 font-bold text-xl" style="white-space: nowrap; padding: 0 5px;">服用</p>
                                             <!--<input name="medicine" type="text" value="{{ $lastFood->medicine }}" id="medicine" class="w-1/4 h-8px flex-shrink-0 break-words mx-1">-->
                                             <select name="medicine" value="{{ $lastFood->medicine }}" id="medicine" class="w-3/5 ml-1.5">
-                                                <option value="selected">{{ $lastFood->medicine }}</option>
+                                                <option value="{{ $lastFood->medicine }}">{{ $lastFood->medicine }}</option>
                                                 <option value="あり">あり</option>
                                                 <option value="なし">なし</option>
                                             </select>

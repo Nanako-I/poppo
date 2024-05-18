@@ -55,7 +55,7 @@
                         
                         <div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">
                             <p class="text-gray-900 font-bold text-xl">備考<p>
-                            <textarea id="" name="medicine_bikou" class="w-full max-w-lg" style="height: 300px;">{{ $medicine->bikou }}</textarea>
+                            <textarea id="" name="medicine_bikou" class="w-full max-w-lg" style="height: 300px;">{{ $medicine->medicine_bikou }}</textarea>
                         </div>
                          
                         <button type="submit" class="inline-flex items-center px-6 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
