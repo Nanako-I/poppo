@@ -47,19 +47,7 @@ class User extends Authenticatable
         return $this->hasMany(Temperature::class, 'user_id');
     }
 
-    public function roles()
-    {
-        return $this->belongsToMany(Role::class);
-    }
 
-    public function hasRole($roles)
-    {
-        if (is_array($roles)) {
-            return $this->roles()->whereIn('name', $roles)->exists();
-        }
-
-        return $this->roles()->where('name', $roles)->exists();
-    }
 
     /**
      * The attributes that are mass assignable.
