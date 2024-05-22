@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -11,10 +10,13 @@ use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
+use Spatie\Permission\Models\Role as SpatieRole;
+use App\Enums\Role as RoleEnum;
+
 class User extends Authenticatable
 {
     // laravel permissionを使うための記述↓
-     use Notifiable,HasRoles;
+     use HasRoles;
      use HasApiTokens, HasFactory, Notifiable;
      
      // 中間テーブルpeople_familyと紐づける↓

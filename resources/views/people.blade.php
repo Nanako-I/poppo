@@ -21,7 +21,13 @@
             </div>
         @endif
         <!-- バリデーションエラーの表示に使用-->
+   @php
+    $user = Auth::user();
+   
+    $permissions = $user->getPermissionsViaRoles();
+  
     
+@endphp 
 <body>
 <style>
   /* フォントを指定 */
@@ -52,7 +58,7 @@
 
 
  <!-- 利用者情報 -->
-@can('role') 
+
   <div class="flex flex-row justify-start w-screen overflow-x-auto">
     <div class="slider">
     @csrf
@@ -108,8 +114,8 @@
                                         </div>
                       </div>
                       <!--</a>-->
-                      
-                              
+                      @can(\App\Enums\RoleType::SuperAdministrator)
+                        
                                 <!--連絡事項↓ -->
                         　    　<div class="border-2 p-2 rounded-lg bg-white m-2">
                                     <div class="flex justify-start items-center">
@@ -1211,7 +1217,7 @@
                                             </a>
                                           </div>
                                     　　</div>
-                                    　　
+                            @endcan        　　
                                
 
                                    <!-- 動画マニュアル↓ -->
@@ -1270,7 +1276,7 @@
   </div>
 <!--</section>-->
 </div>
- @endcan
+ 
  <!--全エリア[END]-->
 
 </body>

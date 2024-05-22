@@ -5,10 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Spatie\Permission\Traits\HasRoles;
+use Spatie\Permission\Models\Role as SpatieRole;
+use App\Enums\Role as RoleEnum;
 
 class Person extends Model
 {
+    use HasRoles;
     use HasFactory;
     protected $table = 'people';
     protected $fillable = ['person_name','date_of_birth' , 'gender','jukyuusha_number', 'kubun_number','profile_image','filename','path'];

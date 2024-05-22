@@ -1,20 +1,21 @@
 <?php
 
 namespace App\Http\Controllers;
-// ↓livewireを呼び出し
-// namespace App\Http\Livewire;
-//use Illuminate\Foundation\Auth\User; // 認証分岐のため追加
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-// Personモデルを呼び出している↓
 use App\Models\User;
 use App\Models\Facility;
 use App\Models\Person;
-use App\Models\Speech;
-use App\Models\Toilets;
-use App\Models\Temperature;
-use Illuminate\Http\Request;
+use App\Models\Role;
+use App\Models\Permission;
 
+use Spatie\Permission\Models\Role as SpatieRole;
+use App\Enums\RoleType;
+use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Http\Request;
+use App\Enums\PermissionType;
+use App\Enums\RoleType as RoleEnums;
+use App\Enums\Role as RoleEnum;
 class PersonController extends Controller
 {
     /**
@@ -26,13 +27,35 @@ class PersonController extends Controller
     {
         
    // ログインしているユーザーの情報↓
-       
-    $user = auth()->user();
-
-    $user->facility_staffs()->first();
+        $user = auth()->user();
+    
+        $user->facility_staffs()->first();
     
         // facility_staffsメソッドからuserの情報をゲットする↓
         $facilities = $user->facility_staffs()->get();
+        
+        // dd($facilities);
+        $roles = $user->user_roles()->get(); // これでロールが取得できる
+        //   dd($roles);
+        
+        $rolename = $user->getRoleNames(); // ロールの名前を取得
+        dd($rolename);
+        
+        $isSuperAdmin = $user->hasRole(RoleType::SuperAdministrator);
+
+        // ロールのIDを取得する場合
+        $roleIds = $user->roles->pluck('id');
+
+        // dd(compact('roles', 'roleIds'));
+        // $roles = $user->getAllPermissions();
+        // $roles = $user->getRoleNames();
+        // $roles =$user->hasPermissionTo('edit facility staff');
+        // ユーザーのロールとパーミッションをデバッグ
+        // $roles = $user->getRoleNames();
+        // $permissions = $user->getAllPermissions()->pluck('name');
+        // dd(compact('roles', 'permissions'));
+        
+    
         $firstFacility = $facilities->first();
         if ($firstFacility) {
             $people = $firstFacility->people_facilities()->get();
@@ -103,7 +126,8 @@ class PersonController extends Controller
         $people = [];// まだpeople（利用者が登録されていない時もエラーが出ないようにする）
     }
 
-
+    // 二重送信防止
+     $request->session()->regenerateToken();
     return view('people',compact('people'));
 }
 

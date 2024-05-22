@@ -106,8 +106,8 @@
                       
                         
                                     
+                         @can(\App\Enums\RoleType::FacilityStaffAdministrator)     
                                 
-                        @can('staff')            
                          <!-- 体調登録↓ -->
                         　    　 <div class="border-2 p-2 rounded-lg bg-white m-2">
                                      <div class="flex justify-start items-center">
