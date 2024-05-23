@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Enums\Permission as PermissionEnum;
+use App\Enums\PermissionType as PermissionEnum;
 use Spatie\Permission\Models\Permission as SpatiePermission;
 
 class Permission extends SpatiePermission
