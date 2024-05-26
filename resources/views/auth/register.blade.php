@@ -10,6 +10,12 @@
             <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
             <x-input-error :messages="$errors->get('name')" class="mt-2" />
         </div>
+        
+        <div>
+            <x-input-label for="custom_id" :value="__('ID')" />
+            <x-text-input id="custom_id" class="block mt-1 w-full" type="text" name="custom_id" :value="old('custom_id')" required autofocus autocomplete="custom_id" />
+            <x-input-error :messages="$errors->get('custom_id')" class="mt-2" />
+        </div>
 
         <!-- Email Address -->
         <div class="mt-4">
@@ -20,7 +26,7 @@
 
         <!-- Password -->
         <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
+            <x-input-label for="password" :value="__('パスワード（英語大文字小文字・数字を含む8文字以上）')" />
 
             <x-text-input id="password" class="block mt-1 w-full"
                             type="password"

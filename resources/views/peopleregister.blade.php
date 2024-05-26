@@ -48,7 +48,7 @@
              <!--@csrf-->
                <form action="{{ url('peopleregister') }}" method="POST" class="w-full" enctype="multipart/form-data">
                         @csrf
-               
+            
     <div style="display: flex; align-items: center; justify-content: center; flex-direction: column;">
         <div class="form-group mb-4 m-2 w-1/2 max-w-md md:w-1/6" style="display: flex; flex-direction: column; align-items: center;">
             <label class="block text-lg font-bold text-gray-700">名前</label>
@@ -73,8 +73,7 @@
             <input name="filename" id="filename" type="file" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm text-lg border-gray-300 rounded-md ml-20">
             </div>
         </div>
-        
-    
+      
         <div class="flex flex-col col-span-1">
             <div class="text-gray-700 text-center px-4 py-2 m-2">
               <button type="submit" class="inline-flex items-center px-6 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">

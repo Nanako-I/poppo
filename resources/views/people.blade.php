@@ -58,7 +58,9 @@
 
 
  <!-- 利用者情報 -->
-
+@role('facility staff administrator')
+aaaa
+@endrole
   <div class="flex flex-row justify-start w-screen overflow-x-auto">
     <div class="slider">
     @csrf
@@ -113,8 +115,13 @@
                                           <p class="text-gray-900 font-bold text-xs" _msttexthash="150072">{{$person->date_of_birth}}生まれ</p>
                                         </div>
                       </div>
+                      
+                      
+                      
+                      
+                     
                       <!--</a>-->
-                      @can(\App\Enums\RoleType::SuperAdministrator)
+                      
                         
                                 <!--連絡事項↓ -->
                         　    　<div class="border-2 p-2 rounded-lg bg-white m-2">
@@ -1217,7 +1224,7 @@
                                             </a>
                                           </div>
                                     　　</div>
-                            @endcan        　　
+                                  　　
                                
 
                                    <!-- 動画マニュアル↓ -->

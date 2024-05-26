@@ -42,7 +42,13 @@ class PersonController extends Controller
 
         $rolename = $user->getRoleNames(); // ロールの名前を取得
 
-        $isSuperAdmin = $user->hasRole(RoleType::SuperAdministrator);
+
+        // $isSuperAdmin = $user->hasRole(RoleType::SuperAdministrator);
+
+        // dd($rolename);
+        
+        $isSuperAdmin = $user->hasRole(RoleType::FacilityStaffAdministrator);
+// dd($isSuperAdmin);
 
         // ロールのIDを取得する場合
         $roleIds = $user->roles->pluck('id');
