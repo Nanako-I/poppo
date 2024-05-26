@@ -59,8 +59,7 @@
 
  <!-- 利用者情報 -->
 @role('facility staff administrator')
-aaaa
-@endrole
+
   <div class="flex flex-row justify-start w-screen overflow-x-auto">
     <div class="slider">
     @csrf
@@ -1278,7 +1277,7 @@ aaaa
         <!--        <button>download</button>-->
         <!--    </form>-->
         <!--</div>-->
-   
+   @endrole
     </div>
   </div>
 <!--</section>-->

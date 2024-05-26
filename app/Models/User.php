@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 use Spatie\Permission\Models\Role as SpatieRole;
-use App\Enums\Role as RoleEnum;
+use App\Enums\RoleType as RoleEnum;
 
 class User extends Authenticatable
 {

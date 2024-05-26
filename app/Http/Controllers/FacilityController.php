@@ -7,6 +7,8 @@ use App\Models\User;
 use App\Models\Role;
 use Illuminate\Http\Request;
 use App\Providers\RouteServiceProvider;
+use Spatie\Permission\Traits\HasRoles;
+use App\Enums\RoleType as RoleEnum;
 
 class FacilityController extends Controller
 {
@@ -48,7 +50,8 @@ class FacilityController extends Controller
     $facility->facility_staffs()->attach($user->id);
     
     
-    $user->user_roles()->attach(1); // ここでrole_id＝1（staff）を紐づける
+    // $user->user_roles()->attach(1); // ここでrole_id＝1（staff）を紐づける
+    $user->assignRole('facility staff administrator'); // ここで'facility staff administrator' を紐づける
     // 二重送信防止
     $request->session()->regenerateToken();
     return redirect('/people'); 
