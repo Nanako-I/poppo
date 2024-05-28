@@ -1,7 +1,11 @@
 <x-guest-layout>
     <form action="{{ route('hogoshanumber.store') }}" method="POST">
         @csrf
-        
+       @if (isset($error))
+    <div style="color: red;">
+        {!! $error !!}
+    </div>
+@endif
         <div class="flex items-center justify-center">
              <!-- ユーザー情報の隠しフィールド -->
         <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">

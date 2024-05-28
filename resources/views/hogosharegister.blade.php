@@ -7,9 +7,16 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>登録画面</title>
 </head>
+@if (isset($error))
+    <div style="color: red;">
+        {!! $error !!}
+    </div>
+@endif
+
 <body>
     <h1>登録画面</h1>
-    <form action="" method="post">
+    <!--<form action="" method="post">-->
+    <form action="{{ url('/hogosharegister') }}" method="post">
         @csrf
         <label for="name">名前</label>
         <input type="text" name="name" id="name">
