@@ -25,17 +25,24 @@ class HogoshaUserController extends Controller
    
     public function register(Request $request)
    {
-    //   $form = $request->validate([
-    //         'name' => ['required', 'string', 'max:255'],
-    //         'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
-    //         'password' => [
-    //         'required',
-    //         'string',
-    //         'min:8',
-    //         'confirmed',
-    //         'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/' // '大文字小文字英数字含む,
-    //     ],
-    //     ]);
+      $form = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
+            'password' => [
+            'required',
+            'string',
+            'min:8',
+            'confirmed',
+            'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/' // '大文字小文字英数字含む,
+        ], [
+            'name.required' => '名前は必須です。',
+            'email.required' => 'メールアドレスは必須です。',
+            'email.email' => '有効なメールアドレスを入力してください。',
+            'password.required' => 'パスワードは必須です。',
+            'password.min' => 'パスワードは8文字以上で入力してください。',
+            'validation.confirmed' => 'パスワード確認が一致しません。',
+        ]
+        ]);
         
         // 入力データを配列に保存
     $userData = [
