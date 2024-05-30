@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Calender\CalenderDeleteRequest;
 use App\Http\Requests\Calender\CalenderEditRequest;
+use App\Http\Requests\Calender\CalenderIndexPersonRequest;
+use App\Http\Requests\Calender\CalenderIndexScheduledVisitRequest;
 use App\Http\Requests\Calender\CalenderRegisterRequest;
 use App\Http\Requests\Calender\CalenderScheduledVisitDetailRequest;
 use App\Http\Traits\MessageTrait;
@@ -13,6 +15,7 @@ use App\Models\VisitType;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Auth;
 
 class CalenderController extends Controller
 {
@@ -21,19 +24,24 @@ class CalenderController extends Controller
     /**
      * 利用者一覧を取得
      *
+     * @param CalenderIndexPersonRequest $request
      * @return JsonResponse
      */
-    public function indexPerson()
+    public function indexPerson(CalenderIndexPersonRequest $request)
     {
+        $form_request = new CalenderIndexPersonRequest();
+        $form_request->authorize($request);
         try {
-            // Personモデル=peopleテーブル
-            $data = Person::all();
-            if ($data->isEmpty()) {
+            $user = Auth::user();
+            $facility = $user->facility_staffs()->first();
+            if ($facility) {
+                $people = $facility->people_facilities()->get();
+                $response = $people->isNotEmpty() ? self::returnMessageIndex($people) : self::returnMessageNodataArray();
+                $status = $people->isNotEmpty() ? Response::HTTP_OK : Response::HTTP_NO_CONTENT;
+            } else {
                 $response = self::returnMessageNodataArray();
                 $status = Response::HTTP_NO_CONTENT;
             }
-            $response = self::returnMessageIndex($data);
-            $status = Response::HTTP_OK;
         } catch (\Exception $e) {
             $message = $e->getMessage();
             $response = self::messageErrorStatusText($message);
@@ -68,22 +76,35 @@ class CalenderController extends Controller
     /**
      * 訪問スケジュール一覧を取得
      *
+     * @param CalenderIndexScheduledVisitRequest $request
      * @return JsonResponse
      */
-    public function indexScheduledVisit()
+    public function indexScheduledVisit(CalenderIndexScheduledVisitRequest $request)
     {
+        $form_request = new CalenderIndexScheduledVisitRequest();
+        $form_request->authorize($request);
         try {
-            $schedules = ScheduledVisit::all();
-            if ($schedules->isEmpty()) {
+            $user = Auth::user();
+            $facility = $user->facility_staffs()->first();
+            if ($facility) {
+                $people = $facility->people_facilities()->get();
+                if ($people) {
+                    $peopleIds = $people->pluck('id');
+                    $scheduled_visits = ScheduledVisit::whereIn('people_id', $peopleIds)->get();
+                    $scheduled_visits->each(function ($schedule) {
+                        $schedule->type = VisitType::find($schedule->visit_type_id)->type;
+                        $schedule->person_name = Person::find($schedule->people_id)->person_name;
+                    });
+                    $response = self::returnMessageIndex($scheduled_visits);
+                    $status = Response::HTTP_OK;
+                } else {
+                    $response = self::returnMessageNodataArray();
+                    $status = Response::HTTP_NO_CONTENT;
+                }
+            } else {
                 $response = self::returnMessageNodataArray();
                 $status = Response::HTTP_NO_CONTENT;
             }
-            $schedules->each(function ($schedule) {
-                $schedule->type = VisitType::find($schedule->visit_type_id)->type;
-                $schedule->person_name = Person::find($schedule->people_id)->person_name;
-            });
-            $response = self::returnMessageIndex($schedules);
-            $status = Response::HTTP_OK;
         } catch (\Exception $e) {
             $message = $e->getMessage();
             $response = self::messageErrorStatusText($message);

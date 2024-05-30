@@ -9,7 +9,7 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 use App\Enums\RoleType as RoleEnum;
 use Illuminate\Support\Facades\Auth;
 
-class CalenderDeleteRequest extends FormRequest
+class CalenderIndexScheduledVisitRequest extends FormRequest
 {
     public function authorize()
     {
@@ -30,9 +30,7 @@ class CalenderDeleteRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'schedule_id' => ['required', 'integer'],
-        ];
+        return [];
     }
 
     /**
@@ -56,10 +54,6 @@ class CalenderDeleteRequest extends FormRequest
      */
     public static function getOnlyRequest($request)
     {
-        $array = $request->only([
-            'schedule_id',
-        ]);
-
-        return $array;
+        return [];
     }
 }

@@ -107,6 +107,9 @@ document.addEventListener("DOMContentLoaded", function () {
     axios
         .get("/calendar/index_person")
         .then((response) => {
+            if (response.status === 204) {
+                return;
+            }
             response.data.contents.forEach((person) => {
                 const option = document.createElement("option");
                 option.value = person.id;

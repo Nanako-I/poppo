@@ -6,13 +6,21 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use App\Enums\RoleType as RoleEnum;
+use Illuminate\Support\Facades\Auth;
 
 class CalenderEditRequest extends FormRequest
 {
-    // 本来は権限バリデーションも入れたい
     public function authorize()
     {
-        return true;
+        // 現在のユーザー情報を取得
+        $user = Auth::user();
+
+        return $user->hasRole([
+            RoleEnum::SuperAdministrator,
+            RoleEnum::FacilityStaffAdministrator,
+            RoleEnum::FacilityStaffUser
+        ]);
     }
 
     /**
