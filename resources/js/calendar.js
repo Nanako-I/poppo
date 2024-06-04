@@ -200,7 +200,8 @@ document.addEventListener("DOMContentLoaded", function () {
                         },
                     })
                     .then(() => {
-                        alert("登録しました");
+                        let job = isEdit ? "編集" : "登録";
+                        alert(`${job}しました`);
                         calendar.refetchEvents();
                     })
                     .catch((error) => {

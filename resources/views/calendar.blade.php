@@ -53,20 +53,20 @@
       <form id="eventForm" class="p-6">
         <div class="mb-6">
           <label for="title" class="block text-sm font-medium text-gray-700">利用者名</label>
-          <select id="selectPeople" name="category" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500">
-            <option>選択してください</option>
+          <select id="selectPeople" name="category" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500" required>
+            <option value="" disabled selected>選択してください</option>
           </select>
         </div>
         <div class="mb-6">
           <label for="selectVisitType" class="block text-sm font-medium text-gray-700">来訪タイプ</label>
-          <select id="selectVisitType" name="category" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500">
-            <option>選択してください</option>
+          <select id="selectVisitType" name="category" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500" required>
+            <option value="" disabled selected>選択してください</option>
           </select>
         </div>
         <div class="mb-8 grid grid-cols-2 gap-8">
           <div>
             <label for="arrival-date" class="block text-sm font-medium text-gray-700">来訪予定日</label>
-            <input type="date" id="arrival-date" name="arrival-date" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500">
+            <input type="date" id="arrival-date" name="arrival-date" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500" required>
           </div>
           <div>
             <label for="arrival-time" class="block text-sm font-medium text-gray-700">来訪予定時間</label>
@@ -74,7 +74,7 @@
           </div>
           <div>
             <label for="exit-date" class="block text-sm font-medium text-gray-700">退館予定日</label>
-            <input type="date" id="exit-date" name="exit-date" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500">
+            <input type="date" id="exit-date" name="exit-date" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500" required>
           </div>
           <div>
             <label for="exit-time" class="block text-sm font-medium text-gray-700">退館予定時間</label>
