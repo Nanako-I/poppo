@@ -1,29 +1,29 @@
 <x-guest-layout>
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
-    
-    <!--職員のroleではない人がログインしようとした時に表示させるエラー（AuthenticatedSessionControllerに記載あり）-->
+    <!--家族のroleではない人がログインしようとした時に表示させるエラー（HogoshaLoginControllerに記載あり）-->
     @if (session('error'))
         <div class="alert alert-danger">
             {{ session('error') }}
         </div>
     @endif
-    <form method="POST" action="{{ route('login') }}">
+
+    <form method="POST" action="{{ route('hogoshalogin') }}">
         @csrf
 
         <!-- Email Address -->
-        <!--<div>-->
-        <!--    <x-input-label for="email" :value="__('Email')" />-->
-        <!--    <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />-->
-        <!--    <x-input-error :messages="$errors->get('email')" class="mt-2" />-->
-        <!--</div>-->
+        <div>
+            <x-input-label for="email" :value="__('Email')" />
+            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
+            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+        </div>
         
          <!--ID -->
-        <div>
-            <x-input-label for="custom_id" :value="__('ID')" />
-            <x-text-input id="custom_id" class="block mt-1 w-full" type="text" name="custom_id" :value="old('custom_id')" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('custom_id')" class="mt-2" />
-        </div>
+        <!--<div>-->
+        <!--    <x-input-label for="custom_id" :value="__('ID')" />-->
+        <!--    <x-text-input id="custom_id" class="block mt-1 w-full" type="text" name="custom_id" :value="old('custom_id')" required autofocus autocomplete="username" />-->
+        <!--    <x-input-error :messages="$errors->get('custom_id')" class="mt-2" />-->
+        <!--</div>-->
 
         <!-- Password -->
         <div class="mt-4">

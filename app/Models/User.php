@@ -35,6 +35,12 @@ class User extends Authenticatable
     
     }
     
+    public function roles()
+    {
+        // /↓ belongsToMany('多対多の相手側のクラス名…ClassName::class','中間テーブルの名前',　'このモデルを参照する中間テーブルの外部キー名', '相手側のモデルを参照する中間テーブルの外部キー名')
+        return $this->belongsToMany(Role::class, 'model_has_roles', 'model_id', 'role_id');
+    }
+    
    // 中間テーブルuser_rolesと紐づける↓
     public function user_roles(): BelongsToMany
     {

@@ -15,7 +15,11 @@ class ProfileUpdateRequest extends FormRequest
         $user = Auth::user();
 
         // 現在のユーザーがスーパーユーザーであることを確認
-        return $user->hasRole(RoleEnum::SuperAdministrator || RoleEnum::FacilityStaffAdministrator || RoleEnum::FacilityStaffUser);
+        return $user->hasRole([
+            RoleEnum::SuperAdministrator,
+            RoleEnum::FacilityStaffAdministrator,
+            RoleEnum::FacilityStaffUser
+        ]);
     }
 
 

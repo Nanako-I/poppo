@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use App\Http\Middleware\Authenticate;//追記
 use App\Http\Middleware\RedirectIfNotAuthenticated;//追記
+use App\Http\Controllers\Auth\HogoshaLoginController;
 
 use App\Http\Controllers\PersonController;//追記
 use App\Http\Controllers\FacilityController;
@@ -56,8 +57,15 @@ use App\Http\Controllers\VideoController;
 |
 */
 Route::get('/', function () {
-    return view('auth.login');
+    // return view('auth.login');　//※ログイン画面にリダイレクトされないようここを削除
 })->middleware([Authenticate::class]); // Authenticate ミドルウェアを適用
+
+// 職員のログイン画面のビュー
+Route::get('auth.login', function () {
+    return view('auth.login');
+})->name('stafflogin');
+
+
 
 
 
@@ -66,22 +74,26 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-// プレミア会員用のルーティング
-//Route::group(['middleware' => ['auth', 'can:company']], function () {
-	// Item用の一括ルーティング
-  //Route::resource('people', PersonController::class);
-  
-//});
 
-// Route::get('facilityregister', [FacilityController::class, 'edit']);
 Route::get('/facilityregister', [FacilityController::class, 'create'])->name('facilityregister.create');
 Route::post('facilityregister', [FacilityController::class, 'store'])->name('facilityregister.store');
 
 // Book用の一括ルーティング　本来使ってたルーティング↓
 Route::resource('people', PersonController::class);
 
-// 中間テーブルのリレーションのための追記↓
-//Route::get('people', [PersonController::class, 'index'])->name('people.show');
+// 認証されていないユーザー向けのビュー
+Route::get('/before-login', function () {
+    return response()->view('before-login');
+    // return view('before-login');
+})->name('before-login');
+
+//保護者ログインページのルート
+Route::get('/hogoshalogin', function () {
+    return response()->view('hogoshalogin');
+})->name('hogoshalogin');
+
+// 保護者ログイン処理のルート
+Route::post('/hogoshalogin', [HogoshaLoginController::class, 'store'])->name('hogoshalogin.submit');
 
 Route::view('/register', 'register');
 
@@ -311,20 +323,6 @@ Route::get('pdf/{people_id}/edit', [DompdfController::class, 'pdf'])->name('pdf'
 Route::post('videos/{people_id}', [VideoController::class, 'store'])->name('videos.store');
 Route::get('videos/{people_id}', [VideoController::class, 'show'])->name('videos.show');
 Route::get('videos/{people_id}/edit', [VideoController::class, 'edit'])->name('videos.edit');
-
-// Qiitaの記事↓
-// Route::get('/index', [SpreadsheetController::class, 'index']);
-// Route::post('/download', [SpreadsheetController::class, 'download']);
-
-// Route::get('/', function () {
-//     return view('welcome');
-// });
-
-
-// Route::get('/photo/upload', PhotoController::class, 'uploadForm')->name('photo.upload.form');
-
-// Route::post('/photo/upload', PhotoController::class, 'upload')->name('photo.upload');
-
 
 
 Route::get('businesscard', 'BusinessCardController@index');
