@@ -4,13 +4,19 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\URL;//職員・家族向けのワンタイムURLを生成するために追記
+use Illuminate\Support\Facades\Mail;
+use Carbon\Carbon;
+
 use App\Http\Middleware\Authenticate;//追記
 use App\Http\Middleware\RedirectIfNotAuthenticated;//追記
 use App\Http\Controllers\Auth\HogoshaLoginController;
+use App\Http\Controllers\RegistrationController;//ユーザー新規登録の二段階認証Controller
 
 use App\Http\Controllers\PersonController;//追記
 use App\Http\Controllers\FacilityController;
 use App\Http\Controllers\HogoshaUserController;
+use App\Http\Controllers\URLController;//追記
 use App\Http\Controllers\PhotoController;//追記
 use App\Http\Controllers\TemperatureController;
 use App\Http\Controllers\BloodpressureController;
@@ -78,7 +84,6 @@ Route::get('/dashboard', function () {
 Route::get('/facilityregister', [FacilityController::class, 'create'])->name('facilityregister.create');
 Route::post('facilityregister', [FacilityController::class, 'store'])->name('facilityregister.store');
 
-// Book用の一括ルーティング　本来使ってたルーティング↓
 Route::resource('people', PersonController::class);
 
 // 認証されていないユーザー向けのビュー
@@ -96,6 +101,87 @@ Route::get('/hogoshalogin', function () {
 Route::post('/hogoshalogin', [HogoshaLoginController::class, 'store'])->name('hogoshalogin.submit');
 
 Route::view('/register', 'register');
+// Route::get('/invitation/{user}', function (Request $request) {
+//     if (! $request->hasValidSignature()) {
+//         abort(401);
+//     }
+ 
+// //     // ...
+// })->name('unsubscribe');
+
+// 管理者が保護者に招待メールを送るためのビュー
+// Route::get('/invitation', function () {
+//     return view('invitation');
+// })->name('invitation');
+
+// 招待URLの検証とリダイレクト
+// Route::get('invitation/{signedUrl}', function ($signedUrl) {
+//     if (! URL::hasValidSignature(request())) {
+//         abort(403, 'このURLは有効期限切れです。施設管理者に招待URLの再送を依頼してください。');
+//     }
+//     return view('hogosharegister');
+// })->name('signed.invitation');
+
+// 招待URLの検証とリダイレクト
+Route::get('invitation/{signedUrl}', function (Request $request) {
+    if (! $request->hasValidSignature()){
+        abort(403, 'このURLは有効期限切れです。施設管理者に招待URLの再送を依頼してください。');
+    }
+    return view('/hogosharegister');
+})->name('signed.invitation');
+// 招待URLの検証とリダイレクト
+// Route::get('invitation', function (Request $request) {
+//     if (! URL::hasValidSignature($request)) {
+//         abort(403, 'このURLは有効期限切れです。施設管理者に招待URLの再送を依頼してください。');
+//     }
+//     return view('/hogosharegister');
+// })->name('signed.invitation');
+
+Route::get('/hogosharegister', [URLController::class, 'unsubscribe'])->name('unsubscribe')->middleware('signed');
+
+// Route::get('invitation/{signedUrl}', function (Request $request) {
+//     if (! $request->hasValidSignature()) {
+//         abort(401, 'このURLは有効期限切れです。施設管理者に招待URLの再送を依頼してください。');
+//     }
+// })->name('signed.invitation');
+
+// Route::get('hogosharegister', function () {
+//     // 登録画面を表示するロジック
+//     return view('hogosharegister');
+// })->name('hogosharegister')->middleware('signed');
+
+
+Route::get('invitation', [URLController::class, 'sendInvitation'])->name('send.invitation');
+// 署名付きURLクリック時
+Route::get('/hogosharegister','URLController@unsubscribe')->name('unsubscribe');
+
+
+
+Route::get('/test-mail', function () {
+    $email = 'recipient@example.com';
+    Mail::raw('This is a test email', function ($message) use ($email) {
+        $message->to($email)
+                ->subject('Test Email');
+    });
+    return 'Test email sent.';
+});
+
+// 新規登録前のメールにワンタイムパスコードを送るビュー
+Route::get('/preregistrationmail', function () {
+    return response()->view('preregistrationmail');
+})->name('preregistrationmail');
+
+// 新規登録するユーザーにパスコードを送る
+Route::post('/send-passcode', [RegistrationController::class, 'sendPasscode'])->name('send-passcode');
+
+
+Route::get('/passcodeform', function () {
+    return response()->view('passcodeform');
+})->name('passcodeform');
+
+// Route::get('/passcode-form', [PasscodeController::class, 'showPasscodeForm'])->name('passcode.form');
+Route::post('/passcodeform', [RegistrationController::class, 'validatePasscode'])->name('passcode.validate');
+Route::get('/hogosharegister', [RegistrationController::class, 'showHogoshaRegisterForm'])->name('hogosharegister');
 
 Route::get('peopleregister', [PersonController::class, 'create']);
 Route::post('peopleregister', [PersonController::class, 'store']);
@@ -120,8 +206,6 @@ Route::get('hogoshanumber', [HogoshaUserController::class, 'create'])->name('hog
 Route::post('hogoshanumber', [HogoshaUserController::class, 'numberregister'])->name('hogoshanumber.store');
 
 
-Route::get('temperaturelist', [PersonController::class, 'showtemperature'])->name('temperaturelist.edit');
-Route::get('temperature/{people_id}/edit', [TemperatureController::class, 'edit'])->name('temperature.edit');
 
 // プルダウンで登録させるバージョン↓
 Route::post('temperatures/{people_id}', [TemperatureController::class, 'store'])->name('temperatures.store');
@@ -130,7 +214,6 @@ Route::get('temperatureedit/{people_id}', [TemperatureController::class, 'edit']
 
 // 体温編集↓
 Route::get('temperaturechange/{people_id}/{id}', [TemperatureController::class, 'change'])->name('temperature.change');
-// Route::get('people', [TemperatureController::class, 'change'])->name('temperature.change');
 Route::post('temperaturechange/{people_id}/{id}',[TemperatureController::class,'update'])->name('temperature_update');
 Route::post('temperaturedestroy/{id}',[TemperatureController::class,'destroy'])->name('temperature.delete');
 

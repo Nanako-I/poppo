@@ -17,9 +17,7 @@
           </h3>
           <!-- Avatar -->
           <div class="flex items-center">
-            
             <div class="ms-2.5 sm:ms-4">
-              
             </div>
           </div>
           <!-- End Avatar -->
@@ -28,9 +26,7 @@
 
       <div class="absolute bottom-0 inset-x-0 z-10">
         <div class="flex flex-col h-full p-4 sm:p-6">
-        
-            
-        </div>
+         </div>
       </div>
     </a>
     <!-- End Card -->
@@ -45,23 +41,11 @@
         <div class="p-4 flex flex-col h-full sm:p-6">
           <h3 class="text-lg sm:text-3xl font-semibold text-black group-hover:text-black/80">
                 ご家族の方はこちら
-              </h3>
-            <!--<button class="mt-2 text-white/80">-->
-            <!--ログイン-->
-            <!--</button>-->
-            
+          </h3>
           <!-- Avatar -->
           <div class="flex items-center">
-            <!--<div class="flex-shrink-0">-->
-            <!--  <img class="size-[46px] border-2 border-white rounded-full" src="https://images.unsplash.com/photo-1669837401587-f9a4cfe3126e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=320&h=320&q=80" alt="Image Description">-->
-            <!--</div>-->
+           
             <div class="ms-2.5 sm:ms-4">
-              <!--<h4 class="font-semibold text-white">-->
-              <!--  Gloria-->
-              <!--</h4>-->
-              <!--<p class="text-xs text-white/80">-->
-              <!--  May 30, 2021-->
-              <!--</p>-->
             </div>
           </div>
           <!-- End Avatar -->
@@ -70,14 +54,6 @@
 
       <div class="absolute bottom-0 inset-x-0 z-10">
         <div class="flex flex-col h-full p-4 sm:p-6">
-          
-            <!--<h3 class="text-lg sm:text-3xl font-semibold text-white group-hover:text-white/80">-->
-            <!--    ご家族の方はこちら-->
-            <!--  </h3>-->
-            <!--<button class="mt-2 text-white/80">-->
-            <!--ログイン-->
-            <!--</button>-->
-       
         </div>
       </div>
     </a>

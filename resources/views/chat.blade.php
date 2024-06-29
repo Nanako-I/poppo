@@ -180,11 +180,7 @@
               }
             }
             
-           /* @media screen and (max-width: 700px) { /*スマホ*/
-        /*    #chatbot {*/
-        /*        margin: 10%;*/
-        /*    }*/
-        /*}*/
+           
                 #chatbot-ul > li{
                     position: relative;
                     /* display: block; */
@@ -346,111 +342,77 @@
           </style>
           </head>
     <div id= "chatbot">
-        <!--<div class="flex items-center justify-center">-->
- 
         <div class="flex flex-col items-center">
-         <form action="{{ url('people' ) }}" method="POST" class="w-full max-w-lg">
-                            @method('PATCH')
-                            @csrf  
-        <div class ="flex items-center justify-center text-center">
-        <h2 class="text-center">{{$person->person_name}}さんの連絡</h2>
+            <form action="{{ url('people' ) }}" method="POST" class="w-full max-w-lg">
+                @method('PATCH')
+                @csrf  
+                <div class ="flex items-center justify-center text-center">
+                    <h2 class="text-center">{{$person->person_name}}さんの連絡</h2>
+                </div>
+            </form>
         </div>
-        </div>
-        </form>
+        
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+        <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
     
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
-    <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
-    
-    
-        <!--<body class="w-4/5 md:w-3/5 lg:w-2/5 m-auto">-->
-        <!--追加分↓-->
         <div id= "chatbot-body">
-        <!--<div class="my-4 p-4 rounded-lg w-11/12">-->
-            <!--追加分↓-->
             <ul id= "chatbot-ul">
-            <ul>
-              @foreach ($chats as $chat)
-    <p class="text-base font-bold @if($chat->user_identifier == session('user_identifier')) text-right @endif">
-        {{ $chat->created_at }} ＠{{ $chat->user_name }}
-    </p>
-   
-    <!-- ユーザーのメッセージ -->
-    <li class="@if($chat->user_identifier == session('user_identifier')) self ml-auto @else other @endif">
-        <li style="overflow-wrap: break-word; max-width: 70%;" class="w-max mx-3 mb-3 p-2 text-lg font-bold rounded-lg
-            @if($chat->user_identifier == session('user_identifier')) bg-blue-200 text-gray-900 border-blue-500 @else bg-teal-100 text-gray-950 border-black @endif
-            relative @if($chat->user_identifier == session('user_identifier')) self ml-auto @else other @endif">
-            <div style="overflow-wrap: break-word;">
-                <p style="overflow-wrap: break-word;" class="text-gray-900">{{ $chat->message }}</p>
-                @if($chat->filename && $chat->path)
-                <img alt="team" class="w-80 h-64" src="{{ asset('storage/sample/chat_photo/' . $chat->filename) }}">
-                    <!--<img src="{{ asset($chat->path) }}" alt="Chat Image">-->
-                @endif
-            </div>
-        </li>
-    </li>
-@endforeach
-
-
-
+                <ul>
+                    @foreach ($chats as $chat)
+                    <p class="text-base font-bold @if($chat->user_identifier == session('user_identifier')) text-right @endif">
+                        {{ $chat->created_at }} ＠{{ $chat->user_name }}
+                    </p>
+                    <!-- ユーザーのメッセージ -->
+                    <li class="@if($chat->user_identifier == session('user_identifier')) self ml-auto @else other @endif">
+                        <li style="overflow-wrap: break-word; max-width: 70%;" class="w-max mx-3 mb-3 p-2 text-lg font-bold rounded-lg
+                            @if($chat->user_identifier == session('user_identifier')) bg-blue-200 text-gray-900 border-blue-500 @else bg-teal-100 text-gray-950 border-black @endif
+                            relative @if($chat->user_identifier == session('user_identifier')) self ml-auto @else other @endif">
+                            <div style="overflow-wrap: break-word;">
+                                <p style="overflow-wrap: break-word;" class="text-gray-900">{{ $chat->message }}</p>
+                                @if($chat->filename && $chat->path)
+                                <img alt="team" class="w-80 h-64" src="{{ asset('storage/sample/chat_photo/' . $chat->filename) }}">
+                                    <!--<img src="{{ asset($chat->path) }}" alt="Chat Image">-->
+                                @endif
+                            </div>
+                        </li>
+                    </li>
+                    @endforeach
+                </ul>
             </ul>
-            </ul>
-        <!--</div>-->
         </div>
         
         <form action="{{ url('chat/'.$person->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
-        <!--追加分↓-->
-        <form onsubmit= "return false">
-        <!--追加分↓-->
-        <div id= "chatbot-footer">
-        <!--<div class="my-4 py-2 px-4 rounded-lg bg-gray-300 text-sm flex flex-col md:flex-row flex-grow">-->
-            
-           
-            <input type="hidden" name="user_identifier" value={{session('user_identifier')}}>
-            
-               
-                <input class="hidden py-1 px-2 rounded text-center mb-2 md:mb-0 md:mr-2 md:ml-0 md:flex-initial" type="text" name="user_name" placeholder="UserName" maxlength="20" value="{{$user_name}}" required>
-               <!--画像保存↓-->
-                <label for="filename"  style="cursor: pointer;">
-                    <i class="fa-regular fa-image mt-2" style="font-size: 2em;"></i> <!-- FontAwesomeのアイコンを追加 -->
-                    <input name="filename" id="filename" type="file" style="display: none;" onChange="uploadFile1()">
-                </label>
-                <!--追加分↓-->
-                <input type= "text" id= "chatbot-text" class= "browser-default" name="message" placeholder= "テキストを入力" required style="word-wrap: break-word;">
-                <!--<textarea class="w-full h-20 mt-2 ml-2 py-1 px-2 rounded flex-auto" type="text" name="message" placeholder="メッセージを入力" autofocus required></textarea>-->
-                
-                <!--追加分↓-->
-                <input type= "submit" value= "送信" id= "chatbot-submit">
-                <!--<button type="submit" class="my-2 inline-flex items-center px-5 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">-->
-                <!--    送信-->
-                <!--</button>-->
-             
-        </div>
-        <!--</div>-->
-        </form>
+            <form onsubmit= "return false">
+                <div id= "chatbot-footer">
+                    <input type="hidden" name="user_identifier" value={{session('user_identifier')}}>
+                    <input class="hidden py-1 px-2 rounded text-center mb-2 md:mb-0 md:mr-2 md:ml-0 md:flex-initial" type="text" name="user_name" placeholder="UserName" maxlength="20" value="{{$user_name}}" required>
+                    <!--画像保存↓-->
+                    <label for="filename"  style="cursor: pointer;">
+                        <i class="fa-regular fa-image mt-2" style="font-size: 2em;"></i> <!-- FontAwesomeのアイコンを追加 -->
+                        <input name="filename" id="filename" type="file" style="display: none;" onChange="uploadFile1()">
+                    </label>
+                    <input type= "text" id= "chatbot-text" class= "browser-default" name="message" placeholder= "テキストを入力" required style="word-wrap: break-word;">
+                    <input type= "submit" value= "送信" id= "chatbot-submit">
+                </div>
+            </form>
          </form>  
-        <!--</body>-->
-    <!--</div>-->
-    <!--</div>-->
     </div>
     <script>
-
-    
     function uploadFile1() {
-        var filename = document.getElementById('filename').value;
-        if (filename.trim() !== '') {
-            document.getElementById('chatbot-text').value = '写真が送信されました';
+            var filename = document.getElementById('filename').value;
+            if (filename.trim() !== '') {
+                document.getElementById('chatbot-text').value = '写真が送信されました';
+            }
         }
+      
+        function chatToBottom() {
+        const chatField = document.getElementById('chatbot-body');
+        chatField.scroll(0, chatField.scrollHeight - chatField.clientHeight);
     }
-  
-    function chatToBottom() {
-    const chatField = document.getElementById('chatbot-body');
-    chatField.scroll(0, chatField.scrollHeight - chatField.clientHeight);
-}
-
-const userText = document.getElementById('chatbot-text');
-const chatSubmitBtn = document.getElementById('chatbot-submit');
-
+    
+    const userText = document.getElementById('chatbot-text');
+    const chatSubmitBtn = document.getElementById('chatbot-submit');
     </script>
 </x-app-layout>

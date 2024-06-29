@@ -67,7 +67,7 @@ class ChatController extends Controller
             'filename' => 'image|max:2048',
         ]);
         $filename = uniqid() . '.' . $request->file('filename')->getClientOriginalExtension();
-         $filename = $request->file('filename')->getClientOriginalName();	
+        $filename = $request->file('filename')->getClientOriginalName();	
         $request->file('filename')->storeAs($directory, $filename);
         $filepath = $directory . '/' . $filename;
     }
