@@ -134,20 +134,20 @@ class ChatController extends Controller
     // ユーザー名を変数に登録（デフォルト値：Guest）
        if($request->session()->missing('user_name')){ session(['user_name' => 'Guest']); }
        
-    // データーベースの件数を取得
-        $length = Chat::all()->count();
+   // データベース内の指定されたpeople_idのチャットの件数を取得
+    $length = Chat::where('people_id', $people_id)->count();
 
-        // 表示する件数を代入
-        $display = 5;
+    // 表示するチャットメッセージの件数を設定
+    $display = 5;
 
-        // $chats = Chat::offset($length-$display)->limit($display)->get();
-    $chats = Chat::offset($length - $display)->limit($display)->get(['*', 'filename', 'path']);
+    // 指定されたpeople_idの最新の5件のチャットメッセージを取得
+    $chats = Chat::where('people_id', $people_id)
+                 ->offset($length - $display)
+                 ->limit($display)
+                 ->get(['*', 'filename', 'path']);
 
-
-    // return view('chat', ['id' => $person->id, 'chats' => $chats, 'person' => $person , 'user_identifier' => $user_identifier, 'user_name' => $user_name]);
-    // return view('chat/index',compact('chats'));
-    return view('chat', ['id' => $person->id],compact('person' , 'user_name','chats'));
-   
+    // ビューにデータを渡して表示
+    return view('chat', ['id' => $person->id], compact('person', 'user_name', 'chats'));
 }
 
 
