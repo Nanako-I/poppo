@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use App\Models\User;
+use App\Models\Role;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -22,12 +24,23 @@ class AuthServiceProvider extends ServiceProvider
      * @return void
      */
     public function boot()
-{
-    $this->registerPolicies();
+    {
+        $this->registerPolicies();
 
-    // プレミア（カンパニー）会員用のみ許可（flagが1の人のみ許可）
-    Gate::define('company', function ($user) {
-        return ($user->flag == 1);
-    });
-}
+        Gate::define('role', function ($user) {
+            // ユーザーが持つ役割を取得します
+            $roles = $user->roles;
+
+            // 役割の中に"staff"があるかどうかをチェックします
+            return $roles->contains('name', 'staff');
+        });
+
+        // SuperAdministratorの場合、全ての権限無視して実行できる
+        // 上記既存コードと当たるかもしれないので一旦コメントアウト
+        // Implicitly grant "Super Admin" role all permissions
+        // This works in the app by using gate-related functions like auth()->user->can() and @can()
+        // Gate::before(function ($user, $ability) {
+        //     return $user->hasRole(Role::SuperAdministrator) ? true : null;
+        // });
+    }
 }

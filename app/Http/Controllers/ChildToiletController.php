@@ -18,6 +18,9 @@ class ChildToiletController extends Controller
     
 		
     $childtoilets = ChildToilet::orderBy('created_at', 'asc')->get();
+    // ログインユーザーに関連する人物の情報を取得
+    $user = auth()->user();
+    $people = $user->people()->get();
 
     return view('hogosha', ['childtoilets' => $childtoilets]);
     
@@ -32,10 +35,10 @@ class ChildToiletController extends Controller
      */
    public function create(Request $request)
 {
-    $people = Person::all(); // Personモデルからデータを取得して$people変数に代入
-  
     $person = ChildToilet::findOrFail($request->people_id);
-  
+    // ログインユーザーに関連する人物の情報を取得
+    $user = auth()->user();
+    $people = $user->people()->get();  
     return view('people', compact('people')); // $people変数をビューに渡す
 }
 
@@ -61,7 +64,9 @@ class ChildToiletController extends Controller
         // 'created_at' => $request->created_at,
     ]);
     
-    $people = Person::all();
+    // ログインユーザーに関連する人物の情報を取得
+    $user = auth()->user();
+    $people = $user->people()->get();  
     return view('hogosha', compact('childtoilets', 'people'));
     }
 
@@ -79,6 +84,9 @@ public function change(Request $request, $people_id)
         //** ↓ 下をコピー ↓ **
         $person = Person::findOrFail($people_id);
         $lastToilet = $person->child_toilets->last();
+        // ログインユーザーに関連する人物の情報を取得
+        $user = auth()->user();
+        $people = $user->people()->get();  
         return view('childtoiletchange', compact('person', 'lastToilet'));
     }
 
@@ -91,10 +99,11 @@ public function change(Request $request, $people_id)
      */
     public function edit(Request $request, $people_id)
 {
-  $people = Person::all(); // Personモデルからデータを取得して$people変数に代入
   $person = Person::findOrFail($people_id);
   $lastToilet = $person->child_toilets->last();
-    // return view('hogosha',  ['id' => $person->id],compact('people', 'lastFoodTime', 'lastOyatsu'));
+   // ログインユーザーに関連する人物の情報を取得
+    $user = auth()->user();
+    $people = $user->people()->get();  
     return view('hogosha',  ['id' => $person->id],compact('people', 'lastToilet'));
 }
 // public function edit(Request $request, $people_id)
@@ -126,7 +135,9 @@ public function change(Request $request, $people_id)
         $childtoilet->ben_condition = $request->ben_condition;
         $childtoilet->save();
         
-        $people = Person::all();
+       // ログインユーザーに関連する人物の情報を取得
+        $user = auth()->user();
+        $people = $user->people()->get();  
         
         return view('hogosha', compact('childtoilet', 'people'));
     }

@@ -47,10 +47,12 @@
         </style>
       <h1 class="sm:text-2xl text-3xl font-bold title-font mb-4 text-gray-900" _msttexthash="91611" _msthidden="1" _msthash="63"></h1>
     </div>
-    
+   
     <!-- 現在の本 -->
+ 
   <div class="flex flex-row justify-start w-screen overflow-x-auto">
     <div class="slider">
+        
     @csrf
         @if (!is_null($people) && count($people) > 0)
      <div class="flex flex-row justify-center tw-flex-row h-150 -m-2">
@@ -103,9 +105,25 @@
                       <!--</a>-->
                       
                         
-                                    
-                                
-                                    
+                        @hasanyrole('client family user|client family reader')   
+                        <!--連絡事項↓ -->
+                        　      　<div class="border-2 p-2 rounded-lg bg-white m-2">
+                                    <div class="flex justify-start items-center">
+                                        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+                                        <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
+                                        <i class="fa-solid fa-comments text-sky-500" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>
+                                        <p class="font-bold text-xl ml-2">連絡</p>
+                                    </div>
+                                    <div class="flex items-center justify-center p-4">
+                                        
+                                        <!-- 登録していない場合 -->
+                                        <a href="{{ url('chat/'.$person->id) }}" class="relative ml-2" style="display: flex; align-items: center;">
+                                        <summary class="text-red-500 font-bold text-xl">連絡する</summary>
+                                        @csrf
+                                        <i class="fa-solid fa-plus text-gray-900" style="font-size: 1.5em; padding: 0 5px; transition: transform 0.2s;"></i>
+                                        </a>
+                                    </div>
+                                </div>
                          <!-- 体調登録↓ -->
                         　    　 <div class="border-2 p-2 rounded-lg bg-white m-2">
                                      <div class="flex justify-start items-center">
@@ -296,7 +314,7 @@
                                     </div>
                                 </div>          
                   
-                                        
+                          
                                 <!-- 最終食事・おやつ登録↓ -->
                         　    　 <div class="border-2 p-2 rounded-lg bg-white m-2">
                                     <div class="flex justify-start items-center">
@@ -661,6 +679,7 @@
                                         
                     </div>
                   </div>
+                  @endhasanyrole 
                 @endforeach
               </div>
               @if (count($people) % 2 == 0)
@@ -671,7 +690,7 @@
                 </div>
               @endif
             @endif
-            
+           
     </div>
   </div>
 <!--</section>-->
@@ -688,7 +707,6 @@
 
 </body>
 </html>
-
 <script>
 
 

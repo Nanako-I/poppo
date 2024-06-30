@@ -21,7 +21,13 @@
             </div>
         @endif
         <!-- バリデーションエラーの表示に使用-->
+   @php
+    $user = Auth::user();
+   
+    $permissions = $user->getPermissionsViaRoles();
+  
     
+@endphp 
 <body>
 <style>
   /* フォントを指定 */
@@ -36,8 +42,7 @@
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet">
         
-           <!--<section class="text-gray-600 body-font" _msthidden="29">-->
-  <!--<div class="container px-5 py-24 mx-auto" _msthidden="29">-->
+           
    <div class="flex flex-col items-center justify-center w-full my-2">
         <style>
          @import url('https://fonts.googleapis.com/css2?family=Arial&display=swap');
@@ -52,7 +57,9 @@
 
 
 
-    <!-- 現在の本 -->
+ <!-- 利用者情報 -->
+<!--@role('facility staff administrator')-->
+@hasanyrole('facility staff administrator|facility staff user|facility staff reader')
   <div class="flex flex-row justify-start w-screen overflow-x-auto">
     <div class="slider">
     @csrf
@@ -107,10 +114,14 @@
                                           <p class="text-gray-900 font-bold text-xs" _msttexthash="150072">{{$person->date_of_birth}}生まれ</p>
                                         </div>
                       </div>
+                      
+                      
+                      
+                      
+                     
                       <!--</a>-->
                       
-                       
-                                    
+                        
                                 <!--連絡事項↓ -->
                         　    　<div class="border-2 p-2 rounded-lg bg-white m-2">
                                     <div class="flex justify-start items-center">
@@ -192,7 +203,7 @@
                                         <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
                                         <a href="{{ url('food/'.$person->id.'/edit') }}" class="relative">
                                         </a>
-                                        
+                                    
                         <!--水分登録↓-->
                             　<div class="border-2 p-2 rounded-lg bg-white m-2">
                                 <div class="flex justify-start items-center">
@@ -1105,7 +1116,7 @@
                                                                     <p class="text-gray-900 font-bold text-xl">備考</p>
                                                                     <textarea id="result-speech" name="hossa_bikou" class="w-3/4 max-w-lg font-bold" style="height: 200px;"></textarea>
                                                                 </div>
-                                                                <label class="block text-lg font-bold text-gray-700">動画・写真を登録する</label>
+                                                                <label class="block text-lg font-bold text-gray-700">動画を登録する</label>
                                                                     <div style="margin-left: 10px;">
                                                                         <input name="filename" id="filename" type="file" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm text-lg border-gray-300 rounded-md ml-20">
                                                                     </div>
@@ -1137,7 +1148,7 @@
                                                                     <p class="text-gray-900 font-bold text-xl">備考</p>
                                                                     <textarea id="result-speech" name="hossa_bikou" class="w-3/4 max-w-lg font-bold" style="height: 200px;"></textarea>
                                                                 </div>
-                                                                <label class="block text-lg font-bold text-gray-700">動画・写真を登録する</label>
+                                                                <label class="block text-lg font-bold text-gray-700">動画を登録する</label>
                                                                     <div style="margin-left: 10px;">
                                                                         <input name="filename" id="filename" type="file" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm text-lg border-gray-300 rounded-md ml-20">
                                                                     </div>
@@ -1198,21 +1209,21 @@
                                    
                                     
                                     
-                                      <!--  <div class="border-2 p-2 rounded-lg bg-white mx-2 mb-2 mt-8">-->
-                                      <!--    <div class="flex justify-start items-center">-->
-                                      <!--      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />-->
-                                      <!--      <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>-->
-                                      <!--      <i class="fa-regular fa-clipboard text-green-700" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>-->
-                                      <!--      <p class="font-bold text-xl ml-2">{{ $person->person_name }}さんの記録</p>-->
-                                      <!--    </div>-->
-                                      <!--    <div class="flex justify-center mt-4">-->
-                                      <!--      <a href="{{ url('record/'.$person->id.'/edit') }}" class="relative">-->
-                                      <!--        @csrf-->
-                                      <!--        <i class="material-icons md-90">add</i>-->
-                                      <!--      </a>-->
-                                      <!--    </div>-->
-                                    　　<!--</div>-->
-                                    　　
+                                        <div class="border-2 p-2 rounded-lg bg-white mx-2 mb-2 mt-8">
+                                          <div class="flex justify-start items-center">
+                                            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+                                            <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
+                                            <i class="fa-regular fa-clipboard text-green-700" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>
+                                            <p class="font-bold text-xl ml-2">{{ $person->person_name }}さんの記録</p>
+                                          </div>
+                                          <div class="flex justify-center mt-4">
+                                            <a href="{{ url('record/'.$person->id.'/edit') }}" class="relative">
+                                              @csrf
+                                              <i class="material-icons md-90">add</i>
+                                            </a>
+                                          </div>
+                                    　　</div>
+                                  　　
                                
 
                                    <!-- 動画マニュアル↓ -->
@@ -1266,23 +1277,17 @@
         <!--        <button>download</button>-->
         <!--    </form>-->
         <!--</div>-->
+   <!--@endrole-->
+   @endhasanyrole
     </div>
   </div>
 <!--</section>-->
-
-
-   
-
-            　　
-   　　　　　　　　　　　　　
-    <!--右側エリア[END]--> 
-
 </div>
+ 
  <!--全エリア[END]-->
 
 </body>
 </html>
-
 <script>
 
 

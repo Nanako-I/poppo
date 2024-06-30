@@ -33,19 +33,28 @@ class RegisteredUserController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'custom_id' => ['required', 'string', 'max:255', 'unique:'.User::class],
+            'password' => [
+            'required',
+            'string',
+            'min:8',
+            'confirmed',
+            'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/' // '大文字小文字英数字含む,
+        ],
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
+            'custom_id' => $request->custom_id,
             'password' => Hash::make($request->password),
+            // 'custom_id' => Str::random(10), // ランダムな英数字IDを生成
         ]);
 
         event(new Registered($user));
 
         Auth::login($user);
-
-        return redirect(RouteServiceProvider::HOME);
+        // 職員が新規登録した後の遷移先をFACILITYREGISTER（facilityregister.blade.php）に指定
+        return redirect(RouteServiceProvider::FACILITYREGISTER);
     }
 }

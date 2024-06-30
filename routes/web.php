@@ -4,10 +4,19 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\URL;//職員・家族向けのワンタイムURLを生成するために追記
+use Illuminate\Support\Facades\Mail;
+use Carbon\Carbon;
+
 use App\Http\Middleware\Authenticate;//追記
 use App\Http\Middleware\RedirectIfNotAuthenticated;//追記
+use App\Http\Controllers\Auth\HogoshaLoginController;
+use App\Http\Controllers\RegistrationController;//ユーザー新規登録の二段階認証Controller
 
 use App\Http\Controllers\PersonController;//追記
+use App\Http\Controllers\FacilityController;
+use App\Http\Controllers\HogoshaUserController;
+use App\Http\Controllers\URLController;//追記
 use App\Http\Controllers\PhotoController;//追記
 use App\Http\Controllers\TemperatureController;
 use App\Http\Controllers\BloodpressureController;
@@ -54,8 +63,15 @@ use App\Http\Controllers\VideoController;
 |
 */
 Route::get('/', function () {
-    return view('auth.login');
+    // return view('auth.login');　//※ログイン画面にリダイレクトされないようここを削除
 })->middleware([Authenticate::class]); // Authenticate ミドルウェアを適用
+
+// 職員のログイン画面のビュー
+Route::get('auth.login', function () {
+    return view('auth.login');
+})->name('stafflogin');
+
+
 
 
 
@@ -64,19 +80,108 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-// プレミア会員用のルーティング
-//Route::group(['middleware' => ['auth', 'can:company']], function () {
-	// Item用の一括ルーティング
-  //Route::resource('people', PersonController::class);
-  
-//});
-// Book用の一括ルーティング　本来使ってたルーティング↓
+
+Route::get('/facilityregister', [FacilityController::class, 'create'])->name('facilityregister.create');
+Route::post('facilityregister', [FacilityController::class, 'store'])->name('facilityregister.store');
+
 Route::resource('people', PersonController::class);
 
-// 中間テーブルのリレーションのための追記↓
-//Route::get('people', [PersonController::class, 'index'])->name('people.show');
+// 認証されていないユーザー向けのビュー
+Route::get('/before-login', function () {
+    return response()->view('before-login');
+    // return view('before-login');
+})->name('before-login');
+
+//保護者ログインページのルート
+Route::get('/hogoshalogin', function () {
+    return response()->view('hogoshalogin');
+})->name('hogoshalogin');
+
+// 保護者ログイン処理のルート
+Route::post('/hogoshalogin', [HogoshaLoginController::class, 'store'])->name('hogoshalogin.submit');
 
 Route::view('/register', 'register');
+// Route::get('/invitation/{user}', function (Request $request) {
+//     if (! $request->hasValidSignature()) {
+//         abort(401);
+//     }
+ 
+// //     // ...
+// })->name('unsubscribe');
+
+// 管理者が保護者に招待メールを送るためのビュー
+// Route::get('/invitation', function () {
+//     return view('invitation');
+// })->name('invitation');
+
+// 招待URLの検証とリダイレクト
+// Route::get('invitation/{signedUrl}', function ($signedUrl) {
+//     if (! URL::hasValidSignature(request())) {
+//         abort(403, 'このURLは有効期限切れです。施設管理者に招待URLの再送を依頼してください。');
+//     }
+//     return view('hogosharegister');
+// })->name('signed.invitation');
+
+// 招待URLの検証とリダイレクト
+Route::get('invitation/{signedUrl}', function (Request $request) {
+    if (! $request->hasValidSignature()){
+        abort(403, 'このURLは有効期限切れです。施設管理者に招待URLの再送を依頼してください。');
+    }
+    return view('/hogosharegister');
+})->name('signed.invitation');
+// 招待URLの検証とリダイレクト
+// Route::get('invitation', function (Request $request) {
+//     if (! URL::hasValidSignature($request)) {
+//         abort(403, 'このURLは有効期限切れです。施設管理者に招待URLの再送を依頼してください。');
+//     }
+//     return view('/hogosharegister');
+// })->name('signed.invitation');
+
+Route::get('/hogosharegister', [URLController::class, 'unsubscribe'])->name('unsubscribe')->middleware('signed');
+
+// Route::get('invitation/{signedUrl}', function (Request $request) {
+//     if (! $request->hasValidSignature()) {
+//         abort(401, 'このURLは有効期限切れです。施設管理者に招待URLの再送を依頼してください。');
+//     }
+// })->name('signed.invitation');
+
+// Route::get('hogosharegister', function () {
+//     // 登録画面を表示するロジック
+//     return view('hogosharegister');
+// })->name('hogosharegister')->middleware('signed');
+
+
+Route::get('invitation', [URLController::class, 'sendInvitation'])->name('send.invitation');
+// 署名付きURLクリック時
+Route::get('/hogosharegister','URLController@unsubscribe')->name('unsubscribe');
+
+
+
+Route::get('/test-mail', function () {
+    $email = 'recipient@example.com';
+    Mail::raw('This is a test email', function ($message) use ($email) {
+        $message->to($email)
+                ->subject('Test Email');
+    });
+    return 'Test email sent.';
+});
+
+// 新規登録前のメールにワンタイムパスコードを送るビュー
+Route::get('/preregistrationmail', function () {
+    return response()->view('preregistrationmail');
+})->name('preregistrationmail');
+
+// 新規登録するユーザーにパスコードを送る
+Route::post('/send-passcode', [RegistrationController::class, 'sendPasscode'])->name('send-passcode');
+
+
+Route::get('/passcodeform', function () {
+    return response()->view('passcodeform');
+})->name('passcodeform');
+
+// Route::get('/passcode-form', [PasscodeController::class, 'showPasscodeForm'])->name('passcode.form');
+Route::post('/passcodeform', [RegistrationController::class, 'validatePasscode'])->name('passcode.validate');
+Route::get('/hogosharegister', [RegistrationController::class, 'showHogoshaRegisterForm'])->name('hogosharegister');
 
 Route::get('peopleregister', [PersonController::class, 'create']);
 Route::post('peopleregister', [PersonController::class, 'store']);
@@ -89,10 +194,18 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+// 保護者のuser登録画面↓
+Route::get('/hogosharegister',[HogoshaUserController::class,'showRegister']);
+Route::post('/hogosharegister',[HogoshaUserController::class,'register']);
+
+Route::middleware('auth')->group(function (){
+    Route::get('/hogosha',[HogoshaUserController::class,'hogosha'])->name('hogosha');
+});
+
+Route::get('hogoshanumber', [HogoshaUserController::class, 'create'])->name('hogoshanumber.show');
+Route::post('hogoshanumber', [HogoshaUserController::class, 'numberregister'])->name('hogoshanumber.store');
 
 
-Route::get('temperaturelist', [PersonController::class, 'showtemperature'])->name('temperaturelist.edit');
-Route::get('temperature/{people_id}/edit', [TemperatureController::class, 'edit'])->name('temperature.edit');
 
 // プルダウンで登録させるバージョン↓
 Route::post('temperatures/{people_id}', [TemperatureController::class, 'store'])->name('temperatures.store');
@@ -212,7 +325,10 @@ Route::post('notificationchange/{people_id}',[NotificationController::class,'upd
 // Route::post('hogoshachange/{people_id}',[HogoshaController::class,'update'])->name('hogosha');
 
 // 子どもの体調について　親からの報告↓
-Route::get('hogosha/{people_id}/edit', [ChildConditionController::class, 'edit'])->name('condition.edit');
+
+Route::get('hogosha', [ChildConditionController::class, 'edit'])->name('condition.edit');
+// Route::get('hogosha/{people_id}', [ChildConditionController::class, 'edit'])->name('condition.edit');
+// Route::get('hogosha/{people_id}/edit', [ChildConditionController::class, 'edit'])->name('condition.edit');
 Route::post('condition/{people_id}/edit', [ChildConditionController::class,'store'])->name('condition.post');
 
 // 編集↓
@@ -290,20 +406,6 @@ Route::get('pdf/{people_id}/edit', [DompdfController::class, 'pdf'])->name('pdf'
 Route::post('videos/{people_id}', [VideoController::class, 'store'])->name('videos.store');
 Route::get('videos/{people_id}', [VideoController::class, 'show'])->name('videos.show');
 Route::get('videos/{people_id}/edit', [VideoController::class, 'edit'])->name('videos.edit');
-
-// Qiitaの記事↓
-// Route::get('/index', [SpreadsheetController::class, 'index']);
-// Route::post('/download', [SpreadsheetController::class, 'download']);
-
-// Route::get('/', function () {
-//     return view('welcome');
-// });
-
-
-// Route::get('/photo/upload', PhotoController::class, 'uploadForm')->name('photo.upload.form');
-
-// Route::post('/photo/upload', PhotoController::class, 'upload')->name('photo.upload');
-
 
 
 Route::get('businesscard', 'BusinessCardController@index');

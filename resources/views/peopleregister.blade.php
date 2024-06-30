@@ -15,7 +15,12 @@
         @if (count($errors) > 0)
             <!-- Form Error List -->
             <div class="flex justify-between p-4 items-center bg-red-500 text-white rounded-lg border-2 border-white">
-                <div><strong>氏名・生年月日は入力必須です。</strong></div> 
+                @if ($errors->has('name') || $errors->has('date_of_birth'))
+                    <div><strong>氏名・生年月日は入力必須です。</strong></div> 
+                @endif
+                @if ($errors->has('jukyuusha_number'))
+                    <div><strong>受給者証番号は10桁で入力してください。</strong></div>
+                @endif
                 <div>
                     <ul>
                     @foreach ($errors->all() as $error)
@@ -25,7 +30,8 @@
                 </div>
             </div>
         @endif
-        <!-- バリデーションエラーの表示に使用-->
+
+
       <body class="h-full w-full">
  
     <div class="flex bg-gray-100">
@@ -42,55 +48,32 @@
              <!--@csrf-->
                <form action="{{ url('peopleregister') }}" method="POST" class="w-full" enctype="multipart/form-data">
                         @csrf
-                <!--<br>-->
-                <!--<div class="mx-0.5  my-4">-->
-                <!--<h3 class ="font-bold">ウェブカメラで身分証明書（障害者手帳など）の写真を撮ってください</h3>-->
-                
-                
-    <!--<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 px-0.5">-->
+            
     <div style="display: flex; align-items: center; justify-content: center; flex-direction: column;">
-    <!--<div class="flex items-center justify-center">-->
-        <!--<div class="form-group col-span-1">-->
-        <!--max-w-md: 最大幅を指定 この場合、md は中サイズの画面 PCとか？（通常、768px以上の画面幅）を指します-->
         <div class="form-group mb-4 m-2 w-1/2 max-w-md md:w-1/6" style="display: flex; flex-direction: column; align-items: center;">
             <label class="block text-lg font-bold text-gray-700">名前</label>
             <input name="person_name" type="text" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm text-xl font-bold border-gray-300 rounded-md" placeholder="名前">
         </div>
-        <!--</div>-->
-        <!--<div class="form-group col-span-1">-->
+        
         <div class="form-group mb-4 m-2 w-1/2 max-w-md md:w-1/6" style="display: flex; flex-direction: column; align-items: center;">
             <label class="block text-lg font-bold text-gray-700">生年月日</label>
             <input name="date_of_birth" type="date" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm text-xl font-bold border-gray-300 rounded-md" placeholder="生年月日">
         </div>
-        <!--</div>-->
         
-      <!--<div class="form-group col-span-1">-->
-      <!--  <label class="block text-base font-bold text-gray-700">受給者番号</label>-->
-      <!--  <input name="jukyuusha_number" type="text" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="受給者番号">-->
-      <!--</div>-->
+        
+      <div class="form-group mb-4 m-2 w-1/2 max-w-md md:w-1/6" style="display: flex; flex-direction: column; align-items: center;">
+        <label class="block text-lg font-bold text-gray-700">受給者証番号</label>
+        <input name="jukyuusha_number" type="text" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm text-xl font-bold border-gray-300 rounded-md" placeholder="受給者番号">
+      </div>
   
-      <!--<div class="form-group col-span-1">-->
-      <!--  <label class="block text-base font-bold text-gray-700">障害支援区分</label>-->
-      <!--  <input name="kubun_number" type="text" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="障害支援区分">-->
-      <!--</div>-->
-  
-        <!--<div class="form-group col-span-1">-->
+
         <div class="form-group mb-4 m-2" style="display: flex; flex-direction: column; align-items: center;">
           <label class="block text-lg font-bold text-gray-700">プロフィール画像</label>
-          <!--<div style="display: flex; flex-direction: column; align-items: center;">-->
           <div style="margin-left: 10px;">
             <input name="filename" id="filename" type="file" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm text-lg border-gray-300 rounded-md ml-20">
-            <!--<button class="mt-2" name="filename" id="filename" type="file" accept="image/*">プロフィール画像を選択</button>-->
-          </div>
+            </div>
         </div>
-        
-    
-      <!--<div class="form-group col-span-1">-->
-      <!--  <label class="block text-base font-bold text-gray-700">障害名</label>-->
-      <!--  <input name="disability_name" type="text" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="障がい名">-->
-      <!--</div>-->
-       <!--<form action="{{ url('peopleregister') }}" method="POST" class="w-full" enctype="multipart/form-data">-->
-       <!--                 @csrf-->
+      
         <div class="flex flex-col col-span-1">
             <div class="text-gray-700 text-center px-4 py-2 m-2">
               <button type="submit" class="inline-flex items-center px-6 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
@@ -99,7 +82,6 @@
             </div>
         </div>
     </div>
-<!--</div>-->
 </form>  
 
 

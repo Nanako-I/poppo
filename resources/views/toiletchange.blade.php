@@ -165,7 +165,7 @@
     <div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">
         <h3>便の状態</h3>
           <select name="ben_condition" value="{{ $toilet->ben_condition }}" class="mx-1 my-1.5" style="width: 6rem;">
-            <option value="selected">{{ $toilet->ben_condition }}</option>
+            <option value="{{ $toilet->ben_condition }}">{{ $toilet->ben_condition }}</option>
             <option value="硬便">硬便</option>
             <option value="普通便">普通便</option>
             <option value="軟便">軟便</option>

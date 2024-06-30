@@ -25,12 +25,25 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
+       
         $request->authenticate();
 
         $request->session()->regenerate();
 
-        return redirect()->intended(RouteServiceProvider::HOME);
-    }
+        // ログインしている人の情報を取得
+        $user = Auth::user();
+        
+        // ロールIDが '5' または '6' の役割を持っているか確認
+        $user_roles = $user->roles()->whereIn('role_id', ['1', '2', '3', '4'])->get();
+    
+        if ($user_roles->isNotEmpty()) {
+            return redirect(RouteServiceProvider::HOME);
+        }
+    
+            // 上記のいずれの条件にも該当しない場合のデフォルトのリダイレクト
+            return redirect()->route('login')->with('error', '職員の方以外はこちらのフォームからログインできません。');
+        }
+    
 
     /**
      * Destroy an authenticated session.
@@ -43,6 +56,6 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect('/before-login');
     }
 }

@@ -23,9 +23,9 @@ class RedirectIfNotAuthenticated
         
         // ログインしていない場合
         if (!Auth::check()) {
-            // リクエストが login, register, forgot-password ルートの場合はリダイレクトしない
-            if (!$request->is('login') && !$request->is('register') && !$request->is('forgot-password')) {
-                return redirect()->route('login');
+            // リクエストが login, register, forgot-password, before-login,hogoshalogin ルートの場合はリダイレクトしない
+            if (!$request->is('login') && !$request->is('register') && !$request->is('forgot-password') && !$request->is('before-login') && !$request->is('hogoshalogin')) {
+                return redirect()->route('before-login');
             }
         }
 

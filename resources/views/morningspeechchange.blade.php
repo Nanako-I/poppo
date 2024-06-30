@@ -29,7 +29,7 @@
       <div class="center-container">
             <div class="flex items-center text-align: center justify-center my-2 font-bold text-2xl">
           <!--<div style="display: flex; align-items: center; margin-left: auto; margin-right: auto; max-width: 300px;">-->
-               <h2 style="margin: 0; padding: 0;">{{$person->person_name}}さんの午前活動記録</h2>
+               <h2 style="margin: 0; padding: 0;">{{$person->person_name}}さんの活動記録</h2>
             </div>   
                <table border="0" width="100%" cellspacing="3" cellpadding="0">
                  <!--<tr><td width="270">&nbsp;サーバ URL</td>-->

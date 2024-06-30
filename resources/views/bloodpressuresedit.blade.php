@@ -37,7 +37,7 @@
                   
                     <div class ="flex items-center justify-center" style="padding: 20px 0;">
                         <div class="flex flex-col items-center">
-                            <h4 class="text-gray-900 font-bold text-lg">内服した時間</h>
+                            <h4 class="text-gray-900 font-bold text-lg">計測した時間</h>
                             <!-- 日ごとの吸引リスト -->
                             @foreach ($bloodpressuresOnSelectedDate as $bloodpressure)
                                       

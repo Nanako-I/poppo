@@ -1,15 +1,28 @@
 <x-guest-layout>
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
-
+    
+    <!--職員のroleではない人がログインしようとした時に表示させるエラー（AuthenticatedSessionControllerに記載あり）-->
+    @if (session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
     <form method="POST" action="{{ route('login') }}">
         @csrf
 
         <!-- Email Address -->
+        <!--<div>-->
+        <!--    <x-input-label for="email" :value="__('Email')" />-->
+        <!--    <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />-->
+        <!--    <x-input-error :messages="$errors->get('email')" class="mt-2" />-->
+        <!--</div>-->
+        
+         <!--ID -->
         <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+            <x-input-label for="custom_id" :value="__('ID')" />
+            <x-text-input id="custom_id" class="block mt-1 w-full" type="text" name="custom_id" :value="old('custom_id')" required autofocus autocomplete="username" />
+            <x-input-error :messages="$errors->get('custom_id')" class="mt-2" />
         </div>
 
         <!-- Password -->
@@ -23,6 +36,9 @@
 
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
+        
+        
+       
 
         <!-- Remember Me -->
         <div class="block mt-4">
@@ -67,7 +83,7 @@
         
             <a href="{{ route('login') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">ログイン</a>
             @if (Route::has('register'))
-    <a href="{{ url('/register') }}" class="ml-4 text-sm text-gray-700 dark:text-gray-500 underline">Register</a>
+    <a href="{{ url('/register') }}" class="ml-4 text-sm text-gray-700 dark:text-gray-500 underline">新規登録</a>
 @endif
 
      </div>

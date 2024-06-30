@@ -18,7 +18,9 @@ class BathController extends Controller
     
 		
     $baths = Bath::orderBy('created_at', 'asc')->get();
-
+// ログインユーザーに関連する人物の情報を取得
+    $user = auth()->user();
+    $people = $user->people()->get();
     return view('hogosha', ['baths' => $baths]);
     
    
@@ -32,10 +34,10 @@ class BathController extends Controller
      */
    public function create(Request $request)
 {
-    $people = Person::all(); // Personモデルからデータを取得して$people変数に代入
-  
-    $person = Bath::findOrFail($request->people_id);
-  
+   $person = Bath::findOrFail($request->people_id);
+  // ログインユーザーに関連する人物の情報を取得
+    $user = auth()->user();
+    $people = $user->people()->get();
     return view('people', compact('people')); // $people変数をビューに渡す
 }
 
@@ -59,7 +61,9 @@ class BathController extends Controller
         
     ]);
     
-    $people = Person::all();
+    // ログインユーザーに関連する人物の情報を取得
+    $user = auth()->user();
+    $people = $user->people()->get();
     return view('hogosha', compact('baths', 'people'));
     }
 
@@ -77,6 +81,9 @@ public function change(Request $request, $people_id)
         //** ↓ 下をコピー ↓ **
         $person = Person::findOrFail($people_id);
         $lastBath = $person->baths->last();
+        // ログインユーザーに関連する人物の情報を取得
+        $user = auth()->user();
+        $people = $user->people()->get();
         return view('childbathchange', compact('person', 'lastBath'));
     }
 
@@ -89,15 +96,16 @@ public function change(Request $request, $people_id)
      */
     public function edit(Request $request, $people_id)
 {
-  $people = Person::all(); // Personモデルからデータを取得して$people変数に代入
-  $person = Person::findOrFail($people_id);
-  $lastBath = null;
+    $person = Person::findOrFail($people_id);
+    $lastBath = null;
 if (!is_null($person->baths)) {
     $lastBath = $person->baths->isEmpty() ? null : $person->baths->last();
 }
 
 
-    // return view('hogosha',  ['id' => $person->id],compact('people', 'lastFoodTime', 'lastOyatsu'));
+    // ログインユーザーに関連する人物の情報を取得
+        $user = auth()->user();
+        $people = $user->people()->get();
     return view('hogosha',  ['id' => $person->id],compact('people', 'lastBath'));
 }
 
@@ -123,7 +131,9 @@ if (!is_null($person->baths)) {
        
         $bath->save();
         
-        $people = Person::all();
+        // ログインユーザーに関連する人物の情報を取得
+        $user = auth()->user();
+        $people = $user->people()->get();
         
         return view('hogosha', compact('bath', 'people'));
     }
