@@ -22,14 +22,35 @@
         <div class="flex justify-between h-16">
             <div class="flex ml-1">
                 <!-- Logo -->
-                @if (!request()->is('pdf/*/edit')) 
+               
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ url('people') }}" >
+                   @php
+                        // ユーザーの情報を取得
+                        $user = Auth::user();
+                        // ロールまたはパーミッションを取得
+                        // $permissions = $user->getPermissionsViaRoles()->pluck('name')->toArray();
+                        $roleIds = $user->roles->pluck('id')->toArray();
+                
+                        //デバッグ用に role_id を表示
+                        //dd($roleIds);
+                        
+                        // デフォルトのURLを設定
+                        $url = 'people';
+                
+                        // ロールに基づいてURLを設定
+                        if (array_intersect($roleIds, ['5', '6'])) {
+                            $url = 'hogosha';
+                        }
+                    @endphp
+                </div>
+                
+                <div class="shrink-0 flex items-center">
+                    <a href="{{ url($url) }}" >
                        
                         <img src="{{ asset('storage/sample/rainbow_heart_toumei.png') }}" width ="60" height="60">
                     </a>
                 </div>
-                @endif
+                
 
                 <!-- Navigation Links -->
                 <!--<div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">-->
@@ -37,36 +58,43 @@
                 <!--        {{ __('Dashboard') }}-->
                 <!--    </x-nav-link>-->
                 <!--</div>-->
+                @hasanyrole('super administrator|facility staff administrator|facility staff user|facility staff reader')
+                    <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex {{ request()->is('people') ?  ' text-black' : '' }} px-4 py-2 rounded-md text-3xl font-bold max-w-4xl text-black">
+                        <x-nav-link :href="url('people')" :active="request()->is('people')">
+                        {{ __('利用者一覧') }}
+                        </x-nav-link>
+                    </div>
+                    
+                      <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex {{ request()->is('peopleregister') ? ' text-black' : '' }} px-4 rounded-md text-xl font-bold items-center justify-center">
+                         <!--<i class="material-icons md-48" id="face">face</i>-->
+                         <x-nav-link :href="url('peopleregister')" :active="request()->is('peopleregister')">
+                            {{ __('新規登録') }}
+                        </x-nav-link>
+                    </div>
+                    
+                     <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex {{ request()->is('calendar') ? ' text-black' : '' }} px-4 rounded-md text-xl font-bold items-center justify-center">
+                         <!--<i class="material-icons md-48" id="face">face</i>-->
+                         <x-nav-link :href="url('calendar')" :active="request()->is('calendar')">
+                            {{ __('カレンダー') }}
+                        </x-nav-link>
+                    </div>
+                    
+                    <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex {{ request()->is('invitation') ? ' text-black' : '' }} px-4 rounded-md text-xl font-bold items-center justify-center">
+                         <!--<i class="material-icons md-48" id="face">face</i>-->
+                         <x-nav-link :href="url('invitation')" :active="request()->is('invitation')">
+                            {{ __('職員・保護者を招待する') }}
+                        </x-nav-link>
+                    </div>
+                @endhasanyrole
                 
-                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex {{ request()->is('people') ?  ' text-black' : '' }} px-4 py-2 rounded-md text-3xl font-bold max-w-4xl text-black">
-                     
-                     <x-nav-link :href="url('people')" :active="request()->is('people')">
-                    {{ __('利用者一覧') }}
-                    </x-nav-link>
-                </div>
-                
-                  <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex {{ request()->is('peopleregister') ? ' text-black' : '' }} px-4 rounded-md text-xl font-bold items-center justify-center">
-                     <!--<i class="material-icons md-48" id="face">face</i>-->
-                     <x-nav-link :href="url('peopleregister')" :active="request()->is('peopleregister')">
-                        {{ __('新規登録') }}
-                    </x-nav-link>
-                </div>
-                
-                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex {{ request()->is('calendar') ? ' text-black' : '' }} px-4 rounded-md text-xl font-bold items-center justify-center">
-                     <!--<i class="material-icons md-48" id="face">face</i>-->
-                     <x-nav-link :href="url('calendar')" :active="request()->is('calendar')">
-                        {{ __('カレンダー') }}
-                    </x-nav-link>
-                </div>
-                
-                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex {{ request()->is('invitation') ? ' text-black' : '' }} px-4 rounded-md text-xl font-bold items-center justify-center">
-                     <!--<i class="material-icons md-48" id="face">face</i>-->
-                     <x-nav-link :href="url('invitation')" :active="request()->is('invitation')">
-                        {{ __('職員・保護者を招待する') }}
-                    </x-nav-link>
-                </div>
-                
-                
+                @hasanyrole('super administrator|client family user|client family reader')
+                    <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex {{ request()->is('invitation') ? ' text-black' : '' }} px-4 rounded-md text-xl font-bold items-center justify-center">
+                         <!--<i class="material-icons md-48" id="face">face</i>-->
+                         <x-nav-link :href="url('hogosha')" :active="request()->is('hogosha')">
+                            {{ __('一覧へ') }}
+                        </x-nav-link>
+                    </div>
+                @endhasanyrole
             </div>
 
             <!-- Settings Dropdown -->
