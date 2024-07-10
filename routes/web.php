@@ -101,59 +101,28 @@ Route::get('/hogoshalogin', function () {
 Route::post('/hogoshalogin', [HogoshaLoginController::class, 'store'])->name('hogoshalogin.submit');
 
 Route::view('/register', 'register');
-// Route::get('/invitation/{user}', function (Request $request) {
-//     if (! $request->hasValidSignature()) {
-//         abort(401);
-//     }
- 
-// //     // ...
-// })->name('unsubscribe');
 
-// 管理者が保護者に招待メールを送るためのビュー
-// Route::get('/invitation', function () {
-//     return view('invitation');
-// })->name('invitation');
+
+Route::get('/invitation', [URLController::class, 'sendInvitation'])->name('signed.invitation');
 
 // 招待URLの検証とリダイレクト
-// Route::get('invitation/{signedUrl}', function ($signedUrl) {
-//     if (! URL::hasValidSignature(request())) {
-//         abort(403, 'このURLは有効期限切れです。施設管理者に招待URLの再送を依頼してください。');
-//     }
-//     return view('hogosharegister');
-// })->name('signed.invitation');
-
-// 招待URLの検証とリダイレクト
-Route::get('invitation/{signedUrl}', function (Request $request) {
-    if (! $request->hasValidSignature()){
+Route::get('invitation/{signedUrl}', function ($signedUrl) {
+    if (! URL::hasValidSignature(request())) {
         abort(403, 'このURLは有効期限切れです。施設管理者に招待URLの再送を依頼してください。');
     }
-    return view('/hogosharegister');
+    return view('hogosharegister');
 })->name('signed.invitation');
-// 招待URLの検証とリダイレクト
-// Route::get('invitation', function (Request $request) {
-//     if (! URL::hasValidSignature($request)) {
-//         abort(403, 'このURLは有効期限切れです。施設管理者に招待URLの再送を依頼してください。');
-//     }
-//     return view('/hogosharegister');
-// })->name('signed.invitation');
-
-Route::get('/hogosharegister', [URLController::class, 'unsubscribe'])->name('unsubscribe')->middleware('signed');
-
-// Route::get('invitation/{signedUrl}', function (Request $request) {
-//     if (! $request->hasValidSignature()) {
-//         abort(401, 'このURLは有効期限切れです。施設管理者に招待URLの再送を依頼してください。');
-//     }
-// })->name('signed.invitation');
-
-// Route::get('hogosharegister', function () {
-//     // 登録画面を表示するロジック
-//     return view('hogosharegister');
-// })->name('hogosharegister')->middleware('signed');
 
 
-Route::get('invitation', [URLController::class, 'sendInvitation'])->name('send.invitation');
-// 署名付きURLクリック時
-Route::get('/hogosharegister','URLController@unsubscribe')->name('unsubscribe');
+
+Route::get('/before-invitation', function () {
+    return view('before-invitation');
+})->name('before-invitation');
+
+// 家族招待前に利用者登録があるか確認↓
+Route::get('/registration-confirmation', function () {
+    return view('registration-confirmation');
+})->name('registration-confirmation');
 
 
 

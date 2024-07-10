@@ -79,9 +79,9 @@
                         </x-nav-link>
                     </div>
                     
-                    <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex {{ request()->is('invitation') ? ' text-black' : '' }} px-4 rounded-md text-xl font-bold items-center justify-center">
+                    <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex {{ request()->is('before-invitation') ? ' text-black' : '' }} px-4 rounded-md text-xl font-bold items-center justify-center">
                          <!--<i class="material-icons md-48" id="face">face</i>-->
-                         <x-nav-link :href="url('invitation')" :active="request()->is('invitation')">
+                         <x-nav-link :href="url('before-invitation')" :active="request()->is('before-invitation')">
                             {{ __('職員・保護者を招待する') }}
                         </x-nav-link>
                     </div>
