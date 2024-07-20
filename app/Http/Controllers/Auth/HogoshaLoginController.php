@@ -36,8 +36,8 @@ class HogoshaLoginController extends Controller
         // ログインしている人の情報を取得
         $user = Auth::user();
         
-        // ロールIDが '5' または '6' の役割を持っているか確認
-        $user_roles = $user->roles()->whereIn('role_id', ['5', '6'])->get();
+        // ロールIDが'1' '5'  '6' のいずれかの役割を持っているか確認
+        $user_roles = $user->roles()->whereIn('role_id', ['1', '5', '6'])->get();
     
         if ($user_roles->isNotEmpty()) {
             return redirect(RouteServiceProvider::HOMEFAMILY);

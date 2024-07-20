@@ -1,7 +1,7 @@
 <x-guest-layout>
     
     @if (isset($error))
-        <div style="color: red;">
+        <div style="color: red; font-size: 2em;">
             {!! $error !!}
         </div>
     @endif
@@ -15,13 +15,13 @@
         <div>
             <x-input-label for="name" :value="__('Name')" />
             <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
-            <x-input-error :messages="$errors->get('name')" class="mt-2" />
+            <x-input-error :messages="$errors->get('name')" class="mt-2 text-lg" />
         </div>
         
         <div>
             <x-input-label for="custom_id" :value="__('ID')" />
             <x-text-input id="custom_id" class="block mt-1 w-full" type="text" name="custom_id" :value="old('custom_id')" required autofocus autocomplete="custom_id" />
-            <x-input-error :messages="$errors->get('custom_id')" class="mt-2" />
+            <x-input-error :messages="$errors->get('custom_id')" class="mt-2 text-lg" />
         </div>
 
          <!--Email Address -->
@@ -40,7 +40,7 @@
                             name="password"
                             required autocomplete="new-password" />
 
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+            <x-input-error :messages="$errors->get('password')" class="mt-2 text-lg" />
         </div>
 
         <!-- Confirm Password -->
@@ -51,7 +51,7 @@
                             type="password"
                             name="password_confirmation" required autocomplete="new-password" />
 
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
+            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2 text-lg" />
         </div>
 
         <div class="flex items-center justify-end mt-4">
