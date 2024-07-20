@@ -6,18 +6,23 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;//職員・家族向けのワンタイムURLを生成するために追記
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Routing\Middleware\ValidationSignatureRedirect;
 use Carbon\Carbon;
 
-use App\Http\Middleware\Authenticate;//追記
-use App\Http\Middleware\RedirectIfNotAuthenticated;//追記
+use App\Http\Middleware\Authenticate;
+use App\Http\Middleware\RedirectIfNotAuthenticated;
 use App\Http\Controllers\Auth\HogoshaLoginController;
-use App\Http\Controllers\RegistrationController;//ユーザー新規登録の二段階認証Controller
+use App\Http\Controllers\RegistrationController;//ユーザー新規登録の二段階認証コントローラー
 
-use App\Http\Controllers\PersonController;//追記
+use App\Http\Controllers\PersonController;
 use App\Http\Controllers\FacilityController;
+use App\Http\Controllers\StaffUserController;
 use App\Http\Controllers\HogoshaUserController;
-use App\Http\Controllers\URLController;//追記
-use App\Http\Controllers\PhotoController;//追記
+use App\Http\Controllers\URLController;
+use App\Http\Controllers\BeforeInvitationController;//管理者が職員のIDを入力するためにfacility_idを取って画面遷移させるコントローラー
+use App\Http\Controllers\CustomIDController;//管理者が職員のIDを登録するコントローラー
+
+use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\TemperatureController;
 use App\Http\Controllers\BloodpressureController;
 use App\Http\Controllers\MedicineController;
@@ -68,7 +73,7 @@ Route::get('/', function () {
 
 // 職員のログイン画面のビュー
 Route::get('auth.login', function () {
-    return view('auth.login');
+    return response()->view('auth.login');
 })->name('stafflogin');
 
 
@@ -102,29 +107,57 @@ Route::post('/hogoshalogin', [HogoshaLoginController::class, 'store'])->name('ho
 
 Route::view('/register', 'register');
 
+Route::get('/invitation', [URLController::class, 'sendInvitation'])->name('invitation');
 
-Route::get('/invitation', [URLController::class, 'sendInvitation'])->name('signed.invitation');
-
-// 招待URLの検証とリダイレクト
-Route::get('invitation/{signedUrl}', function ($signedUrl) {
-    if (! URL::hasValidSignature(request())) {
+Route::get('invitation/{signedUrl}', function (Request $request) {
+    if (! $request->hasValidSignature()) {
         abort(403, 'このURLは有効期限切れです。施設管理者に招待URLの再送を依頼してください。');
     }
-    return view('hogosharegister');
+    return view('preregistrationmail');
 })->name('signed.invitation');
 
+// 期限あり署名付きURLの生成
+// Route::get('/invitation', [URLController::class, 'generate_temporary_signed_url']);
+// 署名付きURLクリック時
+// Route::get('invitation/{signedUrl}', [URLController::class, 'handleInvitation'])->name('signed.invitation')->middleware('signed.redirect');
 
+// Route::get('/before-invitation', function () {
+//     return view('before-invitation');
+// })->name('before-invitation');
 
-Route::get('/before-invitation', function () {
-    return view('before-invitation');
-})->name('before-invitation');
+Route::get('/before-invitation', [BeforeInvitationController::class, 'registrationConfirmation'])->name('before-invitation');
+
 
 // 家族招待前に利用者登録があるか確認↓
 Route::get('/registration-confirmation', function () {
-    return view('registration-confirmation');
+    return response()->view('registration-confirmation');
 })->name('registration-confirmation');
 
 
+//管理者が職員のIDを入力するためにfacility_idを取得し画面遷移させる↓
+Route::get('custom_id_entryform/{facilityId}', [BeforeInvitationController::class, 'beforeInvitation'])->name('beforeInvitation');
+
+//管理者が職員を招待する前に職員IDを入力・確認する↓
+Route::get('custom_id_entryform/{facilityId}', [CustomIDController::class, 'entryForm'])->name('custom_id.entryform');
+Route::post('custom_id_entryform/{facilityId}', [CustomIDController::class, 'store'])->name('custom_id.store');
+Route::get('custom_id_entryform/{facilityId}', [CustomIDController::class, 'edit'])->name('custom_id.edit');
+Route::post('custom_id_destroy/{id}',[CustomIDController::class,'destroy'])->name('custom_id.delete');
+
+// 職員に招待メール・LINEを送る画面に遷移させる↓
+Route::get('/invitation_staff', function () {
+    return response()->view('invitation_staff');
+})->name('invitation_staff');
+
+// 招待URL生成
+Route::get('/invitation_staff', [URLController::class, 'staffsendInvitation'])->name('staff.invitation');
+
+// 職員に届いた招待URLの認証
+Route::get('invitation_staff/{signedUrl}', function (Request $request) {
+    if (! $request->hasValidSignature()) {
+        abort(403, 'このURLは有効期限切れです。施設管理者に招待URLの再送を依頼してください。');
+    }
+    return view('register');
+})->name('signed.invitation_staff');
 
 Route::get('/test-mail', function () {
     $email = 'recipient@example.com';
@@ -174,8 +207,13 @@ Route::middleware('auth')->group(function (){
 Route::get('hogoshanumber', [HogoshaUserController::class, 'create'])->name('hogoshanumber.show');
 Route::post('hogoshanumber', [HogoshaUserController::class, 'numberregister'])->name('hogoshanumber.store');
 
+// 職員の登録画面↓
+Route::get('/staffregister',[StaffUserController::class,'staffshow'])->name('staffregister');
+Route::post('/staffregister',[StaffUserController::class,'register']);
 
-
+// Route::middleware('auth')->group(function (){
+//     Route::get('/staffregister',[StaffUserController::class,'staffshow']);
+// });
 // プルダウンで登録させるバージョン↓
 Route::post('temperatures/{people_id}', [TemperatureController::class, 'store'])->name('temperatures.store');
 Route::get('temperatures/{people_id}', [TemperatureController::class, 'show'])->name('temperatures.show');

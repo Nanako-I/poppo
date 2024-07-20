@@ -63,7 +63,7 @@
   <div class="flex flex-row justify-start w-screen overflow-x-auto">
     <div class="slider">
     @csrf
-                @if (!is_null($people) && count($people) > 0)
+                @if (isset($people) && !empty($people) && count($people) > 0)
              <div class="flex flex-row justify-center tw-flex-row h-150 -m-2">
 
                 @foreach ($people as $person)
