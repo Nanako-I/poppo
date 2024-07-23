@@ -16,6 +16,7 @@ use App\Models\Facility;
 use App\Models\Person;
 use App\Models\Role;
 use App\Models\CustomID;
+use App\Http\Requests\ProfileUpdateRequest;
 
 class StaffUserController extends Controller
 {

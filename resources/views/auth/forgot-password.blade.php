@@ -1,6 +1,6 @@
 <x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
-        {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
+    <div class="mb-4 text-lg text-gray-600 dark:text-gray-400">
+        {!! __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') !!}
     </div>
 
     <!-- Session Status -->
@@ -22,4 +22,12 @@
             </x-primary-button>
         </div>
     </form>
+    
+    <!-- Back Button -->
+    <div class="mt-4">
+        <a href="{{ route('before-login') }}" class="text-blue-500 hover:text-blue-700">
+            {{ __('戻る') }}
+        </a>
+    </div>
 </x-guest-layout>
+

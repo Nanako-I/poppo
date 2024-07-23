@@ -6,11 +6,17 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;//職員・家族向けのワンタイムURLを生成するために追記
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
 use Illuminate\Routing\Middleware\ValidationSignatureRedirect;
+use Illuminate\Auth\Events\PasswordReset;
 use Carbon\Carbon;
 
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\RedirectIfNotAuthenticated;
+use App\Http\Controllers\Auth\NewPasswordController;//リセットメールからパスワードを変更するコントローラー
+use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\HogoshaLoginController;
 use App\Http\Controllers\RegistrationController;//ユーザー新規登録の二段階認証コントローラー
 
@@ -77,7 +83,75 @@ Route::get('auth.login', function () {
 })->name('stafflogin');
 
 
+// Route::get('/reset-password', function () {
+//     return response()->view('auth.reset-password'); // resources/views/auth ディレクトリに配置されている場合、ビューの参照はディレクトリ名も含める必要がある
+// })->name('reset-password');
 
+// メールで送られてきたフォームからパスワードをリセットする
+// Route::get('/reset-password/{token}', function ($token) {
+//     return view('auth.reset-password', ['token' => $token]);
+// })->middleware('guest')->name('password.reset');
+
+// Route::get('/reset-password/{token}', [NewPasswordController::class, 'create'])->name('password.reset');
+// Route::post('/reset-password', [NewPasswordController::class, 'store'])->name('password.store');
+
+// Route::get('/reset-password/{token}', function (Request $request, $token) {
+//     return view('auth.reset-password', ['request' => $request, 'token' => $token]);
+// })->name('password.reset');
+
+// Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])
+    //             ->name('password.reset');
+    
+
+    // Route::post('reset-password', [NewPasswordController::class, 'store'])
+    //             ->name('password.store');
+    
+// Route::get('reset-password', [NewPasswordController::class, 'create'])
+//                 ->name('password.reset');
+                
+Route::post('/forgot-password', function (Request $request) {
+    $request->validate(['email' => 'required|email']);
+
+    $status = Password::sendResetLink(
+        $request->only('email')
+    );
+
+    return $status === Password::RESET_LINK_SENT
+                ? back()->with(['status' => __($status)])
+                : back()->withErrors(['email' => __($status)]);
+})->middleware('guest')->name('password.email');
+
+
+// Route::post('/reset-password', function (Request $request) {
+//     $request->validate([
+//         'token' => 'required',
+//         'email' => 'required|email',
+//         'password' => [
+//             'required',
+//             'string',
+//             'min:8',
+//             'confirmed',
+//             'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/' // '大文字小文字英数字含む,
+//         ],
+//     ]);
+
+//     $status = Password::reset(
+//         $request->only('email', 'password', 'password_confirmation', 'token'),
+//         function ($user, $password) {
+//             $user->forceFill([
+//                 'password' => Hash::make($password)
+//             ])->setRememberToken(Str::random(60));
+
+//             $user->save();
+
+//             event(new PasswordReset($user));
+//         }
+//     );
+
+//     return $status === Password::PASSWORD_RESET
+//                 ? redirect()->route('login')->with('status', __($status))
+//                 : back()->withErrors(['email' => [__($status)]]);
+// })->middleware('guest')->name('pass.update');
 
 
 Route::middleware([RedirectIfNotAuthenticated::class])->group(function () {

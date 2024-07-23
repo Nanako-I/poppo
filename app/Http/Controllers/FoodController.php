@@ -63,7 +63,7 @@ class FoodController extends Controller
         
         $food = Food::create([
         'people_id' => $request->people_id,
-        'food' => $request->food,
+        // 'food' => $request->food,
         'staple_food' => $request->staple_food,
         'side_dish' => $request->side_dish,
         'medicine' => $request->medicine,

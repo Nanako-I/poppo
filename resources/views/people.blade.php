@@ -173,7 +173,7 @@
                                                     <!--<a href="javascript:void(0);" class="font-bold text-xl">-->
                                                         <div class="px-1.5">
                                                             <p class="text-gray-900 font-bold text-base">服用:</p>
-                                                            <p class="text-gray-900 font-bold text-2xl">{{ $lastFood->medicine == 'yes' ? 'あり' : 'なし' }}</p>
+                                                            <p class="text-gray-900 font-bold text-2xl">{{ $lastFood->medicine == 'あり' ? 'あり' : 'なし' }}</p>
                                                         </div>
                                                     <!--</a>-->
                                                 <!--</div>-->

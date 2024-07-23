@@ -9,6 +9,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Auth\Passwords\CanResetPassword;
 
 use Spatie\Permission\Models\Role as SpatieRole;
 use App\Enums\RoleType as RoleEnum;

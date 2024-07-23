@@ -32,7 +32,13 @@ class NewPasswordController extends Controller
         $request->validate([
             'token' => ['required'],
             'email' => ['required', 'email'],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'password' => [
+            'required',
+            'string',
+            'min:8',
+            'confirmed',
+            'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/' // '大文字小文字英数字含む,
+        ],
         ]);
 
         // Here we will attempt to reset the user's password. If it is successful we
@@ -43,7 +49,7 @@ class NewPasswordController extends Controller
             function ($user) use ($request) {
                 $user->forceFill([
                     'password' => Hash::make($request->password),
-                    'remember_token' => Str::random(60),
+                    'remember_token' => Str::random(60), //remember_tokenをランダムに生成し設定する
                 ])->save();
 
                 event(new PasswordReset($user));
