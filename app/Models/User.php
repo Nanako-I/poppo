@@ -13,6 +13,7 @@ use Illuminate\Auth\Passwords\CanResetPassword;
 
 use Spatie\Permission\Models\Role as SpatieRole;
 use App\Enums\RoleType as RoleEnum;
+use App\Notifications\CustomPasswordResetNotification;
 
 class User extends Authenticatable
 {
@@ -56,6 +57,10 @@ class User extends Authenticatable
         return $this->hasMany(Temperature::class,'user_id');
     }
     
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new CustomPasswordResetNotification($token));
+    }
    
 
     /**

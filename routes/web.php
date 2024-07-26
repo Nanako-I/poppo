@@ -83,31 +83,6 @@ Route::get('auth.login', function () {
 })->name('stafflogin');
 
 
-// Route::get('/reset-password', function () {
-//     return response()->view('auth.reset-password'); // resources/views/auth ディレクトリに配置されている場合、ビューの参照はディレクトリ名も含める必要がある
-// })->name('reset-password');
-
-// メールで送られてきたフォームからパスワードをリセットする
-// Route::get('/reset-password/{token}', function ($token) {
-//     return view('auth.reset-password', ['token' => $token]);
-// })->middleware('guest')->name('password.reset');
-
-// Route::get('/reset-password/{token}', [NewPasswordController::class, 'create'])->name('password.reset');
-// Route::post('/reset-password', [NewPasswordController::class, 'store'])->name('password.store');
-
-// Route::get('/reset-password/{token}', function (Request $request, $token) {
-//     return view('auth.reset-password', ['request' => $request, 'token' => $token]);
-// })->name('password.reset');
-
-// Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])
-    //             ->name('password.reset');
-    
-
-    // Route::post('reset-password', [NewPasswordController::class, 'store'])
-    //             ->name('password.store');
-    
-// Route::get('reset-password', [NewPasswordController::class, 'create'])
-//                 ->name('password.reset');
                 
 Route::post('/forgot-password', function (Request $request) {
     $request->validate(['email' => 'required|email']);
@@ -121,39 +96,20 @@ Route::post('/forgot-password', function (Request $request) {
                 : back()->withErrors(['email' => __($status)]);
 })->middleware('guest')->name('password.email');
 
+// パスワードリセットスタッフ用のルート
+Route::get('/reset-password-staff/{token}', [NewPasswordController::class, 'createStaff'])
+    ->middleware('guest')
+    ->name('password.reset.staff');
 
-// Route::post('/reset-password', function (Request $request) {
-//     $request->validate([
-//         'token' => 'required',
-//         'email' => 'required|email',
-//         'password' => [
-//             'required',
-//             'string',
-//             'min:8',
-//             'confirmed',
-//             'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/' // '大文字小文字英数字含む,
-//         ],
-//     ]);
-
-//     $status = Password::reset(
-//         $request->only('email', 'password', 'password_confirmation', 'token'),
-//         function ($user, $password) {
-//             $user->forceFill([
-//                 'password' => Hash::make($password)
-//             ])->setRememberToken(Str::random(60));
-
-//             $user->save();
-
-//             event(new PasswordReset($user));
-//         }
-//     );
-
-//     return $status === Password::PASSWORD_RESET
-//                 ? redirect()->route('login')->with('status', __($status))
-//                 : back()->withErrors(['email' => [__($status)]]);
-// })->middleware('guest')->name('pass.update');
+// 一般ユーザー用のルート
+Route::get('/reset-password/{token}', [NewPasswordController::class, 'create'])
+    ->middleware('guest')
+    ->name('password.reset');
 
 
+Route::post('reset-password-staff/{token}', [NewPasswordController::class, 'staffpasswordstore'])
+                ->name('password-staff.store');
+                
 Route::middleware([RedirectIfNotAuthenticated::class])->group(function () {
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -258,6 +214,7 @@ Route::get('/passcodeform', function () {
 // Route::get('/passcode-form', [PasscodeController::class, 'showPasscodeForm'])->name('passcode.form');
 Route::post('/passcodeform', [RegistrationController::class, 'validatePasscode'])->name('passcode.validate');
 Route::get('/hogosharegister', [RegistrationController::class, 'showHogoshaRegisterForm'])->name('hogosharegister');
+
 
 Route::get('peopleregister', [PersonController::class, 'create']);
 Route::post('peopleregister', [PersonController::class, 'store']);

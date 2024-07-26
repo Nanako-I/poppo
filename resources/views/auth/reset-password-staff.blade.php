@@ -6,7 +6,7 @@
                     <li>{{ $error }}</li>
                 @endforeach
             </ul>
-            @if (isset($errors->get('email')[0]) && $errors->get('email')[0] === __('このURLは期限切れです。'))
+            @if (isset($errors->get('custom_id')[0]) && $errors->get('custom_id')[0] === __('このURLは期限切れです。'))
                 <x-primary-button>
                     <a href="{{ route('password.request') }}" class="btn btn-primary mt-3" style="font-size: 1.25em;">
                     {{ __('パスワード再設定メールを再送する') }}
@@ -15,8 +15,7 @@
             @endif
         </div>
     @endif
-
-<form method="POST" action="{{ route('password.store', ['token' => $request->token]) }}">
+    <form method="POST" action="{{ route('password-staff.store', ['token' => $request->token]) }}">
         @csrf
 
         <!-- Password Reset Token -->
@@ -24,8 +23,8 @@
 
         <!-- Email Address -->
         <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email', $request->email)" required autofocus autocomplete="username" />
+            <x-input-label for="custom_id" :value="__('ID')" />
+            <x-text-input id="custom_id" class="block mt-1 w-full" type="text" name="custom_id" :value="old('custom_id', $request->custom_id)" required autofocus autocomplete="username" />
         </div>
 
         <!-- Password -->
@@ -41,6 +40,7 @@
             <x-text-input id="password_confirmation" class="block mt-1 w-full"
                                 type="password"
                                 name="password_confirmation" required autocomplete="new-password" />
+
         </div>
 
         <div class="flex items-center justify-end mt-4">
