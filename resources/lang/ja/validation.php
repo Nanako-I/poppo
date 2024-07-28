@@ -17,6 +17,7 @@ return [
     ],
     'boolean'              => ':attributeには、trueかfalseを指定してください。',
     'confirmed'            => ':attributeと、確認フィールドとが、一致していません。',
+    'current_password' => '現在のパスワードが正しくありません。',
     'date'                 => ':attributeは、正しい日付ではありません。',
     'date_equals'          => ':attributeは、:dateと同じ日付でなければなりません。',
     'date_format'          => ':attributeの形式は、:formatと一致していません。',
@@ -39,7 +40,7 @@ return [
     'gte'                  => [
         'numeric' => ':attributeは、:value以上でなければなりません。',
         'file'    => ':attributeは、:value kB以上でなければなりません。',
-        'string'  => ':attributeは、:value文字以上でなければなりません。',
+        'string'  => ':attributeは、:value文字以上にしてください。',
         'array'   => ':attributeは、:value個以上でなければなりません。',
     ],
     'image'                => ':attributeは、画像でなければなりません。',
@@ -99,7 +100,7 @@ return [
     'starts_with'          => ':attributeは、:valuesのいずれかで始まらなければなりません。',
     'string'               => ':attributeは、文字でなければなりません。',
     'timezone'             => ':attributeは、有効なタイムゾーンでなければなりません。',
-    'unique'               => ':attributeの値は既に存在しています。',
+    'unique'               => 'この:attributeは既に登録されています。',
     'uploaded'             => ':attributeのアップロードに失敗しました。',
     'url' => ':attribute は、有効なURLでなければなりません。',
 

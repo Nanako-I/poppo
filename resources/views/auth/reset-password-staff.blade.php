@@ -21,7 +21,13 @@
         <!-- Password Reset Token -->
         <input type="hidden" name="token" value="{{ $request->token }}">
 
+        
         <!-- Email Address -->
+        <div>
+            <x-input-label for="email" :value="__('事業所のメールアドレス')" />
+            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email', request('email'))" required autofocus autocomplete="username" />
+        </div>
+        
         <div>
             <x-input-label for="custom_id" :value="__('ID')" />
             <x-text-input id="custom_id" class="block mt-1 w-full" type="text" name="custom_id" :value="old('custom_id', $request->custom_id)" required autofocus autocomplete="username" />

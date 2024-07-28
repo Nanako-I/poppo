@@ -5,22 +5,30 @@ namespace App\Http\Requests;
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
 use App\Enums\RoleType as RoleEnum;
 
 class ProfileUpdateRequest extends FormRequest
 {
+    
     public function authorize()
     {
-        // 現在のユーザー情報を取得
-        $user = Auth::user();
-
-        // 現在のユーザーがスーパーユーザーであることを確認
-        return $user->hasRole([
-            RoleEnum::SuperAdministrator,
-            RoleEnum::FacilityStaffAdministrator,
-            RoleEnum::FacilityStaffUser
-        ]);
+        // 現在のユーザーが自分自身のプロフィールを更新することを許可
+        return true;
     }
+    
+    // public function authorize()
+    // {
+    //     // 現在のユーザー情報を取得
+    //     $user = Auth::user();
+
+    //     // 現在のユーザーがスーパーユーザーであることを確認
+    //     return $user->hasRole([
+    //         RoleEnum::SuperAdministrator,
+    //         RoleEnum::FacilityStaffAdministrator,
+    //         RoleEnum::FacilityStaffUser
+    //     ]);
+    // }
 
 
     /**
@@ -34,7 +42,8 @@ class ProfileUpdateRequest extends FormRequest
             'name' => ['string', 'max:255'],
             'email' => ['email', 'max:255', Rule::unique(User::class)->ignore($this->user()->id)],
             'password' => [
-            'required',
+            // 'required',
+             'nullable', // パスワードの更新は任意
             'string',
             'min:8',
             'confirmed',
