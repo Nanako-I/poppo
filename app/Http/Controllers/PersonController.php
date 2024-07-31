@@ -48,7 +48,7 @@ class PersonController extends Controller
         // dd($rolename);
         
         $isSuperAdmin = $user->hasRole(RoleType::FacilityStaffAdministrator);
-// dd($isSuperAdmin);
+        // dd($isSuperAdmin);
 
         // ロールのIDを取得する場合
         $roleIds = $user->roles->pluck('id');
@@ -92,6 +92,23 @@ class PersonController extends Controller
             'date_of_birth' => 'required|max:255',
             'jukyuusha_number' => 'required|digits:10',
         ]);
+        
+        $user = auth()->user();
+        $facilities = $user->facility_staffs()->get();
+        $firstFacility = $facilities->first();
+    
+        if ($firstFacility) {
+            // 現在ログインしているユーザーが属する施設に登録されているpeopleを取得
+            $existingPerson = $firstFacility->people_facilities()
+                ->where('jukyuusha_number', $request->jukyuusha_number)
+                ->first();
+    
+            if ($existingPerson) {
+                return back()->withInput($request->all())
+                             ->withErrors(['duplicate_jukyuusha_number' => '同じ受給者番号の人がすでに存在します。']);
+            }
+        }
+        
 
         $directory = 'public/sample';
         $filename = null;
@@ -116,12 +133,14 @@ class PersonController extends Controller
             'path' => $filepath,
 
         ]);
+        
+        
 
-        $user = auth()->user();
+        // $user = auth()->user();
 
         // facility_staffsメソッドからuserの情報をゲットする↓
-        $facilities = $user->facility_staffs()->get();
-        $firstFacility = $facilities->first();
+        // $facilities = $user->facility_staffs()->get();
+        // $firstFacility = $facilities->first();
 
         // 現在ログインしているユーザーが属する施設にpeople（利用者）を紐づける↓
         // syncWithoutDetaching＝完全重複以外は、重複OK

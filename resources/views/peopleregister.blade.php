@@ -12,22 +12,16 @@
             
         <!-- バリデーションエラーの表示に使用-->
        <!-- resources/views/components/errors.blade.php -->
-        @if (count($errors) > 0)
-            <!-- Form Error List -->
+        @if ($errors->any())
             <div class="flex justify-between p-4 items-center bg-red-500 text-white rounded-lg border-2 border-white">
                 @if ($errors->has('name') || $errors->has('date_of_birth'))
                     <div><strong>氏名・生年月日は入力必須です。</strong></div> 
                 @endif
-                @if ($errors->has('jukyuusha_number'))
+                @if ($errors->has('duplicate_jukyuusha_number'))
+                    <div><strong>{{ $errors->first('duplicate_jukyuusha_number') }}</strong></div>
+                @elseif ($errors->has('jukyuusha_number'))
                     <div><strong>受給者証番号は10桁で入力してください。</strong></div>
                 @endif
-                <div>
-                    <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                    </ul>
-                </div>
             </div>
         @endif
 

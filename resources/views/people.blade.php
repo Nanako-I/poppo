@@ -58,8 +58,8 @@
 
 
  <!-- 利用者情報 -->
-<!--@role('facility staff administrator')-->
-@hasanyrole('facility staff administrator|facility staff user|facility staff reader')
+
+@hasanyrole('super administrator|facility staff administrator|facility staff user|facility staff reader')
   <div class="flex flex-row justify-start w-screen overflow-x-auto">
     <div class="slider">
     @csrf
@@ -1277,7 +1277,6 @@
         <!--        <button>download</button>-->
         <!--    </form>-->
         <!--</div>-->
-   <!--@endrole-->
    @endhasanyrole
     </div>
   </div>

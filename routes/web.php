@@ -235,8 +235,8 @@ Route::middleware('auth')->group(function (){
     Route::get('/hogosha',[HogoshaUserController::class,'hogosha'])->name('hogosha');
 });
 
-Route::get('hogoshanumber', [HogoshaUserController::class, 'create'])->name('hogoshanumber.show');
-Route::post('hogoshanumber', [HogoshaUserController::class, 'numberregister'])->name('hogoshanumber.store');
+Route::get('/hogoshanumber', [HogoshaUserController::class, 'create'])->name('hogoshanumber.show');
+Route::post('/hogoshanumber', [HogoshaUserController::class, 'numberregister'])->name('hogoshanumber.store');
 
 // 職員の登録画面↓
 Route::get('/staffregister',[StaffUserController::class,'staffshow'])->name('staffregister');
