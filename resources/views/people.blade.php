@@ -7,19 +7,34 @@
             
         <!-- バリデーションエラーの表示に使用-->
        <!-- resources/views/components/errors.blade.php -->
-        @if (count($errors) > 0)
-            <!-- Form Error List -->
-            <div class="flex justify-between p-4 items-center bg-red-500 text-white rounded-lg border-2 p-2 border-white">
-                <div><strong>入力した文字を修正してください。</strong></div> 
-                <div>
-                    <ul>
+        <!--@if (count($errors) > 0)-->
+        <!--     Form Error List -->
+        <!--    <div class="flex justify-between p-4 items-center bg-red-500 text-white rounded-lg border-2 p-2 border-white">-->
+        <!--        <div><strong>入力した文字を修正してください。</strong></div> -->
+        <!--        <div>-->
+        <!--            <ul>-->
+        <!--            @foreach ($errors->all() as $error)-->
+        <!--                <li>{{ $error }}</li>-->
+        <!--            @endforeach-->
+        <!--            </ul>-->
+        <!--        </div>-->
+        <!--    </div>-->
+        <!--@endif-->
+        
+        @if ($errors->any())
+            <div style="color: red; font-weight: bold; background-color: #ffe6e6; border: 2px solid red; padding: 10px; border-radius: 5px;">
+                <ul style="list-style-type: none; padding-left: 0;">
                     @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
+                        <li style="margin-bottom: 5px; color: red; font-weight: bold; font-size: 1.1em;">
+                            <i class="fas fa-exclamation-triangle" style="margin-right: 5px;"></i>
+                            {{ $error }}
+                        </li>
                     @endforeach
-                    </ul>
-                </div>
+                </ul>
             </div>
         @endif
+
+                                        
         <!-- バリデーションエラーの表示に使用-->
    @php
     $user = Auth::user();
@@ -116,13 +131,7 @@
                       </div>
                       
                       
-                      
-                      
-                     
-                      <!--</a>-->
-                      
-                        
-                                <!--連絡事項↓ -->
+                      <!--連絡事項↓ -->
                         　    　<div class="border-2 p-2 rounded-lg bg-white m-2">
                                     <div class="flex justify-start items-center">
                                         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
@@ -143,7 +152,7 @@
                                     
                        <!-- 食事登録↓ -->
                         　    　 <div class="border-2 p-2 rounded-lg bg-white m-2">
-                                     <div class="flex justify-start items-center">
+                                    <div class="flex justify-start items-center">
                                         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
                                         <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
                                         <i class="fa-solid fa-bowl-rice text-emerald-700" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>
@@ -161,7 +170,8 @@
                                             
                                             <!-- 直近の食事結果表示 -->
                                                 <div class="flex justify-evenly">
-                                                <a href="{{ url('foodchange/'.$person->id) }}" class="relative ml-2 flex items-center">
+                                                <a href="{{ url('foodedit/'.$person->id) }}" class="relative ml-2 flex items-center">
+                                                
                                                      @csrf
                                                 <!--<div class="flex justify-evenly">-->
                                                     <!--<a href="javascript:void(0);" class="font-bold text-xl">-->
@@ -183,14 +193,14 @@
                                                 </a>
                                                </div>
                                             @else
-                                                <a href="{{ url('food/'.$person->id.'/edit') }}" class="relative ml-2" style="display: flex; align-items: center;">
+                                                <a href="{{ url('food/'.$person->id) }}" class="relative ml-2" style="display: flex; align-items: center;">
                                                 <p class="text-red-500 font-bold text-xl">登録して<br>ください</p>
                                                 @csrf
                                                 <i class="fa-solid fa-plus text-gray-900" style="font-size: 1.5em; padding: 0 5px; transition: transform 0.2s;"></i>
                                                 </a>
                                             @endif
                                         @else
-                                            <a href="{{ url('food/'.$person->id.'/edit') }}" class="relative ml-2" style="display: flex; align-items: center;">
+                                            <a href="{{ url('food/'.$person->id) }}" class="relative ml-2" style="display: flex; align-items: center;">
                                             <p class="text-red-500 font-bold text-xl">登録して<br>ください</p>
                                                 @csrf
                                             <i class="fa-solid fa-plus text-gray-900" style="font-size: 1.5em; padding: 0 5px; transition: transform 0.2s;"></i>
@@ -201,7 +211,7 @@
                   
                                     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
                                         <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
-                                        <a href="{{ url('food/'.$person->id.'/edit') }}" class="relative">
+                                        <a href="{{ url('food/'.$person->id) }}" class="relative">
                                         </a>
                                     
                         <!--水分登録↓-->
@@ -834,7 +844,7 @@
                                     <p class="font-bold text-xl ml-2">トイレ</p>
                                 </div>
                                 <div class="flex items-center justify-center p-4">
-                                            @if (!is_null($person) && count($person->kyuuins) > 0)
+                                            @if (!is_null($person) && count($person->toilets) > 0)
                                             @php
                                                $today = \Carbon\Carbon::now()->toDateString();
                                                $todaysToilets = $person->toilets()
@@ -908,6 +918,7 @@
                                     <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
                                     <i class="fa-solid fa-droplet text-sky-500" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>
                                     <p class="font-bold text-xl ml-2">吸引</p>
+                                    
                                 </div>
                                  <div class="flex items-center justify-center p-4">
                                             @if (!is_null($person) && count($person->kyuuins) > 0)
@@ -1073,6 +1084,7 @@
                                                                     
                                                                     <input type="hidden" name="people_id" value="{{ $person->id }}">
                                                                     <div style="display: flex; align-items: center; justify-content: center; flex-direction: column;">
+                                                                        
                                                                         <div class="flex flex-col items-center justify-center">
                                                                             <p class="text-gray-900 font-bold text-xl">発作が起きた時間</p>
                                                                             <input type="time" name="created_at" id="scheduled-time">

@@ -70,7 +70,7 @@ return [
         'array'   => ':attributeは、:max個以下でなければなりません。',
     ],
     'mimes'                => ':attributeは、:valuesタイプのファイルでなければなりません。',
-    'mimetypes'            => ':attributeは、:valuesタイプのファイルでなければなりません。',
+    'mimetypes'            => ':attributeは、:valuesタイプのいずれかのファイルでなければなりません。',
     'min'                  => [
         'numeric' => ':attributeは、:min以上でなければなりません。',
         'file'    => ':attributeは、:min kB以上でなければなりません。',

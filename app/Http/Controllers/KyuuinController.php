@@ -8,6 +8,7 @@ use App\Models\Kyuuin;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class KyuuinController extends Controller
 {
@@ -46,9 +47,26 @@ class KyuuinController extends Controller
      */
     public function store(Request $request)
     {
-       $storeData = $request->validate([
-            
-        ]);
+        // バリデーションルールとメッセージを定義
+    $rules = [
+        'created_at' => 'required', // 日時の登録を必須にする
+        'filename' => 'image|max:2048',// 2MB = 2048KB
+        ];
+        $messages = [
+            'created_at.required' => '時間の登録は必須です。',
+            'image' => '画像ファイルを選択してください。（画像ファイルはjpeg, png, bmp, gif, svgのいずれかにしてください）',
+            'uploaded' => '画像ファイルを選択してください。（画像ファイルはjpeg, png, bmp, gif, svgのいずれかにしてください）',
+            'filename.max' => 'ファイルサイズが大きすぎます。2MB以下のファイルを選択してください。',
+        ];
+
+    // バリデーション実行
+    $validator = Validator::make($request->all(), $rules, $messages);
+
+    if ($validator->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
+    }
+    
+       
          //   画像保存
         $directory = 'public/sample/kyuuin_photo';
         $filename = null;
@@ -58,8 +76,14 @@ class KyuuinController extends Controller
             $request->validate([
                 'filename' => 'image|max:2048',
             ]);
-            $filename = uniqid() . '.' . $request->file('filename')->getClientOriginalExtension();
-            $filename = $request->file('filename')->getClientOriginalName();	
+            // $filename = uniqid() . '.' . $request->file('filename')->getClientOriginalExtension();
+            // $filename = $request->file('filename')->getClientOriginalName();	
+            
+            // 同じファイル名でも上書きされないようユニークなIDをファイル名に追加
+            $uniqueId = uniqid();
+            $originalFilename = $request->file('filename')->getClientOriginalName();
+            $filename = $uniqueId . '_' . $originalFilename;
+            
             $request->file('filename')->storeAs($directory, $filename);
             $filepath = $directory . '/' . $filename;
         }
@@ -136,6 +160,24 @@ public function change(Request $request, $people_id, $id)
     
     public function update(Request $request, Kyuuin $kyuuin)
     {
+        $rules = [
+        'created_at' => 'required', // 日時の登録を必須にする
+        'filename' => 'image|max:2048', // 2MB = 2048KB
+    ];
+    $messages = [
+        'created_at.required' => '時間の登録は必須です。',
+        'image' => '画像ファイルを選択してください。（画像ファイルはjpeg, png, bmp, gif, svgのいずれかにしてください）',
+        'uploaded' => '画像ファイルを選択してください。（画像ファイルはjpeg, png, bmp, gif, svgのいずれかにしてください）',
+        'filename.max' => 'ファイルサイズが大きすぎます。2MB以下のファイルを選択してください。',
+         
+    ];
+        
+        // バリデーション実行
+        $validator = Validator::make($request->all(), $rules, $messages);
+    
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
       
     //データ更新
         $kyuuin = Kyuuin::find($request->id);
@@ -146,8 +188,14 @@ public function change(Request $request, $people_id, $id)
             ]);
     
             $directory = 'public/sample/kyuuin_photo';
-            $filename = uniqid() . '.' . $request->file('filename')->getClientOriginalExtension();
-            $filename = $request->file('filename')->getClientOriginalName();
+            // $filename = uniqid() . '.' . $request->file('filename')->getClientOriginalExtension();
+            // $filename = $request->file('filename')->getClientOriginalName();	
+            
+            // 同じファイル名でも上書きされないようユニークなIDをファイル名に追加
+            $uniqueId = uniqid();
+            $originalFilename = $request->file('filename')->getClientOriginalName();
+            $filename = $uniqueId . '_' . $originalFilename;
+            
             $request->file('filename')->storeAs($directory, $filename);
             $filepath = $directory . '/' . $filename;
     
@@ -160,13 +208,6 @@ public function change(Request $request, $people_id, $id)
      }
         // 他のデータを更新
     $kyuuin->fill($request->except(['filename']));
-    // $kyuuin->fill($request->except(['filename', '_token', 'path']));
-    // $kyuuin->fill($request->all());
-    
-    // $updateData = $request->only(['people_id','kyuuin','bikou','filename','filepath','created_at']);
-    // $kyuuin->fill() メソッドにデータを渡す
-    // $kyuuin->fill($updateData);
-
     $kyuuin->save();
 
     // セッショントークンを再生成

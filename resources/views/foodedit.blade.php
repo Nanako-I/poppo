@@ -1,220 +1,124 @@
-<x-app-layout>
+  <x-app-layout>
 
     <!--ヘッダー[START]-->
-  <div class="flex items-center justify-center">
-  <!--<div style="display: flex; flex-direction: column;">-->
-     <div class="flex flex-col items-center">
-         <form action="{{ url('people' ) }}" method="POST" class="w-full max-w-lg">
-                            @method('PATCH')
-                            @csrf
-          <style>
-            h2 {
-              font-family: Arial, sans-serif; /* フォントをArialに設定 */
-              font-size: 20px; /* フォントサイズを20ピクセルに設定 */
-              
-            }
-          </style>
-        <div class ="flex items-center justify-center">
-        <h2>{{$person->person_name}}さんの食事登録</h2>
-        </div>
-        </form>
-    
-          <!--<button type="button" button id="modal-button" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded">食事量をとうろくする</button>-->
-  <!--ヘッダー[END]-->
-            
-        <!-- バリデーションエラーの表示に使用-->
-       <!-- resources/views/components/errors.blade.php -->
-       
-<form action="{{ url('food/'.$person->id.'/edit') }}" method="POST">
-         
-      
-                        @csrf
-                        
-                        <!--<label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-1">-->
-                        <!--今日のこんだて-->
-                        <!--</label>-->
-                        <!--<input name="food" id="text-box" class="appearance-none block w-full text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" type="text" placeholder="">-->
-                        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-                         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
-                         <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
-                            <!--モーダル表示部分↓-->
-          <!--<div id="modal" class="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center z-10 hidden">-->
+      　<div class="flex items-center justify-center" style="padding: 20px 0;">
+            <div class="flex flex-col items-center">
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+                <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
+                <form method="get" action="{{ route('food.edit', $person->id) }}">
+                <!--<form action="{{ url('people' ) }}" method="POST" class="w-full max-w-lg">-->
+                                    @method('PATCH')
+                                    @csrf
+                <style>
+                    h2 {
+                      font-family: Arial, sans-serif; /* フォントをArialに設定 */
+                      font-size: 20px; /* フォントサイズを20ピクセルに設定 */
+                    }
+                </style>
+                <div class="flex items-center justify-center" style="padding: 20px 0;">
                     <div class="flex flex-col items-center">
-                        <style>
-                          p {
-                            font-family: Arial, sans-serif; /* フォントをArialに設定 */
-                            font-size: 25px; /* フォントサイズを20ピクセルに設定 */
-                            font-weight: bold;
-                          }
-                        </style>
-                  
-                            <p>どれぐらい食べましたか？</p>
-                              <div class="flex items-center justify-center">
-                                <div class="flex flex-col items-center">
-                                  <span class="text-gray-400 text-4xl" onclick="changeColorAndSize(this, 'rice_bowl_icon_1')">
-                                    <i class="fa-solid fa-bowl-rice text-red-300"  id="rice_bowl_icon_1" style="font-size: 1.5em; padding: 15px 5px; transition: transform 0.2s;"></i>
-                                  </span>
-                                </div>
-                              </div>
-                              
-                               <div style="max-width: 350px; margin: 1.5rem auto;">
-                                    <input type="range" id ="rice_range" class="input-range" name="foo" min="0" max="10" oninput="oninput_rice()">
-                                  </div>
-                                  
-                                  <style>
-                                  /*// リセットCSS（すでに指定済なら不要）*/
-                                  /** {*/
-                                  /*  box-sizing: border-box;*/
-                                  /*}*/
-                                  
-                                  /*// 🚩：重要なポイント*/
-                                  
-                                  .input-range {
-                                    -webkit-appearance: none;
-                                    appearance: none;
-                                    cursor: pointer;
-                                    background: #8acdff;
-                                    height: 14px;
-                                    width: 100%; 
-                                    border-radius: 10px; 
-                                    border: solid 3px #dff1ff; 
-                                    outline: 0; /* アウトラインを消して代わりにfocusのスタイルをあてる */
-                                    &:focus {
-                                      box-shadow: 0 0 3px rgb(0, 161, 255);
-                                    }
-                                    /*// -webkit-向けのつまみ*/
-                                    &::-webkit-slider-thumb {
-                                      -webkit-appearance: none; 
-                                      background: #53aeff; 
-                                      width: 24px; 
-                                      height: 24px; 
-                                      border-radius: 50%;
-                                      box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.15);
-                                    }
-                                    /*// -moz-向けのつまみ*/
-                                    &::-moz-range-thumb {
-                                      background: #53aeff;
-                                      width: 24px;
-                                      height: 24px;
-                                      border-radius: 50%;
-                                      box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.15);
-                                      border: none; 
-                                    }
-                                    /*// Firefoxで点線が周りに表示されてしまう問題の解消*/
-                                    &::-moz-focus-outer {
-                                      border: 0;
-                                    }
-                                    /*// つまみをドラッグしているときのスタイル*/
-                                    &:active::-webkit-slider-thumb {
-                                      box-shadow: 0px 5px 10px -2px rgba(0, 0, 0, 0.3);
-                                    }
-                                  }
-                                  
-                                  </style>
-                                  
-                              　<!--<div class="flex items-center justify-center">-->
-                                    <div style="display: flex; flex-direction: column; align-items: center;">
-                                        <!--<p class="text-lg">主食</p>-->
-                                        <!--<div class="flex items-center justify-center">-->
-                                          <div class="flex items-center justify-center ml-4">
-                                            <input name="staple_food" type="text" id="staple_food" class="w-1/4 h-8px flex-shrink-0 break-words mx-1">
-                                            <p class="text-gray-900 font-bold text-xl">割</p>
-                                          </div>
-                                        <!--</div>-->
-                                
-                                        <i class="fa-solid fa-prescription-bottle-medical text-green-600" style="font-size: 3em; padding: 15px 5px; transition: transform 0.2s;"></i>
-                                        <!--<form action="送信先のURL" method="POST">-->
-                                        <div class="flex items-center justify-center my-2 mr-6">
-                                            <p class="text-gray-900 font-bold text-xl" style="white-space: nowrap; padding: 0 5px;">服用</p>
-                                            <select name="medicine" class="w-3/5 ml-1.5">
-                                                <option value="selected">選択</option>
-                                                <option value="あり">あり</option>
-                                                <option value="なし">なし</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                <!--</div>-->
-
-                                      
-                                        <div class="flex items-center justify-center my-2">
-                                         <p class="text-gray-900 font-bold text-xl">薬の名称</p>
-                                         <input name="medicine_name" type="text" class="h-8px flex-shrink-0 break-words mx-1" style="width: 12rem;">
-                                        </div> 
-                                        
-                                        <div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">
-                                          <p class="text-gray-900 font-bold text-xl">備考<p>
-                                            <!--<div class="flex items-center justify-center m-2">-->
-                                            <!-- <p class="font-bold text-xl">音声で入力する場合、スタートボタンを押してください</p>-->
-                                            <!--</div>-->
-                                            <!--  <div class="flex items-center justify-center">-->
-                                            <!--  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />-->
-                                            <!--    <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>-->
-                                            <!--      <i class="fa-solid fa-volume-high text-orange-400" style="font-size: 3em; padding: 0 5px;"></i>-->
-                                           
-                                            <!--      <button id="start-btn" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded-lg text-lg mx-1">-->
-                                            <!--        スタート-->
-                                            <!--      </button>-->
-                                          
-                                            <!--      <button id="stop-btn" class="bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-lg text-lg mx-1">-->
-                                            <!--        ストップ-->
-                                            <!--      </button>-->
-                                            <!--  <div id="result-div"></div>-->
-                                            <!--</div>-->
-                                            <textarea id="result-speech" name="bikou" class="w-full max-w-lg" style="height: 300px;"></textarea>
-                                          </div>
-                                          <button type="submit" class="inline-flex items-center px-6 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
-                                              送信
-                                          </button>
-                              </div>
+                        <h2>{{$person->person_name}}さん</h2>
+                        <h3 class="text-gray-900 font-bold text-xl">{{ $selectedDate }}の食事記録</h3>
                     </div>
-                  </div>
-  </form>
+                </div>
+                    <!--<label for="selected_date"  class="text-gray-900 font-bold text-xl">日付選択：</label>-->
+                <input type="date" name="selected_date" id="selected_date" value="{{ $selectedDate }}">
+                  <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+                    表示
+                  </button>
+            </div>
+        </div>
+    </form>
+                    @php
+                       $today = \Carbon\Carbon::now()->toDateString();
+                       $todaysFoods = $person->foods->where('created_at', '>=', $today)
+                       ->where('created_at', '<', $today . ' 23:59:59');
+                    @endphp
+                    @if ($todaysFoods->count() > 0)
+                    <!--<div class="flex flex-col">-->
+                    <div class ="flex items-center justify-center"  style="padding: 20px 0;">
+                        <div class="flex flex-col items-center">
+                            <p class="text-gray-900 font-bold text-lg">食事した時間</p>
+                            <!-- 日ごとの吸引リスト -->
+                            @foreach ($foodsOnSelectedDate as $food)
+                                    <div class="flex-row items-center justify-between p-2 border-b border-gray-300">
+                                        <p class="text-gray-900 font-bold text-lg">{{ $food->created_at->format('H:i') }}</p>
+                                        <p class="text-gray-900 font-bold text-xl">{{ $food->staple_food }}割食べました</p>
+                                        <p class="text-gray-900 font-bold text-xl">{{ $food->medicine == 'あり' ? '服用：あり' : ($food->medicine != 'なし' ? $food->medicine : '') }}</p>
+                                        <p class="text-gray-900 font-bold text-xl">{{ $food->medicine_name }}</p>
+                                        <p class="text-gray-900 font-bold text-xl">{{ $food->bikou }}</p>
+                                        
+                                        <a href="{{ route('food.change', ['people_id' => $person->id, 'id' => $food->id]) }}" class="text-stone-500">
+                                            <i class="fa-solid fa-pencil pt-2" style="font-size: 2em;"></i>
+                                        </a>
+                                        <form action="{{ route('food.delete', ['id'=>$food->id]) }}" method="POST">
+                                        @csrf
+                                            <button type="button" class="text-stone-500 delete-btn" data-id="{{ $food->id }}" data-toggle="modal" data-target="#confirmDeleteModal">
+                                            <!--<button type="submit" class="text-stone-500">-->
+                                                <i class="fa-solid fa-trash-can pt-2" style="font-size: 2em;"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                            @endforeach
+                        @endif
+                        </div>
+                    </div>
+            </div>
+    
+          <!-- モーダルダイアログ -->
+<div class="modal fixed w-full h-full top-0 left-0 flex items-center justify-center hidden" id="confirmDeleteModal">
+  <div class="modal-overlay absolute w-full h-full bg-gray-600 opacity-50"></div>
 
- <!--全エリア[END]-->
+  <!--<div class="modal-container bg-white w-11/12 md:max-w-md mx-auto rounded shadow-lg z-50 overflow-y-auto">-->
+    <div class="modal-container bg-white w-full max-w-xs mx-auto rounded shadow-lg z-50 overflow-y-auto">
+    <!-- Add margin if you want to see some of the overlay behind the modal-->
+    <div class="modal-content py-4 text-left px-6">
+      <!--Title-->
+      <div class="flex justify-between items-center pb-3">
+        <p class="text-2xl font-bold">本当に削除しますか？</p>
+        <div class="modal-close cursor-pointer z-50" data-dismiss="modal">
+          <svg class="fill-current text-black" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18">
+            <path d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"></path>
+          </svg>
+        </div>
+      </div>
+
+      <!--Body-->
+      <p class="font-bold">削除したデータは復元できません。</p>
+
+      <!--Footer-->
+      <div class="flex justify-end pt-2">
+        <button type="button" class="px-4 bg-blue-800 p-3 rounded-lg text-white hover:bg-blue-400 mr-2" data-dismiss="modal">キャンセル</button>
+        <button type="button" class="px-4 bg-red-500 p-3 rounded-lg text-white hover:bg-red-400" id="deleteBtn">削除</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
+document.addEventListener('DOMContentLoaded', function () {
+    var deleteForm; // 削除するフォームを保存する変数
 
-function oninput_rice(){
-  var rice_range = document.getElementById('rice_range');
-  const staple_food = document.getElementById("staple_food");
-  staple_food.value = rice_range.value;
-};
+    document.querySelectorAll('.delete-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            deleteForm = this.closest('form'); // フォームを取得して保存
+            document.getElementById('confirmDeleteModal').classList.remove('hidden');
+        });
+    });
 
+    document.getElementById('deleteBtn').addEventListener('click', function() {
+        deleteForm.submit(); // モーダルの削除ボタンがクリックされたらフォームを送信
+        document.getElementById('confirmDeleteModal').classList.add('hidden');
+    });
 
-function oninput_meal(){
-  var meal_range = document.getElementById('meal_range');
-  const side_dish = document.getElementById("side_dish");
-  side_dish.value = meal_range.value;
-};
-
-// スクロールイベント↓
-
-  function countScroll() {
-  var target = document.getElementById('target');
-  var x = target.scrollLeft;
-  document.getElementById('output').innerHTML = x;
-  
-  // アイコンのサイズ変更
-  // var leftIcon = document.getElementById('leftIcon');
-  // var rightIcon = document.getElementById('rightIcon');
-  // var newSize = 2 + x / 100; // スクロール量に応じてサイズを変更する調整値
-  // leftIcon.style.fontSize = newSize + 'em';
-  // rightIcon.style.fontSize = newSize + 'em';
-  
-  // アイコンの位置調整
-  // var iconWrapper = document.getElementById('iconWrapper');
-  // var maxScroll = target.scrollWidth - target.clientWidth;
-  // var iconPosition = x / maxScroll * (target.clientWidth - leftIcon.clientWidth);
-  // iconWrapper.style.left = iconPosition + 'px';
-}
-
-// スクロールイベントの監視
-var target = document.getElementById('target');
-target.addEventListener('scroll', countScroll);
-
-
-
-
-  
+    document.querySelectorAll('[data-dismiss="modal"]').forEach(button => {
+        button.addEventListener('click', function() {
+            document.getElementById('confirmDeleteModal').classList.add('hidden');
+        });
+    });
+});
 
 </script>
+
+
 </x-app-layout>

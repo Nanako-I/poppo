@@ -14,11 +14,21 @@
             </style>
             <div class ="flex items-center justify-center"  style="padding: 20px 0;">
                 <div class="flex flex-col items-center">
-                    <h2>{{$person->person_name}}さんの体温記録</h2>
+                    <h2>{{$person->person_name}}さんのトイレ記録</h2>
                     
                 </div>
             </div>
         </form>
+         <!-- エラーメッセージ表示 -->
+            @if ($errors->any())
+                <div style="color: red; font-weight: bold; font-size: 1.2em;">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li style="color: red; padding-bottom: 10px;">{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
        
 <form action="{{ url('toiletchange/' . $person->id . '/' . $toilet->id) }}" method="POST"  enctype="multipart/form-data">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
@@ -46,7 +56,7 @@
       <h3>トイレに行った時間</h3>
     </div>
     <div style="display: flex; flex-direction: column; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
-      <input type="time" name="created_at" id="scheduled-time" value="{{ $toilet->created_at }}">
+      <input type="datetime-local" name="created_at" id="scheduled-time" value="{{ $toilet->created_at }}">
     </div>
     <div style="display: flex; flex-direction: column; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
       <h3>尿の量</h3>

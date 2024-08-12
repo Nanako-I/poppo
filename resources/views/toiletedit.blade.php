@@ -18,7 +18,7 @@
                 <div class="flex items-center justify-center" style="padding: 20px 0;">
                     <div class="flex flex-col items-center">
                         <h2>{{$person->person_name}}さん</h2>
-                        <h3 class="text-gray-900 font-bold text-xl">{{ $selectedDate }}の体温記録</h3>
+                        <h3 class="text-gray-900 font-bold text-xl">{{ $selectedDate }}のトイレ記録</h3>
                     </div>
                 </div>
                 <input type="date" name="selected_date" id="selected_date" value="{{ $selectedDate }}">
@@ -37,7 +37,7 @@
                   
                     <div class ="flex items-center justify-center"  style="padding: 20px 0;">
                         <div class="flex flex-col items-center">
-                            <h4 class="text-gray-900 font-bold text-lg">トイレの時間</h>
+                            <h4 class="text-gray-900 font-bold text-lg">トイレをした時間</h>
                             <!-- 日ごとの体温リスト -->
                             @foreach ($toiletsOnSelectedDate as $toilet)
                                     <div class="flex-row items-center justify-between p-2 border-b border-gray-300">
@@ -58,25 +58,25 @@
                                     <p class="text-gray-900 font-bold text-2xl">{{ $toilet->ben_condition }}</p>
                                 </div>
                             </div>
+                            <p class="text-gray-900 font-bold text-lg">{{ $toilet->bikou }}</p>
                                 @if($toilet->filename && $toilet->path)
                                     <img alt="team" class="w-80 h-64" src="{{ asset('storage/sample/toilet_photo/' . $toilet->filename) }}">
                                 @endif
                                 <a href="{{ route('toilet.change', ['people_id' => $person->id, 'id' => $toilet->id]) }}" class="text-stone-500">
-                                  <i class="fa-solid fa-pencil" style="font-size: 1.5em;"></i>
+                                  <i class="fa-solid fa-pencil pt-2" style="font-size: 2em;"></i>
                                 </a>
                                 <form action="{{ route('toilet.delete', ['id'=>$toilet->id]) }}" method="POST">
                                 @csrf
                                     <button type="button" class="text-stone-500 delete-btn" data-id="{{ $toilet->id }}" data-toggle="modal" data-target="#confirmDeleteModal">
-                                       <i class="fa-solid fa-trash-can" style="font-size: 1.5em;"></i>
+                                       <i class="fa-solid fa-trash-can pt-2" style="font-size: 2em;"></i>
                                     </button>
                                 </form>
                             </div>
-                            </div>       
                             @endforeach
                         @endif
-                        </div>
+                        </div> 
                     </div>
-            </div>
+                    
     
           <!-- モーダルダイアログ -->
 <div class="modal fixed w-full h-full top-0 left-0 flex items-center justify-center hidden" id="confirmDeleteModal">

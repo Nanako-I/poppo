@@ -46,12 +46,12 @@
                                            <video controls class="h-64" src="{{ asset('storage/sample/hossa_photo/'.$hossa->filename) }}" muted class="contents_width"></video>
                                         @endif
                                         <a href="{{ route('hossa.change', ['people_id' => $person->id, 'id' => $hossa->id]) }}" class="text-stone-500">
-                                            <i class="fa-solid fa-pencil" style="font-size: 1.5em;"></i>
+                                            <i class="fa-solid fa-pencil pt-2" style="font-size: 2em;"></i>
                                         </a>
                                         <form action="{{ route('hossa.delete', ['id'=>$hossa->id]) }}" method="POST">
                                         @csrf
                                             <button type="button" class="text-stone-500 delete-btn" data-id="{{ $hossa->id }}" data-toggle="modal" data-target="#confirmDeleteModal">
-                                               <i class="fa-solid fa-trash-can" style="font-size: 1.5em;"></i>
+                                               <i class="fa-solid fa-trash-can pt-2" style="font-size: 2em;"></i>
                                             </button>
                                         </form>
                                     </div>

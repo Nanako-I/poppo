@@ -1,27 +1,34 @@
 @vite(['resources/css/app.css', 'resources/js/app.js'])
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ぶーけあ</title>
   <style>
     /* 携帯画面用のスタイル */
     @media (max-width: 640px) {
       .preregistrationmail {
         padding: 20px; /* コンテナ全体のパディング */
+        /*font-size: 3rem;*/
       }
 
-      .preregistrationmail h1 {
-        font-size: 24px; /* 見出しのフォントサイズ */
-      }
+      .title h1 {
+      font-size: 3rem; /* 見出しのフォントサイズ */
+    }
 
       .preregistrationmail p {
-        font-size: 18px; /* 段落のフォントサイズ */
+        font-size: 2rem; /* 段落のフォントサイズ */
       }
+      
 
       .submit-btn {
-        font-size: 18px; /* ボタンのテキストサイズ */
+        font-size: 24px; /* ボタンのテキストサイズ */
         padding: 16px 32px; /* ボタンの内側の余白 */
         width: 100%; /* ボタンの幅を100%に設定 */
       }
 
       input[type="email"] {
-        font-size: 18px; /* 入力フィールドのフォントサイズ */
+        font-size: 30px; /* 入力フィールドのフォントサイズ */
         padding: 14px 20px; /* 入力フィールドの内側の余白 */
       }
     }
@@ -31,10 +38,12 @@
 <div class="preregistrationmail relative overflow-hidden">
     <div class="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-24">
         <div class="text-center">
-            <h1 class="text-3xl sm:text-6xl font-bold text-gray-800 dark:text-neutral-200">
-                パスコードの入力
-            </h1>
-            <p class="mt-3 text-xl text-gray-600 dark:text-neutral-400">
+            <div class="title">
+                <h1 class="text-3xl sm:text-6xl font-bold text-gray-800 dark:text-neutral-200">
+                    パスコードの入力
+                </h1>
+            </div>
+            <p class="mt-3 text-3xl text-gray-600 dark:text-neutral-400">
                 メールで届いたパスコードを入力してください
             </p>
             <div class="mt-7 sm:mt-12 mx-auto max-w-xl relative">
@@ -111,3 +120,4 @@
         });
     </script>
     </body>
+    </html>

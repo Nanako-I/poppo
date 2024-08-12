@@ -46,12 +46,12 @@
                                             <img alt="team" class="w-80 h-64" src="{{ asset('storage/sample/tube_photo/' . $tube->filename) }}">
                                         @endif
                                         <a href="{{ route('tube.change', ['people_id' => $person->id, 'id' => $tube->id]) }}" class="text-stone-500">
-                                            <i class="fa-solid fa-pencil" style="font-size: 1.5em;"></i>
+                                            <i class="fa-solid fa-pencil pt-2" style="font-size: 2em;"></i>
                                         </a>
                                         <form action="{{ route('tube.delete', ['id'=>$tube->id]) }}" method="POST">
                                         @csrf
                                             <button type="button" class="text-stone-500 delete-btn" data-id="{{ $tube->id }}" data-toggle="modal" data-target="#confirmDeleteModal">
-                                               <i class="fa-solid fa-trash-can" style="font-size: 1.5em;"></i>
+                                               <i class="fa-solid fa-trash-can pt-2" style="font-size: 2em;"></i>
                                             </button>
                                         </form>
                                     </div>

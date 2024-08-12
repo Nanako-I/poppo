@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Food;
 use App\Models\Person;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class FoodController extends Controller
 {
@@ -75,6 +78,7 @@ class FoodController extends Controller
     $people = Person::all();
 //   $person = Person::findOrFail($request->people_id);
     // return redirect()->route('food.edit', ['people_id' => $person->id]); //
+     $request->session()->regenerateToken();
     return view('people', compact('food', 'people'));
     }
 
@@ -104,19 +108,15 @@ class FoodController extends Controller
 //   return view('edit', ['message'=>$message, 'article'=>$article]);  // 編集ページに渡す
 // }
 
-public function change(Request $request, $people_id)
+public function change(Request $request, $people_id, $id)
 // public function change(Food $food)
     {
-        //** ↓ 下をコピー ↓ **
         
-      
         $person = Person::findOrFail($people_id);
-        // dd($person->foods);
-        $lastFood = $person->foods->last();
-        // $food = Food::all();
+        $food = Food::findOrFail($id);
       
-        // return view('foodchange', ['id' => $person->id, 'foods' => $foods], compact('person'));
-        return view('foodchange', compact('person', 'lastFood'));
+       
+        return view('foodchange', compact('person', 'food'));
     }
 
 
@@ -126,11 +126,23 @@ public function change(Request $request, $people_id)
      * @param  \App\Models\Food  $food
      * @return \Illuminate\Http\Response
      */
-    public function edit(Request $request, $people_id)
+//     public function edit(Request $request, $people_id)
+// {
+//     $person = Person::findOrFail($people_id);
+//     return view('food', ['id' => $person->id],compact('person'));
+// }
+public function edit(Request $request, $people_id)
 {
     $person = Person::findOrFail($people_id);
-    return view('foodedit', ['id' => $person->id],compact('person'));
+    $today = \Carbon\Carbon::now()->toDateString();
+    $selectedDate = $request->input('selected_date', Carbon::now()->toDateString());
+    $selectedDateStart = Carbon::parse($selectedDate)->startOfDay();
+    $selectedDateEnd = Carbon::parse($selectedDate)->endOfDay();
+
+    $foodsOnSelectedDate = $person->foods->whereBetween('created_at', [$selectedDateStart, $selectedDateEnd]);
+    return view('foodedit', compact('person', 'selectedDate', 'foodsOnSelectedDate'));
 }
+
 
 
     /**
@@ -142,21 +154,27 @@ public function change(Request $request, $people_id)
      */
      public function update(Request $request, Food $food)
     {
-    //  public function update(PostRequest $request, Post $post)
-    // {
-        //データ更新
         $person = Person::find($request->people_id);
-        $food->people_id = $person->id;
-        $food->staple_food = $request->staple_food;
-        $food->side_dish = $request->side_dish;
-        $food->medicine = $request->medicine;
-        $food->medicine_name = $request->medicine_name;
-        $food->bikou = $request->bikou;
-        
-        $food->save();
+    //データ更新
+        $food = Food::find($request->id);
+        $form = $request->all();
+        $food->fill($form)->save();
+        // dd($food);
+    
+        //データ更新
+        // $person = Person::find($request->people_id);
+        // // $food->people_id = $person->id;
+        // $food->staple_food = $request->staple_food;
+        // $food->side_dish = $request->side_dish;
+        // $food->medicine = $request->medicine;
+        // $food->medicine_name = $request->medicine_name;
+        // $food->bikou = $request->bikou;
+        // $food->save();
         
         $people = Person::all();
         
+        // セッショントークンを再生成
+        $request->session()->regenerateToken();
         return view('people', compact('food', 'people'));
     }
     
@@ -169,8 +187,13 @@ public function change(Request $request, $people_id)
      * @param  \App\Models\Food  $food
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Food $food)
+    public function destroy($id)
     {
-        //
+       
+        $food = Food::find($id);
+    if ($food) {
+        $food->delete();
+    }
+        return redirect()->route('people.index');
     }
 }

@@ -1,4 +1,10 @@
 @vite(['resources/css/app.css', 'resources/js/app.js'])
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ぶーけあ</title>
+
   <style>
     /* 携帯画面用のスタイル */
     @media (max-width: 640px) {
@@ -51,7 +57,7 @@
                             <button type="submit" class="submit-btn inline-flex justify-center items-center gap-x-2 text-lg font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none py-4 px-6">
                                 送信
                             </button>
-                      </div>
+                        </div>
                     </div>
                   </form>
           <!-- End Form -->
@@ -82,6 +88,7 @@
         
         
         document.getElementById('registration-form').addEventListener('submit', function(event) {
+        //alert('クリックされました');
         event.preventDefault();
         const email = document.getElementById('email').value;
 
@@ -107,3 +114,4 @@
     });
     </script>
     </body>
+    </html>

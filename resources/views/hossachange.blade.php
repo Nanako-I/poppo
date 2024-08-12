@@ -16,9 +16,20 @@
                 <div class="flex flex-col items-center">
                     <h2>{{$person->person_name}}さんの発作記録</h2>
                 </div>
+
             </div>
         </form>
-         
+                        
+ <!-- エラーメッセージ表示 -->
+            @if ($errors->any())
+                <div style="color: red; font-weight: bold; font-size: 1.2em;">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li style="color: red; padding-bottom: 10px;">{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
             <form action="{{ url('hossachange/' . $person->id . '/' . $hossa->id) }}" method="POST"  enctype="multipart/form-data">
 
                 @csrf
@@ -46,7 +57,7 @@
 
                         <div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">
                             <p class="text-gray-900 font-bold text-xl">備考<p>
-                            <textarea id="" name="bikou" class="w-full max-w-lg" style="height: 300px;">{{ $hossa->hossa_bikou }}</textarea>
+                            <textarea id="" name="hossa_bikou" class="w-full max-w-lg" style="height: 300px;">{{ $hossa->hossa_bikou }}</textarea>
                         </div>
                         <div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">
                             @if($hossa->filename && $hossa->path)

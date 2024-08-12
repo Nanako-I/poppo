@@ -65,18 +65,27 @@ class RecordController extends Controller
 public function show(Request $request, $people_id)
 {
    
-    $person = Person::findOrFail($people_id);
+    // $person = Person::findOrFail($people_id);
+    $person = Person::with(['foods', 'temperatures', 'toilets', 'waters'])->findOrFail($people_id);
     $today = \Carbon\Carbon::now()->toDateString();
-    $selectedDate = $request->input('selected_date', Carbon::now()->toDateString());
-    $selectedDateStart = Carbon::parse($selectedDate)->startOfDay();
-    $selectedDateEnd = Carbon::parse($selectedDate)->endOfDay();
+    $selectedDate = $request->input('selected_date', \Carbon\Carbon::now()->toDateString());
+    $selectedDateStart = \Carbon\Carbon::parse($selectedDate)->startOfDay();
+    
+    $selectedDateEnd = \Carbon\Carbon::parse($selectedDate)->endOfDay();
     
     $foodsOnSelectedDate = $person->foods->whereBetween('created_at', [$selectedDateStart, $selectedDateEnd]);
-
-    $toiletsOnSelectedDate = $person->toilets->whereBetween('created_at', [$selectedDateStart, $selectedDateEnd]);
     $watersOnSelectedDate = $person->waters->whereBetween('created_at', [$selectedDateStart, $selectedDateEnd]);
-    return view('recordedit', compact('person', 'selectedDate', 'toiletsOnSelectedDate', 'watersOnSelectedDate', 'foodsOnSelectedDate'));
-    // return view('recordedit', compact('person',
+    $medicinesOnSelectedDate = $person->medicines->whereBetween('created_at', [$selectedDateStart, $selectedDateEnd]);
+    $tubesOnSelectedDate = $person->tubes->whereBetween('created_at', [$selectedDateStart, $selectedDateEnd]);
+    // $temperaturesOnSelectedDate = $person->temperatures->whereBetween('created_at', [$selectedDateStart, $selectedDateEnd]);
+    $temperaturesOnSelectedDate = $person->temperatures ? $person->temperatures->whereBetween('created_at', [$selectedDateStart, $selectedDateEnd]) : collect();
+    // dd($temperaturesOnSelectedDate);
+    $bloodpressuresOnSelectedDate = $person->bloodpressures->whereBetween('created_at', [$selectedDateStart, $selectedDateEnd]);
+    $toiletsOnSelectedDate = $person->toilets->whereBetween('created_at', [$selectedDateStart, $selectedDateEnd]);
+    $kyuuinsOnSelectedDate = $person->kyuuins ? $person->kyuuins->whereBetween('created_at', [$selectedDateStart, $selectedDateEnd]) : collect();
+    $hossasOnSelectedDate = $person->hossas ? $person->hossas->whereBetween('created_at', [$selectedDateStart, $selectedDateEnd]) : collect();
+    $speechesOnSelectedDate = $person->speeches ? $person->speeches->whereBetween('created_at', [$selectedDateStart, $selectedDateEnd]) : collect();
+    return view('recordedit', compact('person', 'selectedDate','foodsOnSelectedDate',  'watersOnSelectedDate' , 'medicinesOnSelectedDate', 'tubesOnSelectedDate',  'temperaturesOnSelectedDate', 'bloodpressuresOnSelectedDate','toiletsOnSelectedDate','kyuuinsOnSelectedDate', 'hossasOnSelectedDate', 'speechesOnSelectedDate'));
 }
 
 // public function show($people_id, Request $request)

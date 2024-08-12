@@ -13,22 +13,22 @@
                   font-size: 20px; /* フォントサイズを20ピクセルに設定 */
                 }
             </style>
-            <div class ="flex items-center justify-center"  style="padding: 20px 0;">
+            <div class ="flex flex-col items-center justify-center"  style="padding: 20px 0;">
                 <div class="flex flex-col items-center">
                     <h2>{{$person->person_name}}さんの食事登録</h2>
-                    @php
-                       $lastFood = $person->foods->last();
-                      
-                    @endphp
-                    @if(!is_null($lastFood))
-                        （{{$lastFood->created_at->format('n/jG：i')}}に登録した内容）
-                    @endif
+                </div>
+          </form>
+          
+          <form action="{{ url('foodchange/' . $person->id . '/' . $food->id) }}" method="POST">
+              @csrf
+                <div style="display: flex; flex-direction: column; align-items: center;">
+                    <div class="flex items-center justify-center ml-4">
+                        <input type="datetime-local" name="created_at" id="scheduled-time" value="{{ $food->created_at}}">
+                    </div>
                 </div>
             </div>
-        </form>
-          <form action="{{ url('foodchange/'.$person->id) }}" method="POST">
-         
-                @csrf
+        
+          
              
             <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
@@ -100,9 +100,10 @@
                                   
                               　<!--<div class="flex items-center justify-center">-->
                                     <div style="display: flex; flex-direction: column; align-items: center;">
+                                      
                                         <div class="flex items-center justify-center ml-4">
-                                            @if (!is_null($lastFood))
-                                                <input name="staple_food" type="text" value="{{ $lastFood->staple_food }}" id="staple_food" class="w-1/4 h-8px flex-shrink-0 break-words mx-1">
+                                            @if (!is_null($food))
+                                                <input name="staple_food" type="text" value="{{ $food->staple_food }}" id="staple_food" class="w-1/4 h-8px flex-shrink-0 break-words mx-1">
                                             
                                             <p class="text-gray-900 font-bold text-xl">割</p>
                                         </div>
@@ -111,9 +112,9 @@
                                         <!--<form action="送信先のURL" method="POST">-->
                                         <div class="flex items-center justify-center my-2 mr-6">
                                             <p class="text-gray-900 font-bold text-xl" style="white-space: nowrap; padding: 0 5px;">服用</p>
-                                            <!--<input name="medicine" type="text" value="{{ $lastFood->medicine }}" id="medicine" class="w-1/4 h-8px flex-shrink-0 break-words mx-1">-->
-                                            <select name="medicine" value="{{ $lastFood->medicine }}" id="medicine" class="w-3/5 ml-1.5">
-                                                <option value="{{ $lastFood->medicine }}">{{ $lastFood->medicine }}</option>
+                                            <!--<input name="medicine" type="text" value="{{ $food->medicine }}" id="medicine" class="w-1/4 h-8px flex-shrink-0 break-words mx-1">-->
+                                            <select name="medicine" value="{{ $food->medicine }}" id="medicine" class="w-3/5 ml-1.5">
+                                                <option value="{{ $food->medicine }}">{{ $food->medicine }}</option>
                                                 <option value="あり">あり</option>
                                                 <option value="なし">なし</option>
                                             </select>
@@ -122,12 +123,12 @@
 
                                     <div class="flex items-center justify-center my-2">
                                         <p class="text-gray-900 font-bold text-xl">薬の名称</p>
-                                        <input name="medicine_name" type="text" value="{{$lastFood->medicine_name}}" class="h-8px flex-shrink-0 break-words mx-1" style="width: 12rem;">
+                                        <input name="medicine_name" type="text" value="{{$food->medicine_name}}" class="h-8px flex-shrink-0 break-words mx-1" style="width: 12rem;">
                                     </div> 
                                         
                                     <div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">
                                         <p class="text-gray-900 font-bold text-xl">備考<p>
-                                        <textarea id="result-speech" name="bikou" class="w-full max-w-lg" style="height: 300px;">{{ $lastFood->bikou }}</textarea>
+                                        <textarea id="result-speech" name="bikou" class="w-full max-w-lg" style="height: 300px;">{{ $food->bikou }}</textarea>
                                     </div>
                                     @endif
                                     <button type="submit" class="inline-flex items-center px-6 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">

@@ -79,7 +79,8 @@ Route::get('/', function () {
 
 // 職員のログイン画面のビュー
 Route::get('auth.login', function () {
-    return response()->view('auth.login');
+    // return response()->view('auth.login');
+    return view('auth.login');
 })->name('stafflogin');
 
 
@@ -123,13 +124,14 @@ Route::resource('people', PersonController::class);
 
 // 認証されていないユーザー向けのビュー
 Route::get('/before-login', function () {
-    return response()->view('before-login');
-    // return view('before-login');
+    // return response()->view('before-login');
+    return view('before-login');
 })->name('before-login');
 
 //保護者ログインページのルート
 Route::get('/hogoshalogin', function () {
-    return response()->view('hogoshalogin');
+    // return response()->view('hogoshalogin');
+    return view('hogoshalogin');
 })->name('hogoshalogin');
 
 // 保護者ログイン処理のルート
@@ -160,7 +162,8 @@ Route::get('/before-invitation', [BeforeInvitationController::class, 'registrati
 
 // 家族招待前に利用者登録があるか確認↓
 Route::get('/registration-confirmation', function () {
-    return response()->view('registration-confirmation');
+    // return response()->view('registration-confirmation');
+    return view('egistration-confirmation');
 })->name('registration-confirmation');
 
 
@@ -266,10 +269,11 @@ Route::post('bloodpressurechange/{people_id}/{id}',[BloodpressureController::cla
 Route::post('bloodpressuredestroy/{id}',[BloodpressureController::class,'destroy'])->name('bloodpressure.delete');
 
 Route::get('foods/{id}', 'FoodController@show')->name('foods.show');
-Route::get('food/{people_id}/edit', [FoodController::class, 'edit'])->name('food.edit');
-Route::post('food/{people_id}/edit', [FoodController::class,'store'])->name('food.post');
-Route::get('foodchange/{people_id}',[FoodController::class,'change'])->name('food.change'); 
-Route::post('foodchange/{people_id}',[FoodController::class,'update'])->name('food_update');
+Route::get('foodedit/{people_id}', [FoodController::class, 'edit'])->name('food.edit');
+Route::post('food/{people_id}', [FoodController::class,'store'])->name('food.post');
+Route::get('foodchange/{people_id}/{id}',[FoodController::class,'change'])->name('food.change'); 
+Route::post('foodchange/{people_id}/{id}',[FoodController::class,'update'])->name('food_update');
+Route::post('fooddestroy/{id}',[FoodController::class,'destroy'])->name('food.delete');
 
 Route::post('toilet/{people_id}', [ToiletController::class, 'store'])->name('toilet.store');
 Route::get('toilet/{people_id}', [ToiletController::class, 'show'])->name('toilet.show');

@@ -48,13 +48,13 @@
                                             <img alt="team" class="w-80 h-64" src="{{ asset('storage/sample/kyuuin_photo/' . $kyuuin->filename) }}">
                                         @endif
                                         <a href="{{ route('kyuuin.change', ['people_id' => $person->id, 'id' => $kyuuin->id]) }}" class="text-stone-500">
-                                            <i class="fa-solid fa-pencil" style="font-size: 1.5em;"></i>
+                                            <i class="fa-solid fa-pencil pt-2" style="font-size: 2em;"></i>
                                         </a>
                                         <form action="{{ route('kyuuin.delete', ['id'=>$kyuuin->id]) }}" method="POST">
                                         @csrf
                                             <button type="button" class="text-stone-500 delete-btn" data-id="{{ $kyuuin->id }}" data-toggle="modal" data-target="#confirmDeleteModal">
                                             <!--<button type="submit" class="text-stone-500">-->
-                                                <i class="fa-solid fa-trash-can" style="font-size: 1.5em;"></i>
+                                                <i class="fa-solid fa-trash-can pt-2" style="font-size: 2em;"></i>
                                             </button>
                                         </form>
                                     </div>
