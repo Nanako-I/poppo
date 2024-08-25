@@ -15,7 +15,9 @@ return [
     |
     */
 
-    'default' => env('BROADCAST_DRIVER', 'null'),
+    //'default' => env('BROADCAST_DRIVER', 'null'),
+    'default' => env('BROADCAST_DRIVER', 'pusher'),
+
 
     /*
     |--------------------------------------------------------------------------
@@ -30,34 +32,36 @@ return [
 
     'connections' => [
 
-       
-        
-        //     'pusher' => [
-        //     'driver' => 'pusher',
-        //     'key' => env('PUSHER_APP_KEY'),
-        //     'secret' => env('PUSHER_APP_SECRET'),
-        //     'app_id' => env('PUSHER_APP_ID'),
-        //     'options' => [
-        //         'cluster' => env('PUSHER_APP_CLUSTER'),
-        //         'encrypted' => true,
-        //         'useTLS' => false,
-        //         'host' => 'localhost', 
-        //         'port' => 6001,
-        //         'scheme' => 'https', 
-        //     ],
-        // ],
+        'pusher' => [
+            'driver' => 'pusher',
+            'key' => env('PUSHER_APP_KEY'),
+            //'key' => "e5f439b12032cb8f7894",
+            'secret' => env('PUSHER_APP_SECRET'),
+            //'secret' => "67e5919f5f17937bf3b6",
+            'app_id' => env('PUSHER_APP_ID'),
+            //'app_id' => 1837219,
+            'options' => [
+                'cluster' => env('PUSHER_APP_CLUSTER'),
+                //'cluster' => "mt1",
+                'useTLS' => true,
+                'host' =>env('PUSHER_HOST') ?: 'api-'.env('PUSHER_APP_CLUSTER', 'mt1').'.pusher.com',
+                'port' => env('PUSHER_PORT'),
+                'scheme' => env('PUSHER_SCHEME'),
+                'encrypted' => true
+            ],
+        ],
 
-        
+
 
         'ably' => [
             'driver' => 'ably',
             'key' => env('ABLY_KEY'),
         ],
 
-        'redis' => [
-            'driver' => 'redis',
-            'connection' => 'default',
-        ],
+        // 'redis' => [
+        //     'driver' => 'redis',
+        //     'connection' => 'default',
+        // ],
 
         'log' => [
             'driver' => 'log',
