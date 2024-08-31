@@ -42,6 +42,7 @@ use App\Http\Controllers\ChildFoodController;
 use App\Http\Controllers\ChildToiletController;
 use App\Http\Controllers\BathController;
 use App\Http\Controllers\HogoshaRecordController;
+use App\Http\Controllers\ConversationController;
 
 use App\Http\Controllers\DompdfController;
 use App\Http\Controllers\MessageController;
@@ -71,7 +72,9 @@ Route::get('auth.login', function () {
     return view('auth.login');
 })->name('stafflogin');
 
-
+Route::get('/test', function () {
+    return view('text');
+});
 
 
 
@@ -105,7 +108,7 @@ Route::view('/register', 'register');
 //     if (! $request->hasValidSignature()) {
 //         abort(401);
 //     }
- 
+
 // //     // ...
 // })->name('unsubscribe');
 
@@ -198,9 +201,12 @@ Route::middleware('auth')->group(function () {
 Route::get('/hogosharegister',[HogoshaUserController::class,'showRegister']);
 Route::post('/hogosharegister',[HogoshaUserController::class,'register']);
 
-Route::middleware('auth')->group(function (){
-    Route::get('/hogosha',[HogoshaUserController::class,'hogosha'])->name('hogosha');
-});
+// Route::middleware('auth')->group(function (){
+//     Route::get('/hogosha',[HogoshaUserController::class,'hogosha'])->name('hogosha');
+// });
+
+Route::get('/hogosha', [HogoshaUserController::class, 'hogosha'])->name('hogosha');
+
 
 Route::get('hogoshanumber', [HogoshaUserController::class, 'create'])->name('hogoshanumber.show');
 Route::post('hogoshanumber', [HogoshaUserController::class, 'numberregister'])->name('hogoshanumber.store');
@@ -230,7 +236,7 @@ Route::post('bloodpressuredestroy/{id}',[BloodpressureController::class,'destroy
 Route::get('foods/{id}', 'FoodController@show')->name('foods.show');
 Route::get('food/{people_id}/edit', [FoodController::class, 'edit'])->name('food.edit');
 Route::post('food/{people_id}/edit', [FoodController::class,'store'])->name('food.post');
-Route::get('foodchange/{people_id}',[FoodController::class,'change'])->name('food.change'); 
+Route::get('foodchange/{people_id}',[FoodController::class,'change'])->name('food.change');
 Route::post('foodchange/{people_id}',[FoodController::class,'update'])->name('food_update');
 
 Route::post('toilet/{people_id}', [ToiletController::class, 'store'])->name('toilet.store');
@@ -325,8 +331,8 @@ Route::post('notificationchange/{people_id}',[NotificationController::class,'upd
 // Route::post('hogoshachange/{people_id}',[HogoshaController::class,'update'])->name('hogosha');
 
 // 子どもの体調について　親からの報告↓
-
-Route::get('hogosha', [ChildConditionController::class, 'edit'])->name('condition.edit');
+Route::get('hogosha', [HogoshaUserController::class, 'edit'])->name('condition.edit');
+// Route::get('hogosha', [ChildConditionController::class, 'edit'])->name('condition.edit');
 // Route::get('hogosha/{people_id}', [ChildConditionController::class, 'edit'])->name('condition.edit');
 // Route::get('hogosha/{people_id}/edit', [ChildConditionController::class, 'edit'])->name('condition.edit');
 Route::post('condition/{people_id}/edit', [ChildConditionController::class,'store'])->name('condition.post');
@@ -370,6 +376,11 @@ Route::post('childbathchange/{people_id}',[BathController::class,'update'])->nam
 // 連絡帳機能
 Route::get('chat/{people_id}', [ChatController::class, 'show'])->name('chat.show');
 Route::post('chat/{people_id}', [ChatController::class, 'store'])->name('chat.store');
+// Route::get('/conversations/{id}/chats', [ChatController::class, 'show'])->name('chat.show');
+// Route::post('/conversations/{id}/chats', [ChatController::class, 'store'])->name('chat.store');
+
+//Route::get('/conversations', [ConversationController::class, 'index'])->name('conversations.index');
+
 
 // 保護者が家で記録した内容一覧↓
 Route::get('hogosharecord/{people_id}/edit', [HogoshaRecordController::class, 'show'])->name('hogosharecord.edit');
@@ -413,8 +424,8 @@ Route::post('businesscard/extract', 'BusinessCardController@extract');
 
 // Route::get('message', 'MessageController@index');
 Route::get('/message', [MessageController::class, 'index']);
-Route::get('ajax/message', 'Ajax\MessageController@index'); 
-Route::post('ajax/message', 'Ajax\MessageController@create'); 
+Route::get('ajax/message', 'Ajax\MessageController@index');
+Route::post('ajax/message', 'Ajax\MessageController@create');
 
 // 音声認識テスト↓
 Route::view('/speechsample', 'speechsample');
@@ -430,4 +441,11 @@ Route::get('/calendar', function () {
 
 require __DIR__.'/auth.php';
 
+});
+
+use App\Events\TestEvent;
+
+Route::get('/test-broadcast', function () {
+    event(new TestEvent('Hello, this is a test message!'));
+    return 'Event has been sent!';
 });

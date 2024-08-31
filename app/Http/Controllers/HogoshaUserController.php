@@ -15,6 +15,7 @@ use App\Models\User;
 use App\Models\Facility;
 use App\Models\Person;
 use App\Models\Role;
+use App\Models\Chat;
 
 class HogoshaUserController extends Controller
 {
@@ -22,7 +23,7 @@ class HogoshaUserController extends Controller
    {
        return view('hogosharegister');
    }
-   
+
     public function register(Request $request)
    {
       $form = $request->validate([
@@ -43,7 +44,7 @@ class HogoshaUserController extends Controller
             'validation.confirmed' => 'パスワード確認が一致しません。',
         ]
         ]);
-        
+
         // 入力データを配列に保存
     $userData = [
         'name' => $request->input('name'),
@@ -56,12 +57,47 @@ class HogoshaUserController extends Controller
     return view('hogoshanumber');
 
   }
-   public function hogosha()
-   {
-       return view('hogosha');
-   }
 
-   
+  public function index(){
+    \Log::info('HogoshaUserController hogosha method started.');
+
+  }
+
+  public function edit(Request $request)
+    {
+        $user = auth()->user();
+
+        // ログインしているユーザーに関連する人物を取得
+        $people = $user->people_family()->get();
+        // 各Personに対して未読メッセージがあるかを確認
+        foreach ($people as $person) {
+            $unreadMessages = Chat::where('people_id', $person->id)
+                                ->where('is_read', false)
+                                ->where('user_identifier', '!=', $user->id)
+                                ->exists();
+            $person->unreadMessages = $unreadMessages;
+        }
+
+
+        \Log::info('HogoshaUserController edit method started.');
+        return view('hogosha', compact('people'));
+    }
+
+  public function hogosha()
+  {
+      // 現在ログインしているユーザーを取得
+      $user = Auth::user();
+
+      // ユーザーが関連付けられている全てのPerson（利用者）を取得
+      $people = $user->people_family()->get();
+
+
+      // データをビューに渡す
+      return view('hogosha', compact('people'));
+  }
+
+
+
    public function numberregister(Request $request)
 {
     $request->validate([
@@ -70,7 +106,7 @@ class HogoshaUserController extends Controller
 
     // ログインユーザーを取得
     // $user = auth()->user();
-    
+
     // // jukyuusha_numberカラムから人を検索
     // $person = Person::where('jukyuusha_number', $request->jukyuusha_number)->first();
 
@@ -78,7 +114,7 @@ class HogoshaUserController extends Controller
     // if ($person) {
     // // people_familiesテーブルに関連付ける
     // $user->people_family()->syncWithoutDetaching($person->id);
-       
+
     //     // 任意のリダイレクト先にリダイレクトするなどの処理を行う
     // $people = $user->people_family()->get();
     // // $user->user_roles()->attach(2); // ここでrole_id＝2(family)を紐づける
@@ -90,11 +126,13 @@ class HogoshaUserController extends Controller
 
         // 人が見つかった場合
         if ($person) {
+        \Log::info('This is a test log.');
+
             // セッションから登録データを取得
             $registerData = $request->session()->get('user_data');
             // dd($registerData);
             // セッションから登録するデータは取れている
-            
+
             try {
                 $user = User::query()->create([
                 'name' => $registerData['name'],
@@ -112,8 +150,22 @@ class HogoshaUserController extends Controller
 
                 // DB::commit();
 
-                return view('hogosha', compact('people'));
-                    } catch (\Exception $e) {
+                  // 現在ログインしているユーザーを取得
+                // $user = Auth::user();
+
+                // ユーザーが関連付けられている全てのPerson（利用者）を取得
+                $people = $user->people_family()->get();
+
+
+                // 未読メッセージを取得
+                $unreadMessages = Chat::where('people_id', $person->id)
+                ->where('is_read', false)
+                ->where('user_identifier', '!=', $user->id)
+                ->exists();
+
+                // hogosha ビューにデータを渡して表示
+                return view('hogosha', compact('people', 'unreadMessages'));
+            } catch (\Exception $e) {
                 DB::rollBack();
                 $error = '登録処理中にエラーが発生しました。もう一度お試しください。';
                 return view('hogoshanumber', compact('error'));
