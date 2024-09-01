@@ -9,8 +9,10 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
+
 use App\Models\User;
 use App\Models\Facility;
 use App\Models\Person;
@@ -35,12 +37,7 @@ class HogoshaUserController extends Controller
             'confirmed',
             'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/' // '大文字小文字英数字含む,
         ], [
-            'name.required' => '名前は必須です。',
-            'email.required' => 'メールアドレスは必須です。',
-            'email.email' => '有効なメールアドレスを入力してください。',
-            'password.required' => 'パスワードは必須です。',
-            'password.min' => 'パスワードは8文字以上で入力してください。',
-            'validation.confirmed' => 'パスワード確認が一致しません。',
+            //validation.phpにバリデーションのエラーは記載
         ]
         ]);
         
@@ -48,80 +45,94 @@ class HogoshaUserController extends Controller
     $userData = [
         'name' => $request->input('name'),
         'email' => $request->input('email'),
-        'password' => $request->input('password'),
+        'password' => Hash::make($request->input('password')),
     ];
     // dd($userData);
     $request->session()->put('user_data', $userData);
     // dd($request->session()->get('user_data'));
-    return view('hogoshanumber');
+    return view('hogoshanumber', compact('userData'));
 
   }
    public function hogosha()
    {
        return view('hogosha');
    }
+   
+   public function create()
+   {
+       return view('hogoshanumber');
+   }
 
    
    public function numberregister(Request $request)
 {
-    $request->validate([
-        'jukyuusha_number' => 'required|digits:10',// バリデーションルールは適宜変更してください
-    ]);
+   
+      // バリデーションルールとメッセージを定義
+    $rules = [
+        'jukyuusha_number' => 'required|digits:10',
+        'date_of_birth' => 'required|date_format:Y-m-d', // 必要に応じてフォーマットを調整
+    ];
 
-    // ログインユーザーを取得
-    // $user = auth()->user();
-    
-    // // jukyuusha_numberカラムから人を検索
-    // $person = Person::where('jukyuusha_number', $request->jukyuusha_number)->first();
+    $messages = [
+        'jukyuusha_number.required' => '受給者証番号は必須です。',
+        'jukyuusha_number.digits' => '受給者証番号は10桁で入力してください。',
+        'date_of_birth.required' => '生年月日は必須です。',
+        'date_of_birth.date_format' => '生年月日は正しい形式で入力してください。',
+    ];
 
-    // // 人が見つかった場合
-    // if ($person) {
-    // // people_familiesテーブルに関連付ける
-    // $user->people_family()->syncWithoutDetaching($person->id);
-       
-    //     // 任意のリダイレクト先にリダイレクトするなどの処理を行う
-    // $people = $user->people_family()->get();
-    // // $user->user_roles()->attach(2); // ここでrole_id＝2(family)を紐づける
-    // $user->assignRole('client family user'); // ここで'client family user' を紐づける
-
-    // return view('hogosha', compact('people'));
-    // 受給者証番号カラムから人を検索
-        $person = Person::where('jukyuusha_number', $request->jukyuusha_number)->first();
-
+    // バリデーションを実行
+    $validator = Validator::make($request->all(), $rules, $messages);
+    if ($validator->fails()) {
+        // バリデーションに失敗した場合、エラーメッセージとともに同じビューを返す
+        return view('hogoshanumber', [
+            'errors' => $validator->errors(),
+            'input' => $request->all()
+        ]);
+    }
+    // 受給者証番号と生年月日で人を検索
+    $person = Person::where('jukyuusha_number', $request->jukyuusha_number)
+                    ->where('date_of_birth', $request->date_of_birth)
+                    ->first();
+    // dd($person);
         // 人が見つかった場合
         if ($person) {
             // セッションから登録データを取得
             $registerData = $request->session()->get('user_data');
-            // dd($registerData);
-            // セッションから登録するデータは取れている
+            //  dd($registerData);
             
-            try {
-                $user = User::query()->create([
+            if (!$registerData) {
+            $error = 'セッションの登録データが見つかりませんでした。';
+            return view('hogoshanumber', compact('error'));
+        }
+
+        try {
+            DB::beginTransaction();
+
+            $user = User::query()->create([
                 'name' => $registerData['name'],
                 'email' => $registerData['email'],
                 'password' => Hash::make($registerData['password']),
             ]);
-                Auth::login($user);
 
-                // people_familiesテーブルに関連付ける
-                $user->people_family()->syncWithoutDetaching($person->id);
+            Auth::login($user);
 
-                // 任意のリダイレクト先にリダイレクトするなどの処理を行う
-                $people = $user->people_family()->get();
-                $user->assignRole('client family user'); // ここで 'client family user' を紐づける
+            $user->people_family()->syncWithoutDetaching($person->id);
+            $people = $user->people_family()->get();
+            $user->assignRole('client family user');
 
-                // DB::commit();
+            DB::commit();
 
-                return view('hogosha', compact('people'));
-                    } catch (\Exception $e) {
-                DB::rollBack();
-                $error = '登録処理中にエラーが発生しました。もう一度お試しください。';
-                return view('hogoshanumber', compact('error'));
-                    }
-                } else {
-                    // 人が見つからなかった場合の処理
-                    $error = 'この受給者証番号の利用者が存在しません。<br>施設側でこのアプリにご家族の登録がされているか施設にお問い合わせください';
-                    return view('hogoshanumber', compact('error'));
-                }
-            }
+            return view('hogosha', compact('people'));
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('登録処理中のエラー: ' . $e->getMessage());
+            $error = '登録処理中にエラーが発生しました。もう一度お試しください。';
+            return view('hogoshanumber', compact('error'));
+        }
+    } else {
+        $error = '受給者証番号と生年月日が一致する利用者が存在しません。<br>施設側でこのアプリにご家族の登録がされているか施設にお問い合わせください';
+        return view('hogoshanumber', compact('error'));
+    }
+
+}
 }

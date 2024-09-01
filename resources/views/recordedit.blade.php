@@ -134,59 +134,187 @@
         text-align: left; /* セル内のテキストを左寄せにする */
       }
     </style>
+<section class="text-gray-600 body-font mx-auto" _msthidden="10">
+  <div class="container px-5 pb-24 mx-auto flex flex-wrap" _msthidden="10">
+   <div class="flex flex-col flex-wrap lg:py-6 -mb-10 lg:w-1/2 lg:pl-12 lg:text-left text-center" _msthidden="9">
+      
+      <div class="flex flex-col mb-10 lg:items-start items-center" _msthidden="3">
+        <div class="w-12 h-12 inline-flex items-center justify-center rounded-full bg-indigo-100 text-indigo-500 mb-5">
+            <i class="fa-solid fa-bowl-rice text-gray-700" style="font-size: 1.5em; transition: transform 0.2s;"></i>
+        </div>
+        <div class="flex-grow" _msthidden="3">
+          <h2 class="text-gray-900 text-lg title-font font-medium mb-3" _msttexthash="232921" _msthidden="1" _msthash="740">食事</h2>
+          @if ($foodsOnSelectedDate->count() > 0)
+          @foreach ($foodsOnSelectedDate as $index => $foods)
+          <p class="text-gray-900 font-bold text-lg">{{ $foods->created_at->format('H:i') }}</p>
+          <p class="text-gray-900 font-bold text-xl">{{ $foods->staple_food }}割食べました</p>
+          <p class="text-gray-900 font-bold text-xl">{{ $foods->medicine == 'あり' ? '服用：あり' : ($foods->medicine != 'なし' ? $foods->medicine : '') }}</p>
+          <p class="text-gray-900 font-bold text-xl">{{ $foods->medicine_name }}</p>
+          <p class="text-gray-900 font-bold text-xl">{{ $foods->bikou }}</p>
+          <div class="pt-2">
+            <!-- 最後の要素でない場合のみ <hr> を表示 -->
+            @if(!$loop->last)
+              <hr style="border: 1px dashed #666; margin: 0 auto; width: 100%;">
+            @endif
+          </div>
+        @endforeach
+      @endif
+          
+        </div>
+       <hr style="border: 1px solid #666; margin: 0 auto; width: 100%;">
+    </div>
+    
+      <div class="flex flex-col mb-10 lg:items-start items-center" _msthidden="3">
+        <div class="w-12 h-12 inline-flex items-center justify-center rounded-full bg-indigo-100 text-indigo-500 mb-5">
+            <i class="fa-solid fa-thermometer text-gray-700" style="font-size: 1.5em; transition: transform 0.2s;"></i>
+        </div>
+        <div class="flex-grow" _msthidden="3">
+          <h2 class="text-gray-900 text-lg title-font font-medium mb-3" _msttexthash="232921" _msthidden="1" _msthash="740">体温</h2>
+          @if($temperaturesOnSelectedDate->count() > 0)
+          @foreach ($temperaturesOnSelectedDate as $index => $temperature)
+            <div class="flex justify-around text-left items-start">
+              <p class="text-gray-900 font-bold text-xl px-3">{{ $temperature->created_at->format('H:i') }}</p>
+              <p class="text-gray-900 font-bold text-xl px-3">{{ $temperature->temperature }}℃</p>
+            </div>
+          
+              @if($temperature->bikou !== null)
+                <p class="text-gray-900 font-bold text-xl px-3">{{ $temperature->bikou }}</p>
+              @endif
+            <div class="pt-2">
+              <!-- 最後の要素でない場合のみ <hr> を表示 -->
+              @if(!$loop->last)
+                <hr style="border: 1px dashed #666; margin: 0 auto; width: 100%;">
+              @endif
+            </div>
+        @endforeach
+      @endif
+          
+        </div>
+       <hr style="border: 1px solid #666; margin: 0 auto; width: 100%;">
+
+      </div>
+      
+    <div class="flex flex-col mb-10 lg:items-start items-center" _msthidden="3">
+        <div class="w-12 h-12 inline-flex items-center justify-center rounded-full bg-indigo-100 text-indigo-500 mb-5">
+            <i class="fa-solid fa-heart-pulse text-gray-700" style="font-size: 1.5em; transition: transform 0.2s;"></i>
+        </div>
+        <div class="flex-grow" _msthidden="3">
+          <h2 class="text-gray-900 text-lg title-font font-medium mb-3" _msttexthash="232921" _msthidden="1" _msthash="740">血圧・脈・SpO2</h2>
+          @if ($bloodpressuresOnSelectedDate->count() > 0)
+          @foreach ($bloodpressuresOnSelectedDate as $index => $bloodpressure)
+          
+            <div class="flex items-center justify-around">
+                <div class="px-2">
+                    <p class="text-gray-900 font-bold text-lg">{{ $bloodpressure->created_at->format('H:i') }}</p>
+                </div>
+        　　　　    <div class="px-2">
+        　　　　        <p class="text-gray-900 font-bold text-base">血圧:</p>
+                    <p class="text-gray-900 font-bold text-2xl">{{ $bloodpressure->max_blood }}/{{ $bloodpressure->min_blood }}</p>
+                </div>
+                <div class="px-2">
+        　　　　        <p class="text-gray-900 font-bold text-base">脈:</p>
+                    <p class="text-gray-900 font-bold text-2xl">{{ $bloodpressure->pulse}}/分</p>
+                </div>
+                <div class="px-2">
+        　　　　        <p class="text-gray-900 font-bold text-base">SpO2:</p>
+                    <p class="text-gray-900 font-bold text-2xl">{{ $bloodpressure->spo2}}％</p>
+                </div>
+            </div>
+              <div class="pt-2">
+                <!-- 最後の要素でない場合のみ <hr> を表示 -->
+                @if(!$loop->last)
+                  <hr style="border: 1px dashed #666; margin: 0 auto; width: 100%;">
+                @endif
+              </div>
+          @endforeach
+          @endif
+        </div>
+       <hr style="border: 1px solid #666; margin: 0 auto; width: 100%;">
+    </div>
+      
     <div class="flex flex-col mb-10 lg:items-start items-center" _msthidden="3">
         <div class="w-12 h-12 inline-flex items-center justify-center rounded-full bg-indigo-100 text-indigo-500 mb-5">
             <i class="fa-solid fa-glass-water text-gray-700" style="font-size: 1.5em; transition: transform 0.2s;"></i>
         </div>
-        <div class="flex-grow p-4" _msthidden="3">
-          <h2 class="text-gray-900 text-lg title-font font-medium mb-3" _msttexthash="204971" _msthidden="1" _msthash="743">水分</h2>
-            <div class="flex justify-around text-left items-start">
-    @php
-         $today = \Carbon\Carbon::now()->toDateString();
-         $todaysWaters = $person->waters->where('created_at', '>=', $today)
-         ->where('created_at', '<', $today . ' 23:59:59');
-      @endphp
-   @if ($todaysWaters->count() > 0)
-      <div class="flex flex-col">
-        <div class="flex justify-around text-left items-start">
-        <p class="text-gray-900 font-bold text-lg">摂取時間</p>
-        <!-- 今日の水分摂取リスト -->
-        @foreach ($todaysWaters as $water)
-                <!--<div class="flex-row items-center justify-between p-2 border-b border-gray-300">-->
-                <p class="text-gray-900 font-bold text-lg">{{ $water->created_at->format('H:i') }}</p>
-                <!--</div>-->
-        @endforeach
+        <div class="flex-grow" _msthidden="3">
+          <h2 class="text-gray-900 text-lg title-font font-medium mb-3" _msttexthash="232921" _msthidden="1" _msthash="740">水分</h2>
+          @if ($watersOnSelectedDate->count() > 0)
+            @foreach ($watersOnSelectedDate as $index => $water)
+              <p class="text-gray-900 font-bold text-lg">{{ $water->created_at->format('H:i') }}</p>
+              <p class="text-gray-900 font-bold text-lg">{{ $water->water_bikou }}</p>
+            <div class="pt-2">
+              <!-- 最後の要素でない場合のみ <hr> を表示 -->
+              @if($index < $watersOnSelectedDate->count() - 1)
+                <hr style="border: 1px dashed #666; margin: 0 auto; width: 100%; ">
+              @endif
+            </div>
+            @endforeach
+          @endif
         </div>
-        @endif  
-          </div>
-        <hr style="border: 1px solid #666; margin: 0 auto; width: 100%;">
-       </div> 
-     </div>   
-    </div>  
+       <hr style="border: 1px solid #666; margin: 0 auto; width: 100%;">
+    </div>
     
+    <div class="flex flex-col mb-10 lg:items-start items-center" _msthidden="3">
+        <div class="w-12 h-12 inline-flex items-center justify-center rounded-full bg-indigo-100 text-indigo-500 mb-5">
+            <i class="fa-solid fa-prescription-bottle-medical text-gray-700" style="font-size: 1.5em; transition: transform 0.2s;"></i>
+        </div>
+        <div class="flex-grow" _msthidden="3">
+          <h2 class="text-gray-900 text-lg title-font font-medium mb-3" _msttexthash="232921" _msthidden="1" _msthash="740">内服</h2>
+          @if($medicinesOnSelectedDate->count() > 0)
+          @foreach ($medicinesOnSelectedDate as $index => $medicine)
+            <div class="flex justify-around text-left items-start">
+              <p class="text-gray-900 font-bold text-xl px-3">{{ $medicine->created_at->format('H:i') }}</p>
+              <p class="text-gray-900 font-bold text-xl px-3">{{ $medicine->medicine_bikou }}</p>
+            </div>
+            <div class="pt-2">
+              <!-- 最後の要素でない場合のみ <hr> を表示 -->
+              @if(!$loop->last)
+                <hr style="border: 1px dashed #666; margin: 0 auto; width: 100%;">
+              @endif
+            </div>
+        @endforeach
+      @endif
+        </div>
+       <hr style="border: 1px solid #666; margin: 0 auto; width: 100%;">
+      </div>
+    
+    <div class="flex flex-col mb-10 lg:items-start items-center" _msthidden="3">
+        <div class="w-12 h-12 inline-flex items-center justify-center rounded-full bg-indigo-100 text-indigo-500 mb-5">
+            <i class="fa-solid fa-prescription-bottle-medical text-gray-700" style="font-size: 1.5em; transition: transform 0.2s;"></i>
+        </div>
+        <div class="flex-grow" _msthidden="3">
+          <h2 class="text-gray-900 text-lg title-font font-medium mb-3" _msttexthash="232921" _msthidden="1" _msthash="740">注入</h2>
+          @if ($tubesOnSelectedDate->count() > 0)
+          @foreach ($tubesOnSelectedDate as $index => $tube)
+          <p class="text-gray-900 font-bold text-lg">{{ $tube->created_at->format('H:i') }}</p>
+            <div class="flex justify-around text-left items-start">
+                <p class="text-gray-900 font-bold text-xl px-3">{{ $tube->tube_bikou }}</p>
+            </div>
+              @if($tube->filename && $tube->path)
+                  <img alt="team" class="w-80 h-64" src="{{ asset('storage/sample/tube_photo/' . $tube->filename) }}">
+              @endif
+              <div class="pt-2">
+                <!-- 最後の要素でない場合のみ <hr> を表示 -->
+                @if(!$loop->last)
+                  <hr style="border: 1px dashed #666; margin: 0 auto; width: 100%;">
+                @endif
+              </div>
+          @endforeach
+          @endif
+        </div>
+       <hr style="border: 1px solid #666; margin: 0 auto; width: 100%;">
+    </div>
     
     <div class="flex flex-col mb-10 lg:items-start items-center" _msthidden="3">
         <div class="w-12 h-12 inline-flex items-center justify-center rounded-full bg-indigo-100 text-indigo-500 mb-5">
             <i class="fa-solid fa-toilet-paper text-gray-700" style="font-size: 1.5em; transition: transform 0.2s;"></i>
-            <circle cx="12" cy="7" r="4"></circle>
         </div>
-        <div class="flex-grow p-4" _msthidden="3">
-          <h2 class="text-gray-900 text-lg title-font font-medium mb-3" _msttexthash="96746" _msthidden="1" _msthash="746">トイレ</h2>
-       
-          </div>
-        <hr style="border: 1px solid #666; margin: 0 auto; width: 100%;">
-        
-      @php
-         $today = \Carbon\Carbon::now()->toDateString();
-         $todaysToilets = $person->toilets->where('created_at', '>=', $today)
-         ->where('created_at', '<', $today . ' 23:59:59');
-      @endphp
-     
-      
-        
-          @if ($todaysToilets->count() > 0)
-          @foreach ($todaysToilets as $toilet)
-          <div class="flex justify-around text-left items-start">
+        <div class="flex-grow" _msthidden="3">
+          <h2 class="text-gray-900 text-lg title-font font-medium mb-3" _msttexthash="232921" _msthidden="1" _msthash="740">トイレ</h2>
+          @if ($toiletsOnSelectedDate->count() > 0)
+          @foreach ($toiletsOnSelectedDate as $index => $toilet)
+          <p class="text-gray-900 font-bold text-lg">{{ $toilet->created_at->format('H:i') }}</p>
+            <div class="flex justify-around text-left items-start">
                 <p class="text-gray-900 font-bold text-xl px-3">尿</p>
                 <p class="text-gray-900 font-bold text-xl px-3">{{ $toilet->urine_amount }}</p>
             </div>
@@ -206,22 +334,125 @@
                 <p class="text-gray-900 font-bold text-xl px-3">{{ $toilet->bikou }}</p>
             </div>
             
-                @if($toilet->filename && $toilet->path)
+              @if($toilet->filename && $toilet->path)
                   <img alt="team" class="w-80 h-64" src="{{ asset('storage/sample/toilet_photo/' . $toilet->filename) }}">
               @endif
-              @endforeach
-          @endif  
-          </div>
-        <hr style="border: 1px solid #666; margin: 0 auto; width: 100%;">
+              <div class="pt-2">
+                <!-- 最後の要素でない場合のみ <hr> を表示 -->
+                @if(!$loop->last)
+                  <hr style="border: 1px dashed #666; margin: 0 auto; width: 100%;">
+                @endif
+              </div>
+          @endforeach
+          @endif
+        </div>
+       <hr style="border: 1px solid #666; margin: 0 auto; width: 100%;">
+    </div>
+    
+    <div class="flex flex-col mb-10 lg:items-start items-center" _msthidden="3">
+        <div class="w-12 h-12 inline-flex items-center justify-center rounded-full bg-indigo-100 text-indigo-500 mb-5">
+            <i class="fa-solid fa-droplet text-gray-700" style="font-size: 1.5em; transition: transform 0.2s;"></i>
+        </div>
+        <div class="flex-grow" _msthidden="3">
+          <h2 class="text-gray-900 text-lg title-font font-medium mb-3" _msttexthash="232921" _msthidden="1" _msthash="740">吸引</h2>
+          @php
+           $today = \Carbon\Carbon::now()->toDateString();
+           $todaysKyuuins = $person->kyuuins->where('created_at', '>=', $today)
+           ->where('created_at', '<', $today . ' 23:59:59');
+          @endphp
+      
+          @if ($kyuuinsOnSelectedDate->count() > 0)
+          @foreach ($kyuuinsOnSelectedDate as $index => $kyuuin)
+          <p class="text-gray-900 font-bold text-lg">{{ $kyuuin->created_at->format('H:i') }}</p>
+          <p class="text-gray-900 font-bold text-xl">{{ $kyuuin->bikou }}</p>
+  
+            
+              @if($kyuuin->filename && $kyuuin->path)
+                  <img alt="team" class="w-80 h-64" src="{{ asset('storage/sample/kyuuin_photo/' . $kyuuin->filename) }}">
+              @endif
+              <div class="pt-2">
+                <!-- 最後の要素でない場合のみ <hr> を表示 -->
+                @if(!$loop->last)
+                  <hr style="border: 1px dashed #666; margin: 0 auto; width: 100%;">
+                @endif
+              </div>
+        @endforeach
+      @endif
+        </div>
+       <hr style="border: 1px solid #666; margin: 0 auto; width: 100%;">
+    </div>
+    
+    <div class="flex flex-col mb-10 lg:items-start items-center" _msthidden="3">
+        <div class="w-12 h-12 inline-flex items-center justify-center rounded-full bg-indigo-100 text-indigo-500 mb-5">
+            <i class="fa-solid fa-circle-exclamation text-gray-700" style="font-size: 1.5em; transition: transform 0.2s;"></i>
+        </div>
+        <div class="flex-grow" _msthidden="3">
+          <h2 class="text-gray-900 text-lg title-font font-medium mb-3" _msttexthash="232921" _msthidden="1" _msthash="740">発作</h2>
+          @php
+           $today = \Carbon\Carbon::now()->toDateString();
+           $todaysHossas = $person->hossas->where('created_at', '>=', $today)
+           ->where('created_at', '<', $today . ' 23:59:59');
+          @endphp
+      
+          @if ($hossasOnSelectedDate->count() > 0)
+          @foreach ($hossasOnSelectedDate as $index => $hossa)
+          <p class="text-gray-900 font-bold text-lg">{{ $hossa->created_at->format('H:i') }}</p>
+          <p class="text-gray-900 font-bold text-xl">{{ $hossa->hossa_bikou }}</p>
+  
+            @if($hossa->filename && $hossa->path)
+              <video controls class="h-64" src="{{ asset('storage/sample/hossa_photo/'.$hossa->filename) }}" muted class="contents_width"></video>
+              @endif
+              <div class="pt-2">
+                <!-- 最後の要素でない場合のみ <hr> を表示 -->
+                @if(!$loop->last)
+                  <hr style="border: 1px dashed #666; margin: 0 auto; width: 100%;">
+                @endif
+              </div>
+        @endforeach
+      @endif
+          
+        </div>
+       <hr style="border: 1px solid #666; margin: 0 auto; width: 100%;">
+    </div>
+    
+    <div class="flex flex-col mb-10 lg:items-start items-center" _msthidden="3">
+        <div class="w-12 h-12 inline-flex items-center justify-center rounded-full bg-indigo-100 text-indigo-500 mb-5">
+            <i class="fa-solid fa-sun text-gray-700" style="font-size: 1.5em; transition: transform 0.2s;"></i>
+        </div>
+        <div class="flex-grow" _msthidden="3">
+          <h2 class="text-gray-900 text-lg title-font font-medium mb-3" _msttexthash="232921" _msthidden="1" _msthash="740">1日の活動</h2>
+          @php
+           $today = \Carbon\Carbon::now()->toDateString();
+           $todaysSpeeches = $person->speeches->where('created_at', '>=', $today)
+           ->where('created_at', '<', $today . ' 23:59:59');
+          @endphp
+      
+          @if ($speechesOnSelectedDate->count() > 0)
+          @foreach ($speechesOnSelectedDate as $index => $speeches)
+          <p class="text-gray-900 font-bold text-lg">{{ $speeches->created_at->format('H:i') }}</p>
+          <p class="text-gray-900 font-bold text-xl">{{ $speeches->morning_activity }}</p>
+  
+           
+              <div class="pt-2">
+                <!-- 最後の要素でない場合のみ <hr> を表示 -->
+                @if(!$loop->last)
+                  <hr style="border: 1px dashed #666; margin: 0 auto; width: 100%;">
+                @endif
+              </div>
+        @endforeach
+      @endif
+          
+        </div>
+       <hr style="border: 1px solid #666; margin: 0 auto; width: 100%;">
+    </div>
+    
       </div>
       
       
         
       </div>
-        </div>  
+      </div>  
     
-    </div>
-  </div>
 </section>
 <!--</form>-->
 </body>

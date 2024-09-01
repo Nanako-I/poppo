@@ -17,18 +17,22 @@ class RedirectIfNotAuthenticated
      */
     public function handle(Request $request, Closure $next)
     {
-        // if (!Auth::check() && !$request->is('login')) {
-        //     return redirect()->route('login');
-        // }
+        
         
         // ログインしていない場合
         if (!Auth::check()) {
-            // リクエストが login, register, forgot-password ルートの場合はリダイレクトしない
-            if (!$request->is('login') && !$request->is('register') && !$request->is('forgot-password')) {
-                return redirect()->route('login');
+            // リクエストが login, registerなどの ルートの場合はリダイレクトしない
+            if (!$request->is('login') && !$request->is('register') && !$request->is('forgot-password') && !$request->is('before-login') && !$request->is('passcodeform')&& !$request->is('preregistrationmail')&& !$request->is('send-passcode')&& !$request->is('hogoshalogin')&& !$request->is('hogosharegister')&& !$request->is('hogoshanumber')&& !$request->is('staffregister')&& !$request->is('reset-password/*')) {
+                return redirect()->route('before-login');
             }
         }
 
-        return $next($request);
-    }
+        // return $next($request);
+        $response = $next($request);
+        // Ensure the response is of the correct type
+        if (!$response instanceof \Symfony\Component\HttpFoundation\Response) {
+        $response = response($response);
+        }
+        return $response;
+            }
 }

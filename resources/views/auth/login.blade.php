@@ -1,7 +1,13 @@
 <x-guest-layout>
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
-
+    
+    <!--職員のroleではない人がログインしようとした時に表示させるエラー（AuthenticatedSessionControllerに記載あり）-->
+    @if (session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
     <form method="POST" action="{{ route('login') }}">
         @csrf
 
@@ -72,12 +78,11 @@
 
 @if (Route::has('login'))
     <div class="hidden fixed top-0 right-0 px-6 py-4 sm:block">
-       
-            <!--<a href="{{ url('/dashboard') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">Dashboard</a>-->
-        
-            <a href="{{ route('login') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">ログイン</a>
-            @if (Route::has('register'))
-    <a href="{{ url('/register') }}" class="ml-4 text-sm text-gray-700 dark:text-gray-500 underline">新規登録</a>
+       <a href="{{ route('login') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">ログイン</a>
+    @if (Route::has('register'))
+    @role('super administrator')
+        <a href="{{ url('/register') }}" class="ml-4 text-sm text-gray-700 dark:text-gray-500 underline">新規登録</a>
+    @endrole
 @endif
 
      </div>

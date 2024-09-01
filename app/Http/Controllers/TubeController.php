@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Tube;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Validator;
 
 class TubeController extends Controller
 {
@@ -43,8 +44,24 @@ class TubeController extends Controller
      */
     public function store(Request $request)
     {
-    //   $storeData = $request->validate([
-    //     ]);
+         // バリデーションルールとメッセージを定義
+    $rules = [
+        'created_at' => 'required', // 日時の登録を必須にする
+        'filename' => 'image|max:2048', // 2MB = 2048KB
+    ];
+    $messages = [
+        'created_at.required' => '時間の登録は必須です。',
+        'image' => '画像ファイルを選択してください。（画像ファイルはjpeg, png, bmp, gif, svgのいずれかにしてください）',
+        'uploaded' => '画像ファイルを選択してください。（画像ファイルはjpeg, png, bmp, gif, svgのいずれかにしてください）',
+        'filename.max' => 'ファイルサイズが大きすぎます。2MB以下のファイルを選択してください。',
+         
+    ];
+    // バリデーション実行
+    $validator = Validator::make($request->all(), $rules, $messages);
+
+    if ($validator->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
+    }
          //   画像保存
         $directory = 'public/sample/tube_photo';
         $filename = null;
@@ -54,8 +71,13 @@ class TubeController extends Controller
             $request->validate([
                 'filename' => 'image|max:2048',
             ]);
-            $filename = uniqid() . '.' . $request->file('filename')->getClientOriginalExtension();
-            $filename = $request->file('filename')->getClientOriginalName();	
+            // $filename = uniqid() . '.' . $request->file('filename')->getClientOriginalExtension();
+            // $filename = $request->file('filename')->getClientOriginalName();	
+            
+            // 同じファイル名でも上書きされないようユニークなIDをファイル名に追加
+            $uniqueId = uniqid();
+            $originalFilename = $request->file('filename')->getClientOriginalName();
+            $filename = $uniqueId . '_' . $originalFilename;
             $request->file('filename')->storeAs($directory, $filename);
             $filepath = $directory . '/' . $filename;
             
@@ -145,6 +167,23 @@ public function change(Request $request, $people_id, $id)
      */
     public function update(Request $request, Tube $tube)
     {
+        $rules = [
+        'created_at' => 'required', // 日時の登録を必須にする
+        'filename' => 'image|max:2048',// 2MB = 2048KB
+        ];
+        $messages = [
+            'created_at.required' => '時間の登録は必須です。',
+            'image' => '画像ファイルを選択してください。（画像ファイルはjpeg, png, bmp, gif, svgのいずれかにしてください）',
+            'uploaded' => '画像ファイルを選択してください。（画像ファイルはjpeg, png, bmp, gif, svgのいずれかにしてください）',
+            'filename.max' => 'ファイルサイズが大きすぎます。2MB以下のファイルを選択してください。',
+        ];
+        
+        // バリデーション実行
+        $validator = Validator::make($request->all(), $rules, $messages);
+    
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
     //データ更新
         $tube = Tube::find($request->id);
         // 画像がアップロードされているかチェック
@@ -154,8 +193,14 @@ public function change(Request $request, $people_id, $id)
             ]);
     
             $directory = 'public/sample/tube_photo';
-            $filename = uniqid() . '.' . $request->file('filename')->getClientOriginalExtension();
-            $filename = $request->file('filename')->getClientOriginalName();
+            // $filename = uniqid() . '.' . $request->file('filename')->getClientOriginalExtension();
+            // $filename = $request->file('filename')->getClientOriginalName();
+            
+            // 同じファイル名でも上書きされないようユニークなIDをファイル名に追加
+            $uniqueId = uniqid();
+            $originalFilename = $request->file('filename')->getClientOriginalName();
+            $filename = $uniqueId . '_' . $originalFilename;
+            
             $request->file('filename')->storeAs($directory, $filename);
             $filepath = $directory . '/' . $filename;
     

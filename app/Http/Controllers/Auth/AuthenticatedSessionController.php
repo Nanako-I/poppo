@@ -25,31 +25,24 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-    $request->authenticate();
+       
+        $request->authenticate();
 
-    $request->session()->regenerate();
-    
-    // ログインしている人の情報を取得
-    $user = Auth::user();
-    
-    // rolesはUser.phpのrolesメソッドから取得
-    // 中間テーブルのuser_rolesのrole_idが 'staff' （1）の場合
-    $user_roles = $user->user_roles()->where('role_id', '1')->get();
+        $request->session()->regenerate();
 
-    if ($user_roles->isNotEmpty()) {
-        return redirect(RouteServiceProvider::HOME);
-    }
+        // ログインしている人の情報を取得
+        $user = Auth::user();
+        
+        // ロールIDが '5' または '6' の役割を持っているか確認
+        $user_roles = $user->roles()->whereIn('role_id', ['1', '2', '3', '4'])->get();
     
-    // role_idが 'family'（2） の場合
-    $user_roles = $user->user_roles()->where('role_id', '2')->get();
+        if ($user_roles->isNotEmpty()) {
+            return redirect(RouteServiceProvider::HOME);
+        }
     
-    if ($user_roles->isNotEmpty()) {
-        return redirect(RouteServiceProvider::HOMEFAMILY);
-    }
-
-    // 上記のいずれの条件にも該当しない場合のデフォルトのリダイレクト
-    return redirect()->route('login')->with('error', 'ログインできません。');
-}
+            // 上記のいずれの条件にも該当しない場合のデフォルトのリダイレクト
+            return redirect()->route('login')->with('error', '職員の方以外はこちらのフォームからログインできません。');
+        }
     
 
     /**
@@ -63,6 +56,6 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect('/before-login');
     }
 }

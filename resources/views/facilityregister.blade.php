@@ -8,10 +8,11 @@
         </div>
          
      <!-- Name -->
+     <div class="flex flex-col items-center justify-center">
         <div class="flex flex-col items-center justify-center">
         <p class="text-gray-900 font-bold text-xl">事業所名</p>
         <!--事業所名を登録↓-->
-        <textarea id="facility_name" name="facility_name" class="w-3/4 max-w-lg font-bold" style="height: 200px;"></textarea>
+        <textarea id="facility_name" name="facility_name" class="w-full max-w-lg font-bold text-xl" style="height: 100px;"></textarea>
         </div>
         
         <div class="my-2" style="display: flex; justify-content: center; align-items: center; max-width: 300px;">
@@ -19,5 +20,6 @@
             送信
           </button>
         </div>
+    </div>
      </form>
 </x-guest-layout>

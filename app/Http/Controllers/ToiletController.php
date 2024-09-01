@@ -6,6 +6,8 @@ use App\Models\Toilet;
 use App\Models\Person;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Validator;
+
 
 class ToiletController extends Controller
 {
@@ -44,9 +46,24 @@ class ToiletController extends Controller
      */
     public function store(Request $request)
     {
-       $storeData = $request->validate([
-            
-        ]);
+          // バリデーションルールとメッセージを定義
+    $rules = [
+        'created_at' => 'required', // 日時の登録を必須にする
+        'filename' => 'image|max:2048', // 2MB = 2048KB
+    ];
+    $messages = [
+        'created_at.required' => '時間の登録は必須です。',
+        'image' => '画像ファイルを選択してください。（画像ファイルはjpeg, png, bmp, gif, svgのいずれかにしてください）',
+        'uploaded' => '画像ファイルを選択してください。（画像ファイルはjpeg, png, bmp, gif, svgのいずれかにしてください）',
+        'filename.max' => 'ファイルサイズが大きすぎます。2MB以下のファイルを選択してください。',
+         
+    ];
+    // バリデーション実行
+    $validator = Validator::make($request->all(), $rules, $messages);
+
+    if ($validator->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
+    }
          //   画像保存
         $directory = 'public/sample/toilet_photo';
         $filename = null;
@@ -56,8 +73,14 @@ class ToiletController extends Controller
             $request->validate([
                 'filename' => 'image|max:2048',
             ]);
-            $filename = uniqid() . '.' . $request->file('filename')->getClientOriginalExtension();
-            $filename = $request->file('filename')->getClientOriginalName();	
+            // $filename = uniqid() . '.' . $request->file('filename')->getClientOriginalExtension();
+            // $filename = $request->file('filename')->getClientOriginalName();	
+            
+            // 同じファイル名でも上書きされないようユニークなIDをファイル名に追加
+            $uniqueId = uniqid();
+            $originalFilename = $request->file('filename')->getClientOriginalName();
+            $filename = $uniqueId . '_' . $originalFilename;
+        
             $request->file('filename')->storeAs($directory, $filename);
             $filepath = $directory . '/' . $filename;
         }
@@ -69,6 +92,7 @@ class ToiletController extends Controller
         'ben_condition' => $request->ben_condition,
         'ben_amount' => $request->ben_amount,
         'bentsuu' => $request->bentsuu,
+        'bikou' => $request->bikou,
         'created_at' => $request->created_at,
         'updated_at' => $request->updated_at,
         'filename' => $filename,
@@ -77,7 +101,7 @@ class ToiletController extends Controller
          
     ]);
     // return redirect('people/{id}/edit');
-     $people = Person::all();
+    $people = Person::all();
     $request->session()->regenerateToken();
     return view('people', compact('toilet', 'people'));
     }
@@ -131,7 +155,23 @@ public function change(Request $request, $people_id, $id)
      */
     public function update(Request $request, Toilet $toilet)
     {
-      
+      $rules = [
+        'created_at' => 'required', // 日時の登録を必須にする
+        'filename' => 'image|max:2048',// 2MB = 2048KB
+        ];
+        $messages = [
+            'created_at.required' => '時間の登録は必須です。',
+            'image' => '画像ファイルを選択してください。（画像ファイルはjpeg, png, bmp, gif, svgのいずれかにしてください）',
+            'uploaded' => '画像ファイルを選択してください。（画像ファイルはjpeg, png, bmp, gif, svgのいずれかにしてください）',
+            'filename.max' => 'ファイルサイズが大きすぎます。2MB以下のファイルを選択してください。',
+        ];
+        
+        // バリデーション実行
+        $validator = Validator::make($request->all(), $rules, $messages);
+    
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
     //データ更新
         $toilet = Toilet::find($request->id);
         // 画像がアップロードされているかチェック
@@ -141,8 +181,14 @@ public function change(Request $request, $people_id, $id)
             ]);
     
             $directory = 'public/sample/toilet_photo';
-            $filename = uniqid() . '.' . $request->file('filename')->getClientOriginalExtension();
-            $filename = $request->file('filename')->getClientOriginalName();
+            // $filename = uniqid() . '.' . $request->file('filename')->getClientOriginalExtension();
+            // $filename = $request->file('filename')->getClientOriginalName();
+            
+            // 同じファイル名でも上書きされないようユニークなIDをファイル名に追加
+            $uniqueId = uniqid();
+            $originalFilename = $request->file('filename')->getClientOriginalName();
+            $filename = $uniqueId . '_' . $originalFilename;
+            
             $request->file('filename')->storeAs($directory, $filename);
             $filepath = $directory . '/' . $filename;
     

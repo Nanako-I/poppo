@@ -12,42 +12,30 @@
             
         <!-- バリデーションエラーの表示に使用-->
        <!-- resources/views/components/errors.blade.php -->
-        @if (count($errors) > 0)
-            <!-- Form Error List -->
+        @if ($errors->any())
             <div class="flex justify-between p-4 items-center bg-red-500 text-white rounded-lg border-2 border-white">
                 @if ($errors->has('name') || $errors->has('date_of_birth'))
                     <div><strong>氏名・生年月日は入力必須です。</strong></div> 
                 @endif
-                @if ($errors->has('jukyuusha_number'))
+                @if ($errors->has('duplicate_name_dob'))
+                    <div><strong>{{ $errors->first('duplicate_name_dob') }}</strong></div>
+                @endif
+                @if ($errors->has('duplicate_jukyuusha_number'))
+                    <div><strong>{{ $errors->first('duplicate_jukyuusha_number') }}</strong></div>
+                @elseif ($errors->has('jukyuusha_number'))
                     <div><strong>受給者証番号は10桁で入力してください。</strong></div>
                 @endif
-                <div>
-                    <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                    </ul>
-                </div>
             </div>
         @endif
 
 
       <body class="h-full w-full">
  
-    <div class="flex bg-gray-100">
-
-        <!--左エリア[START]--> 
-        <div class="text-gray-700 text-left px-4 py-4 m-2">
-        </div>
-    </div>
-       
-        <!--左エリア[END]--> 
-        
-      <body>
-             <!--<form action="{{ url('peopleregister') }}" method="POST" class="w-full" enctype="multipart/form-data">-->
-             <!--@csrf-->
-               <form action="{{ url('peopleregister') }}" method="POST" class="w-full" enctype="multipart/form-data">
-                        @csrf
+    
+       <body>
+            
+ <form action="{{ url('peopleregister') }}" method="POST" class="w-full" enctype="multipart/form-data">
+          @csrf
             
     <div style="display: flex; align-items: center; justify-content: center; flex-direction: column;">
         <div class="form-group mb-4 m-2 w-1/2 max-w-md md:w-1/6" style="display: flex; flex-direction: column; align-items: center;">

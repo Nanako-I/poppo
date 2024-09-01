@@ -18,7 +18,17 @@
                 </div>
             </div>
         </form>
-         
+        <!-- エラーメッセージ表示 -->
+            @if ($errors->any())
+                <div style="color: red; font-weight: bold; font-size: 1.2em;">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li style="color: red; padding-bottom: 10px;">{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+            
             <form action="{{ url('kyuuinchange/' . $person->id . '/' . $kyuuin->id) }}" method="POST"  enctype="multipart/form-data">
 
                 @csrf

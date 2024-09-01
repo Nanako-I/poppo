@@ -9,9 +9,11 @@ use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Auth\Passwords\CanResetPassword;
 
 use Spatie\Permission\Models\Role as SpatieRole;
 use App\Enums\RoleType as RoleEnum;
+use App\Notifications\CustomPasswordResetNotification;
 
 class User extends Authenticatable
 {
@@ -34,19 +36,33 @@ class User extends Authenticatable
             ->withTimestamps();
     }
 
-    // 中間テーブルuser_rolesと紐づける↓
-    public function user_roles(): BelongsToMany
+    
+    public function roles()
     {
-        //↓ belongsToMany('多対多の相手側のクラス名…ClassName::class','中間テーブルの名前',　'このモデルを参照する中間テーブルの外部キー名', '相手側のモデルを参照する中間テーブルの外部キー名')
-        return $this->belongsToMany(Role::class, 'user_roles', 'user_id', 'role_id')
-            ->withTimestamps();
+        // /↓ belongsToMany('多対多の相手側のクラス名…ClassName::class','中間テーブルの名前',　'このモデルを参照する中間テーブルの外部キー名', '相手側のモデルを参照する中間テーブルの外部キー名')
+        return $this->belongsToMany(Role::class, 'model_has_roles', 'model_id', 'role_id');
     }
+    
+   // 中間テーブルuser_rolesと紐づける↓
+
+    // public function user_roles(): BelongsToMany
+    // {
+    //     //↓ belongsToMany('多対多の相手側のクラス名…ClassName::class','中間テーブルの名前',　'このモデルを参照する中間テーブルの外部キー名', '相手側のモデルを参照する中間テーブルの外部キー名')
+    //     return $this->belongsToMany(Role::class, 'user_roles', 'user_id', 'role_id')
+    //         ->withTimestamps();
+    // }
 
     public function temperatures()
     {
         return $this->hasMany(Temperature::class, 'user_id');
     }
 
+    
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new CustomPasswordResetNotification($token));
+    }
+   
 
 
     /**

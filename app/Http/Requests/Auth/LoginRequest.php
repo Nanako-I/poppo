@@ -48,7 +48,7 @@ class LoginRequest extends FormRequest
 
             throw ValidationException::withMessages([
                 // 'email' => trans('auth.failed'),
-                'custom_id' => trans('auth.failed'),
+                'custom_id' => trans('IDもしくはパスワードが違います'),
             ]);
         }
 

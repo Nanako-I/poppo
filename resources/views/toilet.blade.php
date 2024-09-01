@@ -20,6 +20,17 @@
         <h2>{{$person->person_name}}さんのトイレ記録</h2>
       </div>
     </form>
+    
+    <!-- エラーメッセージ表示 -->
+            @if ($errors->any())
+                <div style="color: red; font-weight: bold; font-size: 1.2em;">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li style="color: red; padding-bottom: 10px;">{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
    </div>
   </div>
     <!--ヘッダー[END]-->

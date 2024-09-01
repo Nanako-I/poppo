@@ -48,20 +48,10 @@ class PersonController extends Controller
         // dd($rolename);
         
         $isSuperAdmin = $user->hasRole(RoleType::FacilityStaffAdministrator);
-// dd($isSuperAdmin);
+        // dd($isSuperAdmin);
 
         // ロールのIDを取得する場合
         $roleIds = $user->roles->pluck('id');
-
-        // dd(compact('roles', 'roleIds'));
-        // $roles = $user->getAllPermissions();
-        // $roles = $user->getRoleNames();
-        // $roles =$user->hasPermissionTo('edit facility staff');
-        // ユーザーのロールとパーミッションをデバッグ
-        // $roles = $user->getRoleNames();
-        // $permissions = $user->getAllPermissions()->pluck('name');
-        // dd(compact('roles', 'permissions'));
-
 
         $firstFacility = $facilities->first();
         if ($firstFacility) {
@@ -92,6 +82,37 @@ class PersonController extends Controller
             'date_of_birth' => 'required|max:255',
             'jukyuusha_number' => 'required|digits:10',
         ]);
+        
+        $user = auth()->user();
+        $facilities = $user->facility_staffs()->get();
+        $firstFacility = $facilities->first();
+    // dd($firstFacility);
+        if ($firstFacility) {
+            
+            // 名前と生年月日が一致する利用者を検索
+        $existingPersonByNameAndDob = $firstFacility->people_facilities()
+            ->where('person_name', $request->person_name)
+            ->where('date_of_birth', $request->date_of_birth)
+            ->first();
+
+        // 受給者番号が一致する利用者を検索
+        $existingPersonByJukyuushaNumber = $firstFacility->people_facilities()
+            ->where('jukyuusha_number', $request->jukyuusha_number)
+            ->first();
+            // 名前と生年月日が一致する場合
+        if ($existingPersonByNameAndDob) {
+            return back()->withInput($request->all())
+                         ->withErrors(['duplicate_name_dob' => '同じ名前と生年月日の人がすでに存在します。']);
+        }
+
+        // 受給者番号が一致する場合
+        if ($existingPersonByJukyuushaNumber) {
+            return back()->withInput($request->all())
+                         ->withErrors(['duplicate_jukyuusha_number' => '同じ受給者番号の人がすでに存在します。']);
+        }
+    }
+   
+        
 
         $directory = 'public/sample';
         $filename = null;
@@ -116,12 +137,14 @@ class PersonController extends Controller
             'path' => $filepath,
 
         ]);
+        
+        
 
-        $user = auth()->user();
+        // $user = auth()->user();
 
         // facility_staffsメソッドからuserの情報をゲットする↓
-        $facilities = $user->facility_staffs()->get();
-        $firstFacility = $facilities->first();
+        // $facilities = $user->facility_staffs()->get();
+        // $firstFacility = $facilities->first();
 
         // 現在ログインしているユーザーが属する施設にpeople（利用者）を紐づける↓
         // syncWithoutDetaching＝完全重複以外は、重複OK
