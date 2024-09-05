@@ -17,6 +17,7 @@ use App\Models\User;
 use App\Models\Facility;
 use App\Models\Person;
 use App\Models\Role;
+use App\Models\Chat;
 
 class HogoshaUserController extends Controller
 {
@@ -53,10 +54,40 @@ class HogoshaUserController extends Controller
     return view('hogoshanumber', compact('userData'));
 
   }
+
+  public function edit(Request $request)
+    {
+        $user = auth()->user();
+
+        // ログインしているユーザーに関連する人物を取得
+        $people = $user->people_family()->get();
+        // 各Personに対して未読メッセージがあるかを確認
+        foreach ($people as $person) {
+            $unreadMessages = Chat::where('people_id', $person->id)
+                                ->where('is_read', false)
+                                ->where('user_identifier', '!=', $user->id)
+                                ->exists();
+            $person->unreadMessages = $unreadMessages;
+        }
+
+
+        \Log::info('HogoshaUserController edit method started.');
+        return view('hogosha', compact('people'));
+    }
+
+
    public function hogosha()
-   {
-       return view('hogosha');
-   }
+  {
+      // 現在ログインしているユーザーを取得
+      $user = Auth::user();
+
+      // ユーザーが関連付けられている全てのPerson（利用者）を取得
+      $people = $user->people_family()->get();
+
+
+      // データをビューに渡す
+      return view('hogosha', compact('people'));
+  }
    
    public function create()
    {
@@ -121,8 +152,13 @@ class HogoshaUserController extends Controller
             $user->assignRole('client family user');
 
             DB::commit();
-
-            return view('hogosha', compact('people'));
+// 未読メッセージを取得
+$unreadMessages = Chat::where('people_id', $person->id)
+->where('is_read', false)
+->where('user_identifier', '!=', $user->id)
+->exists();
+// hogosha ビューにデータを渡して表示
+            return view('hogosha', compact('people', 'unreadMessages'));
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('登録処理中のエラー: ' . $e->getMessage());

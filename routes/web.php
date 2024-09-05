@@ -53,7 +53,7 @@ use App\Http\Controllers\ChildFoodController;
 use App\Http\Controllers\ChildToiletController;
 use App\Http\Controllers\BathController;
 use App\Http\Controllers\HogoshaRecordController;
-
+use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\DompdfController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\AmiVoiceController;
@@ -235,12 +235,16 @@ Route::middleware('auth')->group(function () {
 Route::get('/hogosharegister',[HogoshaUserController::class,'showRegister']);
 Route::post('/hogosharegister',[HogoshaUserController::class,'register']);
 
-Route::middleware('auth')->group(function (){
-    Route::get('/hogosha',[HogoshaUserController::class,'hogosha'])->name('hogosha');
-});
+// Route::middleware('auth')->group(function (){
+//     Route::get('/hogosha',[HogoshaUserController::class,'hogosha'])->name('hogosha');
+// });
 
-Route::get('/hogoshanumber', [HogoshaUserController::class, 'create'])->name('hogoshanumber.show');
-Route::post('/hogoshanumber', [HogoshaUserController::class, 'numberregister'])->name('hogoshanumber.store');
+Route::get('/hogosha', [HogoshaUserController::class, 'hogosha'])->name('hogosha');
+
+
+Route::get('hogoshanumber', [HogoshaUserController::class, 'create'])->name('hogoshanumber.show');
+Route::post('hogoshanumber', [HogoshaUserController::class, 'numberregister'])->name('hogoshanumber.store');
+
 
 // 職員の登録画面↓
 Route::get('/staffregister',[StaffUserController::class,'staffshow'])->name('staffregister');
