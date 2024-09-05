@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Person;
 use App\Models\Hogosha;
 use Illuminate\Http\Request;
+use App\Models\Chat;
 
 class HogoshaController extends Controller
 {
@@ -15,14 +16,30 @@ class HogoshaController extends Controller
      */
     public function index()
     {
+        \Log::info('HogoshaController index method started.');
+
     //   / 全件データ取得して一覧表示する↓
         // $people は変数名　Person::でPersonモデルにアクセスする
         $hogosha = Hogosha::all();
         $people = Person::all();
         // ('people')に$peopleが代入される
-        
+
+        // ログインしているユーザーを取得
+        $user = auth()->user();
+
+        // 未読メッセージの情報を各 Person に追加
+        foreach ($people as $person) {
+            $unreadMessages = Chat::where('people_id', $person->id)
+                                  ->where('is_read', false)
+                                  ->where('user_identifier', '!=', $user->id)
+                                  ->exists();
+
+            $person->unreadMessages = $unreadMessages;
+            \Log::info('Person ID: ' . $person->id . ' Unread Messages: ' . $unreadMessages);
+        }
+
         // 'people'はpeople.blade.phpの省略↓　// compact('people')で合っている↓
-        return view('people',compact('hogosha'));
+        return view('hogosha', compact('hogosha', 'people'));
     }
     /**
      * Show the form for creating a new resource.
@@ -44,10 +61,10 @@ class HogoshaController extends Controller
     public function store(Request $request)
     {
        $storeData = $request->validate([
-            
+
         ]);
         // バリデーションした内容を保存する↓
-        
+
         $hogosha = Hogosha::create([
         'people_id' => $request->people_id,
         'condition' => $request->condition,
@@ -59,7 +76,7 @@ class HogoshaController extends Controller
         'food_created_at' => $request->food_created_at,
         'nyuuyoku' => $request->nyuuyoku,
         'oyatsu' => $request->oyatsu,
-        'bikou' => $request->bikou, 
+        'bikou' => $request->bikou,
     ]);
     // return redirect('people/{id}/edit');
      $people = Person::all();
@@ -75,12 +92,12 @@ class HogoshaController extends Controller
      */
     public function show($id)
 {
-    
+
     $person = Person::findOrFail($id);
     $hogoshas = $person->hogoshas;
 
     return view('people', compact('hogoshas'));
-    
+
     // $temperature = Temperature::findOrFail($id);
 
     // return view('temperaturelist', compact('temperature'));
@@ -102,7 +119,7 @@ public function change(Request $request, $people_id)
     {
         $person = Person::findOrFail($people_id);
         $lastHogosha = $person->hogoshas->last();
-        
+
         return view('hogoshachange', compact('person', 'lastHogosha'));
     }
     /**
@@ -128,9 +145,9 @@ public function change(Request $request, $people_id)
         $hogosha->oyatsu = $request->oyatsu;
         $hogosha->bikou = $request->bikou;
         $hogosha->save();
-        
+
         $people = Person::all();
-        
+
         return view('people', compact('hogosha', 'people'));
     }
 

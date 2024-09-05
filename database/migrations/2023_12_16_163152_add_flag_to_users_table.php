@@ -13,9 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-    Schema::table('users', function (Blueprint $table) {
-        $table->integer('flag')->default(0);
-    });
+        Schema::table('users', function (Blueprint $table) {
+            if (!Schema::hasColumn('users', 'flag')) {
+                $table->integer('flag')->default(0);
+            }
+        });
     }
 
     /**
@@ -26,7 +28,9 @@ return new class extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            //
+            if (Schema::hasColumn('users', 'flag')) {
+                $table->dropColumn('flag');
+            }
         });
     }
 };

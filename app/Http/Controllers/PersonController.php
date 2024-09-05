@@ -9,6 +9,8 @@ use App\Models\Facility;
 use App\Models\Person;
 use App\Models\Role;
 use App\Models\Permission;
+use App\Models\Chat;
+
 
 use Spatie\Permission\Models\Role as SpatieRole;
 use App\Enums\RoleType;
@@ -27,6 +29,9 @@ class PersonController extends Controller
      */
     public function index()
     {
+        \Log::info('PersonController index method started.');
+        \Log::info('This is a test log.');
+
 
         // ログインしているユーザーの情報↓
         $user = auth()->user();
@@ -46,7 +51,7 @@ class PersonController extends Controller
         // $isSuperAdmin = $user->hasRole(RoleType::SuperAdministrator);
 
         // dd($rolename);
-        
+
         $isSuperAdmin = $user->hasRole(RoleType::FacilityStaffAdministrator);
         // dd($isSuperAdmin);
 
@@ -58,6 +63,15 @@ class PersonController extends Controller
             $people = $firstFacility->people_facilities()->get();
         } else {
             $people = []; // まだpeople（利用者が登録されていない時もエラーが出ないようにする）
+        }
+
+        foreach ($people as $person) {
+            $unreadMessages = Chat::where('people_id', $person->id)
+                                  ->where('is_read', false)
+                                  ->where('user_identifier', '!=', $user->id)
+                                  ->exists();
+
+            $person->unreadMessages = $unreadMessages;
         }
 
         return view('people', compact('people'));
@@ -205,7 +219,6 @@ class PersonController extends Controller
     }
 
     // 食事
-    // 登録のルート↓
     public function showfood(Person $person)
     {
         $people = Person::all();
