@@ -19,8 +19,8 @@ return new class extends Migration
             // onDelete('cascade')は、外部キーの参照先のpeopleテーブルのidのレコードが削除された場合に、このレコードも一緒に削除されるようにする
             $table->foreign('people_id')->references('id')->on('people')->onDelete('cascade');
             $table->date('date')->default(now());
-            $table->time('start_time')->default('00:00');
-            $table->time('end_time')->default('00:00');
+            // $table->time('start_time')->default('00:00');
+            // $table->time('end_time')->default('00:00');
             $table->string('school')->nullable();
             $table->json('pick_up')->nullable();
             $table->json('send')->nullable();
