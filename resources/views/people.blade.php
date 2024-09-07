@@ -28,6 +28,12 @@
 
 
 @endphp
+<script src="https://js.pusher.com/7.0/pusher.min.js"></script>
+<script>
+    window.peopleIds = @json($people->pluck('id'));
+    window.UserId = {{ Auth::id() }};
+</script>
+
 <body>
 <style>
   /* フォントを指定 */
@@ -36,22 +42,22 @@
     font-family: 'Noto Sans JP', sans-serif; /* フォントをArialに設定 */
   background: linear-gradient(135deg, rgb(209, 253, 255,0.5), rgb(253, 219, 146,1));
   }
-  </style>
-        <!--// 処理-->
+</style>
+    <!--// 処理-->
 
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
-      rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    rel="stylesheet">
 
 
-   <div class="flex flex-col items-center justify-center w-full my-2">
-        <style>
-         /* @import url('https://fonts.googleapis.com/css2?family=Arial&display=swap'); */
-            h1 {
-            font-family: Arial, sans-serif; /* フォントをArialに設定 */
-          }
-        </style>
-      <h1 class="sm:text-2xl text-3xl font-bold title-font mb-4 text-gray-900" _msttexthash="91611" _msthidden="1" _msthash="63"></h1>
-    </div>
+<div class="flex flex-col items-center justify-center w-full my-2">
+    <style>
+        /* @import url('https://fonts.googleapis.com/css2?family=Arial&display=swap'); */
+        h1 {
+        font-family: Arial, sans-serif; /* フォントをArialに設定 */
+        }
+    </style>
+    <h1 class="sm:text-2xl text-3xl font-bold title-font mb-4 text-gray-900" _msttexthash="91611" _msthidden="1" _msthash="63"></h1>
+</div>
 
 
 
@@ -133,16 +139,31 @@
                                         <div class="flex items-center justify-center p-4">
 
                                             <!-- 登録していない場合 -->
-                                            <a href="{{ url('chat/'.$person->id) }}" class="relative ml-2" style="display: flex; align-items: center;">
+                                            <!-- <a href="{{ url('chat/'.$person->id) }}" class="relative ml-2" style="display: flex; align-items: center;">
+                                                <summary class="text-red-500 font-bold text-xl">連絡する</summary>
+                                                @csrf
+                                                <i class="fa-solid fa-plus text-gray-900" style="font-size: 1.5em; padding: 0 5px; transition: transform 0.2s;"></i>
+
+                                                <!-- 未読メッセージがある場合に new マークを表示 -->
+                                                <!-- @if($person->unreadMessages)
+                                                    <span class="ml-2 text-red-500 text-sm font-bold">New</span>
+                                                @endif
+                                            </a> -->
+                                            <!-- リアルタイムで新着メッセージが届いた場合にNewと表示 -->
+                                            <a href="{{ url('chat/'.$person->id) }}" id="person-{{ $person->id }}" class="relative ml-2" style="display: flex; align-items: center;">
                                                 <summary class="text-red-500 font-bold text-xl">連絡する</summary>
                                                 @csrf
                                                 <i class="fa-solid fa-plus text-gray-900" style="font-size: 1.5em; padding: 0 5px; transition: transform 0.2s;"></i>
 
                                                 <!-- 未読メッセージがある場合に new マークを表示 -->
                                                 @if($person->unreadMessages)
-                                                    <span class="ml-2 text-red-500 text-sm font-bold">New</span>
+                                                    <span id="new-indicator-{{ $person->id }}" class="ml-2 text-red-500 text-sm font-bold">New</span>
+                                                @else
+                                                    <span id="new-indicator-{{ $person->id }}" class="ml-2 text-red-500 text-sm font-bold" style="display: none;">New</span>
                                                 @endif
                                             </a>
+
+
                                         </div>
                                     </div>
 

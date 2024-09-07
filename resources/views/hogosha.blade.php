@@ -21,7 +21,11 @@
             </div>
         @endif
         <!-- バリデーションエラーの表示に使用-->
-
+    <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
+    <script>
+        window.peopleIds = @json($people->pluck('id'));
+        window.UserId = {{ Auth::id() }};
+    </script>
 <body>
 <style>
   /* フォントを指定 */
@@ -116,17 +120,31 @@
                                     </div>
                                     <div class="flex items-center justify-center p-4">
 
-                                        <!-- 登録していない場合 -->
-                                        <a href="{{ url('chat/'.$person->id) }}" class="relative ml-2" style="display: flex; align-items: center;">
-                                            <summary class="text-red-500 font-bold text-xl">連絡する</summary>
-                                            @csrf
-                                            <i class="fa-solid fa-plus text-gray-900" style="font-size: 1.5em; padding: 0 5px; transition: transform 0.2s;"></i>
+                                                <!-- 登録していない場合 -->
+                                            <!-- <a href="{{ url('chat/'.$person->id) }}" class="relative ml-2" style="display: flex; align-items: center;">
+                                                <summary class="text-red-500 font-bold text-xl">連絡する</summary>
+                                                @csrf
+                                                <i class="fa-solid fa-plus text-gray-900" style="font-size: 1.5em; padding: 0 5px; transition: transform 0.2s;"></i>
 
-                                            <!-- 未読メッセージがある場合に new マークを表示 -->
-                                            @if($person->unreadMessages)
-                                                <span class="ml-2 text-red-500 text-sm font-bold">New</span>
-                                            @endif
-                                        </a>
+                                                <!-- 未読メッセージがある場合に new マークを表示 -->
+                                                <!-- @if($person->unreadMessages)
+                                                    <span class="ml-2 text-red-500 text-sm font-bold">New</span>
+                                                @endif
+                                            </a> -->
+                                            <!-- リアルタイムで新着メッセージが届いた場合にNewと表示 -->
+                                            <a href="{{ url('chat/'.$person->id) }}" id="person-{{ $person->id }}" class="relative ml-2" style="display: flex; align-items: center;">
+                                                <summary class="text-red-500 font-bold text-xl">連絡する</summary>
+                                                @csrf
+                                                <i class="fa-solid fa-plus text-gray-900" style="font-size: 1.5em; padding: 0 5px; transition: transform 0.2s;"></i>
+
+                                                <!-- 未読メッセージがある場合に new マークを表示 -->
+                                                @if($person->unreadMessages)
+                                                    <span id="new-indicator-{{ $person->id }}" class="ml-2 text-red-500 text-sm font-bold">New</span>
+                                                @else
+                                                    <span id="new-indicator-{{ $person->id }}" class="ml-2 text-red-500 text-sm font-bold" style="display: none;">New</span>
+                                                @endif
+                                            </a>
+
                                     </div>
                                 </div>
                          <!-- 体調登録↓ -->
