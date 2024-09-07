@@ -154,6 +154,134 @@
                                             </a>
                                         </div>
                                     </div>
+
+                                    <!-- 利用時間など↓ -->
+                        　    　　  <div class="border-2 p-2 rounded-lg bg-white m-2">
+                                    <div class="flex justify-start items-center">
+                                        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+                                        <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
+                                        <i class="fa-regular fa-clock text-gray-900" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>
+                                        <p class="font-bold text-xl ml-2">利用時間・送迎</p>
+                                    </div>
+                                    
+                                   <div class="flex items-center justify-center p-4">
+                                      <!-- 登録していない場合 -->
+                                        @php
+                                            $lastTime = $person->times ? $person->times->last() : null;
+                                        @endphp
+                                        
+                                           @if (!$lastTime || $lastTime->created_at->diffInHours(now()) >= 6)
+                                            
+                                            <form action="{{ route('time.store', $person->id) }}" method="POST">
+                                            <details class="justify-center">
+                                            <summary class="text-red-500 font-bold text-xl">登録する</summary>
+                                            @csrf
+                                            <i class="fa-solid fa-plus text-gray-900" style="font-size: 1.5em; padding: 0 5px; transition: transform 0.2s;"></i>
+                                            
+                                            
+                                                        <input type="hidden" name="people_id" value="{{ $person->id }}">
+                                                            <div style="display: flex; flex-direction: row; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
+                                                                <p class="text-gray-900 font-bold text-xl px-1.5">利用時間</p>
+                                                            </div>
+                                                            
+                                                             <div style="display: flex; flex-direction: row; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
+                                                                <!--<label for="usage_date" class="text-gray-900 font-bold text-xl px-1.5">利用日:</label>-->
+                                                                
+                                                                <input type="date" name="date" id="usage_date" value="{{ now()->format('Y-m-d') }}" required>
+                                                            </div>
+    
+                                                            <div style="display: flex; flex-direction: row; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
+                                                                <input type="time" name="start_time" id="scheduled-time">
+                                                                <p class="text-gray-900 font-bold text-xl px-1.5">～</p>
+                                                            </div>
+                                                            
+                                                            <div style="display: flex; flex-direction: row; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
+                                                                <input type="time" name="end_time" id="scheduled-time">
+                                                            </div>
+                                                            
+                                                            <div style="display: flex; flex-direction: row; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
+                                                                <i class="fa-solid fa-school text-gray-700" style="font-size: 1.5em; transition: transform 0.2s;"></i>
+                                                                <p class="text-gray-900 font-bold text-xl px-1.5">学校</p>
+                                                            </div>
+                                                            
+                                                             <div style="display: flex; flex-direction: row; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
+                                                                <select name="school" class="mx-1 my-1.5" style="width: 6rem;">
+                                                                    <option value="登録なし">選択</option>
+                                                                    <option value="授業終了後">授業終了後</option>
+                                                                    <option value="休校">休校</option>
+                                                                    <option value="欠席">欠席</option>
+                                                                </select>
+                                                            </div>
+                                                            
+                                                            <div style="display: flex; flex-direction: row; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
+                                                                <i class="fa-solid fa-bus text-gray-700" style="font-size: 1.5em; transition: transform 0.2s;"></i>
+                                                                <p class="text-gray-900 font-bold text-xl px-1.5">送迎</p>
+                                                            </div>
+                                                            
+                                                            <div style="display: flex; flex-direction: row; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
+                                                                <input type="checkbox" name="pick_up[]" value="送り"　checked class="w-6 h-6">
+                                                                <p class="text-gray-900 font-bold text-xl px-1.5">送り</p>
+                                                            </div>
+                                                            
+                                                            <div style="display: flex; flex-direction: row; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
+                                                                <input type="checkbox" name="send[]" value="迎え"　checked class="w-6 h-6">
+                                                                <p class="text-gray-900 font-bold text-xl px-1.5">迎え</p>
+                                                            </div>
+                                                            
+                                                            
+                                                        <div class="my-2" style="display: flex; justify-content: center; align-items: center; max-width: 300px;">
+                                                          <button type="submit" class="inline-flex items-center px-6 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+                                                            送信
+                                                          </button>
+                                                        </div>
+                                                    </details>
+                                                </form>
+                                                @else
+                                                
+                                                <div class="flex justify-evenly">
+                                                <a href="{{ url('timechange/'.$person->id) }}" class="relative ml-2 flex items-center">
+                                                     @csrf
+                                                <div class="flex items-center justify-around">
+                                                    @php
+                                                        $pick_upData = json_decode($lastTime->pick_up);
+                                                        $sendData = json_decode($lastTime->send);
+                                                    @endphp
+                                                    <div class="flex justify-evenly">
+                                                        
+                                                        
+                                                        <div class="px-1.5">
+                                                            <p class="text-gray-900 font-bold text-base">利用日:</p>
+                                                            <p class="text-gray-900 font-bold text-xl">{{ \Carbon\Carbon::parse($lastTime->date)->format('n月j日') }}</p>
+
+                                                            <p class="text-gray-900 font-bold text-xl">{{ $lastTime->start_time->format('H:i') }}～{{ $lastTime->end_time->format('H:i') }}</p>
+
+                                                        </div>
+                                                        
+                                                        @if(!empty($pick_upData) && is_array($pick_upData) && count($pick_upData) > 0)
+                                                        <div class="px-1.5">
+                                                            <p class="text-gray-900 font-bold text-base">迎え:</p>
+                                                            <p class="text-gray-900 font-bold text-xl px-1">済</p>
+                                                        </div>
+                                                        @endif
+                                                        
+                                                        @if(!empty($sendData) && is_array($sendData) && count($sendData) > 0)
+                                                        <div class="px-1.5">
+                                                            <p class="text-gray-900 font-bold text-base">送り:</p>
+                                                            <p class="text-gray-900 font-bold text-xl px-1">済</p>
+                                                        </div>
+                                                        @endif
+                                                    
+                                                    
+                                                    </div>
+                                                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+                                                    <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
+                                                    <i class="fa-solid fa-pencil text-stone-500" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>
+                                                </a>
+                                                </div>
+                                               </div>
+                                               @endif
+                                            </div>
+                                         </div>
                                     
                        <!-- 食事登録↓ -->
                         　    　 <div class="border-2 p-2 rounded-lg bg-white m-2">

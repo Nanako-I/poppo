@@ -44,8 +44,12 @@ class Person extends Model
     }
 
    
+    public function times()
+    {
+        return $this->hasMany(Time::class,'people_id');
+        
+    }
 
-// 体温一覧リスト↓
     public function temperatures()
     {
         return $this->hasMany(Temperature::class,'people_id');

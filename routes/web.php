@@ -27,7 +27,7 @@ use App\Http\Controllers\HogoshaUserController;
 use App\Http\Controllers\URLController;
 use App\Http\Controllers\BeforeInvitationController;//管理者が職員のIDを入力するためにfacility_idを取って画面遷移させるコントローラー
 use App\Http\Controllers\CustomIDController;//管理者が職員のIDを登録するコントローラー
-
+use App\Http\Controllers\TimeController;//利用時間を登録するコントローラー
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\TemperatureController;
 use App\Http\Controllers\BloodpressureController;
@@ -149,14 +149,6 @@ Route::get('invitation/{signedUrl}', function (Request $request) {
     return view('preregistrationmail');
 })->name('signed.invitation');
 
-// 期限あり署名付きURLの生成
-// Route::get('/invitation', [URLController::class, 'generate_temporary_signed_url']);
-// 署名付きURLクリック時
-// Route::get('invitation/{signedUrl}', [URLController::class, 'handleInvitation'])->name('signed.invitation')->middleware('signed.redirect');
-
-// Route::get('/before-invitation', function () {
-//     return view('before-invitation');
-// })->name('before-invitation');
 
 Route::get('/before-invitation', [BeforeInvitationController::class, 'registrationConfirmation'])->name('before-invitation');
 
@@ -250,10 +242,20 @@ Route::post('hogoshanumber', [HogoshaUserController::class, 'numberregister'])->
 Route::get('/staffregister',[StaffUserController::class,'staffshow'])->name('staffregister');
 Route::post('/staffregister',[StaffUserController::class,'register']);
 
-// Route::middleware('auth')->group(function (){
-//     Route::get('/staffregister',[StaffUserController::class,'staffshow']);
-// });
-// プルダウンで登録させるバージョン↓
+
+
+// 利用時間↓
+Route::post('times/{people_id}', [TimeController::class, 'store'])->name('time.store');
+Route::get('times/{people_id}', [TimeController::class, 'show'])->name('time.show');
+// Route::get('bloodpressure/{people_id}', [BloodpressureController::class, 'edit'])->name('bloodpressure.edit');
+
+Route::get('times/{people_id}/edit', [TimeController::class, 'edit'])->name('time.edit');
+// 利用時間編集↓
+Route::get('timechange/{people_id}', [TimeController::class, 'change'])->name('time.change');
+Route::post('timechange/{people_id}',[TimeController::class,'update'])->name('time_update');
+
+
+// 体温↓
 Route::post('temperatures/{people_id}', [TemperatureController::class, 'store'])->name('temperatures.store');
 Route::get('temperatures/{people_id}', [TemperatureController::class, 'show'])->name('temperatures.show');
 Route::get('temperatureedit/{people_id}', [TemperatureController::class, 'edit'])->name('temperature.edit');
