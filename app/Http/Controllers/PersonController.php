@@ -16,6 +16,7 @@ use Spatie\Permission\Models\Role as SpatieRole;
 use App\Enums\RoleType;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 use App\Enums\PermissionType;
 use App\Enums\RoleType as RoleEnums;
 use App\Enums\Role as RoleEnum;
@@ -209,14 +210,6 @@ class PersonController extends Controller
      * @param  \App\Models\Person  $person
      * @return \Illuminate\Http\Response
      */
-
-    // 体温登録のルート↓
-    public function showtemperature(Person $person)
-    {
-        $people = Person::all();
-        // ('people')に$peopleが代入される
-        return view('temperaturelist', compact('people'));
-    }
 
     // 食事
     public function showfood(Person $person)

@@ -25,7 +25,7 @@
             </div>
         </div>
     </form>
-      <form action="{{ url('timechange/'.$person->id) }}" method="POST">
+      <form action="{{ url('timechange/'.$person->id. '/'.$lastTime->id) }}" method="POST">
         @csrf
          
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -58,7 +58,7 @@
                         <input type="hidden" name="people_id" value="{{ $person->id }}">
                         
                         <div style="display: flex; flex-direction: row; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
-                            <p class="text-gray-900 font-bold text-xl px-1.5">利用時間</p>
+                            <p class="text-gray-900 font-bold text-xl px-1.5">利用時間　合計時間({{ $totalUsageTime }})</p>
                         </div>
                         
                          <div style="display: flex; flex-direction: row; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">

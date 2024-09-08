@@ -251,8 +251,8 @@ Route::get('times/{people_id}', [TimeController::class, 'show'])->name('time.sho
 
 Route::get('times/{people_id}/edit', [TimeController::class, 'edit'])->name('time.edit');
 // 利用時間編集↓
-Route::get('timechange/{people_id}', [TimeController::class, 'change'])->name('time.change');
-Route::post('timechange/{people_id}',[TimeController::class,'update'])->name('time_update');
+Route::get('timechange/{people_id}/{id}', [TimeController::class, 'change'])->name('time.change');
+Route::post('timechange/{people_id}/{id}',[TimeController::class,'update'])->name('time_update');
 
 
 // 体温↓

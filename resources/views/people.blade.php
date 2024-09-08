@@ -239,12 +239,17 @@
                                                 @else
                                                 
                                                 <div class="flex justify-evenly">
-                                                <a href="{{ url('timechange/'.$person->id) }}" class="relative ml-2 flex items-center">
+                                                <a href="{{ url('timechange/'.$person->id . '/'.$lastTime->id) }}" class="relative ml-2 flex items-center">
                                                      @csrf
                                                 <div class="flex items-center justify-around">
                                                     @php
                                                         $pick_upData = json_decode($lastTime->pick_up);
                                                         $sendData = json_decode($lastTime->send);
+                                                        $startTime = \Carbon\Carbon::parse($lastTime->start_time);
+                                                        $endTime = \Carbon\Carbon::parse($lastTime->end_time);
+                                                        $diffInHours = $startTime->diffInHours($endTime);
+                                                        $diffInMinutes = $startTime->diffInMinutes($endTime) % 60;
+                                                        $totalUsageTime = $diffInHours . '時間' . $diffInMinutes . '分';
                                                     @endphp
                                                     <div class="flex justify-evenly">
                                                         
@@ -254,6 +259,8 @@
                                                             <p class="text-gray-900 font-bold text-xl">{{ \Carbon\Carbon::parse($lastTime->date)->format('n月j日') }}</p>
 
                                                             <p class="text-gray-900 font-bold text-xl">{{ $lastTime->start_time->format('H:i') }}～{{ $lastTime->end_time->format('H:i') }}</p>
+
+                                                            <p class="text-gray-900 font-bold text-xl">({{ $totalUsageTime }})</p>
 
                                                         </div>
                                                         

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Time;
 use App\Models\Person;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class TimeController extends Controller
@@ -59,8 +60,10 @@ class TimeController extends Controller
        
     ]);
 
-    // 他の処理
+
     $people = Person::all();
+     // 二重送信防止
+    $request->session()->regenerateToken();
     return view('people', compact('time', 'people'));
 }
 
@@ -74,7 +77,7 @@ class TimeController extends Controller
 {
     $person = Person::findOrFail($people_id);
     $time = $person->times;
-
+   
     return view('people',compact('time'));
 }
 
@@ -98,30 +101,52 @@ class TimeController extends Controller
      * @return \Illuminate\Http\Response
      */
      
-    public function change(Request $request, $people_id)
+    public function change(Request $request, $people_id, $id)
     {
         $person = Person::findOrFail($people_id);
-        $lastTime = $person->times->last();
-        return view('timechange', compact('person', 'lastTime'));
+        // $lastTime = $person->times->last();
+        $lastTime = Time::findOrFail($id);
+
+
+        // 利用時間合計を計算するためのコード↓
+        $startTime = Carbon::parse($lastTime->start_time);
+        $endTime = Carbon::parse($lastTime->end_time);
+        // dd($startTime, $endTime);
+
+        // 開始時間と終了時間の差を計算
+        $diffInHours = $startTime->diffInHours($endTime);
+        // dd($diffInHours);
+        $diffInMinutes = $startTime->diffInMinutes($endTime) % 60;
+
+        // 合計利用時間を文字列にフォーマット
+        $totalUsageTime = $diffInHours . '時間' . $diffInMinutes . '分';
+
+        return view('timechange', compact('person','totalUsageTime', 'lastTime'));
     }
     
-    public function update(Request $request, Time $time)
+    public function update(Request $request, Time $time, $id)
     {
-    // チェックボックスのデータをJSON形式に変換
-    $pick_up = json_encode($request->input('pick_up', []));
-    $send = json_encode($request->input('send', []));
-    
-    $time = Time::create([
-        'people_id' => $request->people_id,
-        'date' => $request->date,
-        'start_time' => $request->start_time,
-        'end_time' => $request->end_time,
-        'school' => $request->school,
-        'pick_up' => $pick_up,
-        'send' => $send,
-    ]);
+        // チェックボックスのデータをJSON形式に変換
+        $pick_up = json_encode($request->input('pick_up', []));
+        $send = json_encode($request->input('send', []));
+        
+        // IDをリクエストから取得
+        $id = $request->id;
+        // Time モデルのレコードを取得
+        $time = Time::find($id);
+
+        // レコードが存在しない場合のエラーハンドリング
+        if (!$time) {
+            return redirect()->back()->with('error', '指定されたデータが見つかりません。');
+        }
+
+        $form = $request->all();
+        $time->fill($form)->save();
     
         $people = Person::all();
+        // 二重送信防止
+        $request->session()->regenerateToken();
+
         return view('people', compact('time', 'people'));
     }
 
