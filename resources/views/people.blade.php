@@ -1,26 +1,5 @@
 @vite(['resources/css/app.css', 'resources/js/app.js'])
 <x-app-layout>
-
-    <!--ヘッダー[START]-->
-
-    <!--ヘッダー[END]-->
-            
-        <!-- バリデーションエラーの表示に使用-->
-       <!-- resources/views/components/errors.blade.php -->
-        <!--@if (count($errors) > 0)-->
-        <!--     Form Error List -->
-        <!--    <div class="flex justify-between p-4 items-center bg-red-500 text-white rounded-lg border-2 p-2 border-white">-->
-        <!--        <div><strong>入力した文字を修正してください。</strong></div> -->
-        <!--        <div>-->
-        <!--            <ul>-->
-        <!--            @foreach ($errors->all() as $error)-->
-        <!--                <li>{{ $error }}</li>-->
-        <!--            @endforeach-->
-        <!--            </ul>-->
-        <!--        </div>-->
-        <!--    </div>-->
-        <!--@endif-->
-        
         @if ($errors->any())
             <div style="color: red; font-weight: bold; background-color: #ffe6e6; border: 2px solid red; padding: 10px; border-radius: 5px;">
                 <ul style="list-style-type: none; padding-left: 0;">
@@ -34,15 +13,10 @@
             </div>
         @endif
 
-                                        
-        <!-- バリデーションエラーの表示に使用-->
-   @php
-    $user = Auth::user();
-   
-    $permissions = $user->getPermissionsViaRoles();
-  
-    
-@endphp 
+    @php
+        $user = Auth::user();
+        $permissions = $user->getPermissionsViaRoles();
+    @endphp 
 <body>
 <style>
   /* フォントを指定 */
@@ -156,22 +130,21 @@
                                     </div>
 
                                     <!-- 利用時間など↓ -->
-                        　    　　  <div class="border-2 p-2 rounded-lg bg-white m-2">
+                                 <div class="border-2 p-2 rounded-lg bg-white m-2">
                                     <div class="flex justify-start items-center">
                                         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
                                         <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
                                         <i class="fa-regular fa-clock text-gray-900" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>
-                                        <p class="font-bold text-xl ml-2">利用時間・送迎</p>
+                                        <p class="font-bold text-xl ml-2">利用時間</p>
                                     </div>
                                     
                                    <div class="flex items-center justify-center p-4">
                                       <!-- 登録していない場合 -->
                                         @php
                                             $lastTime = $person->times ? $person->times->last() : null;
+                                            $today = \Carbon\Carbon::now()->toDateString();
                                         @endphp
-                                        
-                                           @if (!$lastTime || $lastTime->created_at->diffInHours(now()) >= 6)
-                                            
+                                        @if ($lastTime === $today)
                                             <form action="{{ route('time.store', $person->id) }}" method="POST">
                                             <details class="justify-center">
                                             <summary class="text-red-500 font-bold text-xl">登録する</summary>
@@ -213,12 +186,12 @@
                                                                 </select>
                                                             </div>
                                                             
-                                                            <div style="display: flex; flex-direction: row; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
+                                                            <!-- <div style="display: flex; flex-direction: row; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
                                                                 <i class="fa-solid fa-bus text-gray-700" style="font-size: 1.5em; transition: transform 0.2s;"></i>
                                                                 <p class="text-gray-900 font-bold text-xl px-1.5">送迎</p>
-                                                            </div>
+                                                            </div> -->
                                                             
-                                                            <div style="display: flex; flex-direction: row; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
+                                                            <!-- <div style="display: flex; flex-direction: row; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
                                                                 <input type="checkbox" name="pick_up[]" value="送り"　checked class="w-6 h-6">
                                                                 <p class="text-gray-900 font-bold text-xl px-1.5">送り</p>
                                                             </div>
@@ -226,7 +199,7 @@
                                                             <div style="display: flex; flex-direction: row; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
                                                                 <input type="checkbox" name="send[]" value="迎え"　checked class="w-6 h-6">
                                                                 <p class="text-gray-900 font-bold text-xl px-1.5">迎え</p>
-                                                            </div>
+                                                            </div> -->
                                                             
                                                             
                                                         <div class="my-2" style="display: flex; justify-content: center; align-items: center; max-width: 300px;">
@@ -289,6 +262,16 @@
                                                @endif
                                             </div>
                                          </div>
+
+                                    <!-- 送迎の要否↓ -->
+                                 <div class="border-2 p-2 rounded-lg bg-white m-2">
+                                    <div class="flex justify-start items-center">
+                                        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+                                        <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
+                                        <i class="fa-solid fa-bus text-pink-600" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>
+                                        <p class="font-bold text-xl ml-2">送迎</p>
+                                    </div>
+                                </div>
                                     
                        <!-- 食事登録↓ -->
                         　    　 <div class="border-2 p-2 rounded-lg bg-white m-2">
