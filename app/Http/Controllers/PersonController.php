@@ -21,118 +21,43 @@ class PersonController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(User $user)
-    {
-        // ifどちらにも当てはまらない場合でもエラーが出ないようにする↓
-        $people = [];
-        $families = []; 
-        // 全件データ取得して一覧表示する↓
-        // $people は変数名　Person::でPersonモデルにアクセスする
-        // $people = Person::all();
-        
-        
-        // 条件1　userがフラグ0（家族である）かつ　
-        if($user->flag===1){
-            $people = Person::all();
-            return view('people',compact('people'));
-           
-        }
-        else{
-            // userが家族である　中間テーブルを参照する
-            // $order = Order::find(1);
-
-            // foreach ($order->products as $product) {
-            // dd($product->pivot->quantity); // 1
-            
-            // 下記2行でuserの情報とfamiliesテーブルの情報が配列で出せる ↓
-           //Personモデルに定義された、関連するUserモデルとの関係を表すメソッドを呼び出し
-            //   $families = Person::find(1)->users()->get()->toArray();
-            //  dd($families);
-            
-            // 今ログインしてるuserのID
-            $userId = Auth::id();
-            // dd($userId);
-            //$user = User::find($userId);
-// dd($user);いしだの事業所、いしだかぞくなど配列で出る
-$user = User::with('people')->find($userId);
-// dd($user);
-            //Personモデルのデータベーステーブルから、idが1のPersonモデルのレコードを取得
-            // $family = Person::find(1)->users;
-            // dd($family);　peopleテーブルのidが1の山田桃子が取ってこられて、関係するuser（やまだかぞく）が配列で出る
-            
-            //Userモデルのコレクション $family と、その中の最初のUserモデルに紐づく Peopleテーブルの情報を取得
-            // $familyPeople = $family->merge($family->first()->people); // Peopleテーブルの情報を取得
-           // dd($familyPeople->toArray());
-             
-             
-            // 現在ログインしているユーザーの ID を取得
-// $userId = Auth::id();
-
-// $user = User::find($userId);
-// dd($user);
-// $familyPeople = $user->people; // 中間テーブル families を介して Person モデルのデータを取得
-// if ($familyPeople !== null) {
     
-// dd($familyPeople->toArray());
+     public function index(User $user)
+     {
+         $people = Person::all();
+         
+         // Initialize an array to store selected items for each person
+         $selectedItems = [];
+         
+         // Loop through each person and decode their selected items
+         foreach ($people as $person) {
+             $selectedItems[$person->id] = json_decode($person->selected_items, true) ?? [];
+         }
+     
+         return view('people', compact('people', 'selectedItems'));
+     }
+    // }
 
-//     if ($familyPeople) {
-//         dd($familyPeople->toArray());
-//     } else {
-//         // $user に関連する people が見つからなかった場合の処理
-//     }
-// } else {
-//     // ユーザーが見つからなかった場合の処理
-// }
-
-// $family にはログインしているユーザーに紐づいた Person モデルのコレクションが格納されます
-//dd($family->toArray());
-
-            //foreach ($user->people ?? [] as $person) {
-                
-              //   $pivotData = $person->pivot;
-             //dd($person->pivot->relationship); // 1
-            //  $people[] = $person; // データを $people 配列に格納
-             // 変数を初期化
-    // $people = [];
-    //         return view('people',compact('family'));
-    return view('people', ['user' => $user, 'people' => $user->people]);
-    //return view('people',compact('people'));
-       }
-
-            // 1対1の場合↓
-        //   $people = Person::where('id',$user->people_id)->first();
-        // }
+    public function show(User $user)
+    {
+        $people = Person::all();
         
-   
-    //   companyのuserを判断する
-        // $this->authorize('company', $user);
+        // Initialize an array to store selected items for each person
+        $selectedItems = [];
         
-        
-        // $relationship = $people->pivot->relationship;
-    //   dd($relationship);
-        //return view('people', compact('people', 'familyPeople'));
-        //return view('people', ['user' => $user, 'people' => $user->people]);
-
-        // APIのときは　return $people;などでJSONデータで返す
-   
+        // Loop through each person and decode their selected items
+        foreach ($people as $person) {
+            $selectedItems[$person->id] = json_decode($person->selected_items, true) ?? [];
+        }
+    
+        return view('people', compact('people', 'selectedItems'));
     }
- //}
 
-// use Livewire\Component;
-
-// class Birthday extends Component
-// {
-//     public $birthday;
-
-//     public function render()
-//     {
-//         return view('livewire.birthday');
-//     }
-// }
+      
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+ 
      */
     public function create()
 {
@@ -174,45 +99,42 @@ $user = User::with('people')->find($userId);
     return redirect('people');
 }
 
-//      public function templist()
-// {
-//     $people = Person::all();
-        // ('people')に$peopleが代入される
-        
-        // 'people'はpeople.blade.phpの省略↓　// compact('people')で合っている↓
-        // return view('temperaturelist',compact('people'));
-    // return view('temperaturelist');
-// }
-    // return view('peopleregister');
+public function showSelectedItems($people_id)
+{
+    $person = Person::findOrFail($people_id);
+    $selectedItems = json_decode($person->selected_items, true) ?? [];
+    // $selectedItems = $person->selected_items ?? []; // Retrieve selected items or use an empty array if null
+    return view('select_item', compact('person', 'selectedItems'));
+}
 
-        // $people = Person::create($storeData);
-        // // トップページに返す↓
-        // return redirect('/people');
-    
-    
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Person  $person
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Person $person)
+public function updateSelectedItems(Request $request, $id)
     {
-    return view('temperature.'.$person->id.'.edit');//
+        $person = Person::findOrFail($id);
+        $selectedItems = $request->input('selected_items', []);
+        $person->selected_items = json_encode($selectedItems, JSON_UNESCAPED_UNICODE);
+        $person->save();
+        return redirect()->route('people.show', $person->id)->with('success', '記録項目が更新されました。');
     }
-    
-    // public function showAmountFood(Person $person)
-    // {
-    // return view('food.'.$person->id.'.edit');//
-    // }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Person  $person
-     * @return \Illuminate\Http\Response
-     */
+// public function updateSelectedItems(Request $request, Person $person)
+// {
+//     $selectedItems = $request->input('selected_items', []);
+//     $person->selected_items = $selectedItems;
+//     $person->save();
+//     return redirect('people');
+//     // return redirect()->route('people', $person->id)->with('success', '記録項目が更新されました。');
+// }
+    
+
+   
+    // public function show(Person $person)
+    // {
+    // return view('temperature.'.$person->id.'.edit');//
+    // }
+    
+   
+
+    
      
     // 更新画面の表示↓
     public function edit($id)
@@ -221,30 +143,8 @@ $user = User::with('people')->find($userId);
     return view('peopleedit', compact('person'));
 }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Person  $person
-     * @return \Illuminate\Http\Response
-     */
-     
-    // 体温登録のルート↓
-    public function showtemperature(Person $person)
-{
-    $people = Person::all();
-        // ('people')に$peopleが代入される
-    return view('temperaturelist',compact('people'));
-} 
+    
 
-// 食事
-// 登録のルート↓
-    public function showfood(Person $person)
-{
-    $people = Person::all();
-        // ('people')に$peopleが代入される
-    return view('foodlist',compact('people'));
-} 
     //  フォームから送られてきたデータ↓
     public function update(Request $request, Person $person)
     {

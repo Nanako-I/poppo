@@ -55,14 +55,14 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 
-// Book用の一括ルーティング
 Route::resource('people', PersonController::class);
-// Route::resource('peopleregister',  PersonController::class);
 
 Route::get('peopleregister', [PersonController::class, 'create']);
 Route::post('peopleregister', [PersonController::class, 'store']);
-// Route::get('peopleregister', [PersonController::class, 'create']); 
-//   Route::resource('/photos', 'App\Http\Controllers\PhotoController')->only(['create','store']);
+
+// 登録項目選択
+Route::get('/selected-item/{people_id}', [PersonController::class, 'showSelectedItems'])->name('show.selected.items');
+Route::patch('/selected-item/{people_id}', [PersonController::class, 'updateSelectedItems'])->name('update.selected.items');
 
 Route::post('/logout', 'Auth\LoginController@logout')->name('logout');
 // Route::get('/logout', 'Auth\LoginController@logout')->name('logout');

@@ -10,6 +10,11 @@ class Person extends Model
     use HasFactory;
     protected $table = 'people';
     protected $fillable = ['person_name','date_of_birth' , 'gender','jukyuusha_number', 'kubun_number','profile_image','filename','path'];
+
+    protected $casts = [
+        'selected_items' => 'array',
+    ];
+    
 // 体温一覧リスト↓
     public function temperatures()
     {

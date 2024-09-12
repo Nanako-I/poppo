@@ -45,9 +45,9 @@
                 
                 <!--  <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex {{ request()->is('peopleregister') ? ' text-black' : '' }} px-4 rounded-md text-xl font-bold items-center justify-center">-->
                     
-                <!--     <x-nav-link :href="url('peopleregister')" :active="request()->is('peopleregister')">-->
-                <!--        {{ __('新規登録') }}-->
-                <!--    </x-nav-link>-->
+                    <x-nav-link :href="url('peopleregister')" :active="request()->is('peopleregister')">
+                       {{ __('新規登録') }}
+                </x-nav-link>
                 <!--</div>-->
                 
                 

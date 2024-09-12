@@ -57,6 +57,8 @@
 
                 @foreach ($people as $person)
                 <!--$person->load('temperatures');-->
+                <a href="{{ route('update.selected.items', ['people_id' => $person->id]) }}" class="relative ml-2">
+                    @csrf
                   <div class="p-2 h-full lg:w-1/3 md:w-full flex">
                    <div class="slide height:auto  border-2 p-2 p-4 w-full md:w-64 lg:w-100 rounded-lg bg-white">
                      <style>
@@ -103,7 +105,7 @@
                                           <p class="text-gray-900 font-bold text-xs" _msttexthash="150072">{{$person->date_of_birth}}生まれ</p>
                                         </div>
                       </div>
-                      <!--</a>-->
+                      </a>
                       
                       
                                     
@@ -237,6 +239,7 @@
                                          </div>
                                          
                                     <!-- 体温登録↓ -->
+                                @if(isset($selectedItems[$person->id]) && in_array('体温', $selectedItems[$person->id]))
                         　    　　  <div class="border-2 p-2 rounded-lg bg-white m-2">
                                       <div class="flex justify-start items-center">
                                         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
@@ -245,7 +248,6 @@
                                         <p class="font-bold text-xl ml-2">体温</p>
                                     </div>
                                     
-                                    <!-- people.blade.php -->
                                    <div class="flex items-center justify-center p-4">
                                         @if (!is_null($person) && count($person->temperatures) > 0)
                                         @php
@@ -340,8 +342,9 @@
                                         @endif
                                     </div>
                                 </div>
-                                
+                                @endif 
                                 <!-- 食事登録↓ -->
+                                @if(isset($selectedItems[$person->id]) && in_array('食事', $selectedItems[$person->id]))
                         　    　 <div class="border-2 p-2 rounded-lg bg-white m-2">
                                     <div class="flex justify-start items-center">
                                         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
@@ -472,8 +475,10 @@
                                         <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
                                         <a href="{{ url('food/'.$person->id.'/edit') }}" class="relative">
                                         </a>
-                                        
+                                @endif
+
                                     <!-- トイレ登録↓ -->
+                            @if(isset($selectedItems[$person->id]) && in_array('トイレ', $selectedItems[$person->id]))
                         　    　<div class="border-2 p-2 rounded-lg bg-white m-2">
                                 <div class="flex justify-start items-center">
                                     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
@@ -551,10 +556,11 @@
                                             </div>
                                             </a>
                                         @endif
-                                    
-                                </div>
-                            </div>    
+                                 </div>
+                            </div>  
+                            @endif  
                                    <!-- トレーニング登録↓ -->
+                                   @if(isset($selectedItems[$person->id]) && in_array('トレーニング', $selectedItems[$person->id]))
                         　    　　  <div class="border-2 p-2 rounded-lg bg-white m-2">
                                     <div class="flex justify-start items-center">
                                         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
@@ -565,7 +571,6 @@
                                     
                                    <div class="flex items-center justify-center p-4">
                                       
-                                       <!-- 検温フォーム -->
                                                <style>
                                                     summary::-webkit-details-marker {
                                                         display: inline-block;
@@ -713,8 +718,10 @@
                                                @endif
                                             </div>
                                          </div>
-                                   
+                                        @endif
+
                                 <!-- 生活習慣登録↓ -->
+                                @if(isset($selectedItems[$person->id]) && in_array('トレーニング', $selectedItems[$person->id]))
                         　    　　  <div class="border-2 p-2 rounded-lg bg-white m-2">
                                     <div class="flex justify-start items-center">
                                         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
@@ -802,8 +809,10 @@
                                                @endif
                                             </div>
                                          </div>
-                                         
+                                        @endif
+
                                 <!-- 創作活動登録↓ -->
+                                @if(isset($selectedItems[$person->id]) && in_array('創作活動', $selectedItems[$person->id]))
                         　    　　  <div class="border-2 p-2 rounded-lg bg-white m-2">
                                     <div class="flex justify-start items-center">
                                         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
@@ -891,7 +900,8 @@
                                                @endif
                                             </div>
                                          </div>
-                                    
+                                        @endif
+
                                 <!--連絡事項↓ -->
                         　    　<!--<div class="border-2 p-2 rounded-lg bg-white m-2">-->
                               <!--      <div class="flex justify-start items-center">-->
@@ -920,6 +930,7 @@
 
                                 
                             <!-- 集団・個人活動登録↓ -->
+                            @if(isset($selectedItems[$person->id]) && in_array('集団・個人活動', $selectedItems[$person->id]))
                         　    　　  <div class="border-2 p-2 rounded-lg bg-white m-2">
                                     <div class="flex justify-start items-center">
                                         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
@@ -1046,7 +1057,8 @@
                                                </div>
                                                @endif
                                             </div>
-                                         </div>        
+                                         </div>  
+                                         @endif      
                                     <div class="border-2 p-2 rounded-lg bg-white m-2">
                                           <div class="flex justify-start items-center">
                                             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
