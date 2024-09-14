@@ -9,7 +9,7 @@ class Food extends Model
 {
    use HasFactory;
     protected $table = 'food';
-    protected $fillable = ['people_id','food','staple_food','side_dish','medicine','medicine_name','bikou','created_at'];
+    protected $fillable = ['people_id','lunch','lunch_bikou','oyatsu','oyatsu_bikou','food','staple_food','side_dish','medicine','medicine_name','bikou'];
     
     public function person()
     {

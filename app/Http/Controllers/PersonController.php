@@ -28,8 +28,26 @@ class PersonController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    
+     public function index(User $user)
+     {
+         $people = Person::all();
+         
+         // Initialize an array to store selected items for each person
+         $selectedItems = [];
+         
+         // Loop through each person and decode their selected items
+         foreach ($people as $person) {
+             $selectedItems[$person->id] = json_decode($person->selected_items, true) ?? [];
+         }
+     
+         return view('people', compact('people', 'selectedItems'));
+     }
+    // }
+
+    public function show(User $user)
     {
+
         \Log::info('PersonController index method started.');
         \Log::info('This is a test log.');
 
@@ -75,14 +93,20 @@ class PersonController extends Controller
             $person->unreadMessages = $unreadMessages;
         }
 
-        return view('people', compact('people'));
+        $selectedItems = [];
+        
+        // Loop through each person and decode their selected items
+        foreach ($people as $person) {
+            $selectedItems[$person->id] = json_decode($person->selected_items, true) ?? [];
+        }
+    
+        return view('people', compact('people', 'selectedItems'));
     }
-
 
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+ 
      */
     public function create()
     {
@@ -203,21 +227,7 @@ class PersonController extends Controller
         return view('peopleedit', compact('person'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Person  $person
-     * @return \Illuminate\Http\Response
-     */
-
-    // 食事
-    public function showfood(Person $person)
-    {
-        $people = Person::all();
-        // ('people')に$peopleが代入される
-        return view('foodlist', compact('people'));
-    }
+    
     //  フォームから送られてきたデータ↓
     public function update(Request $request, Person $person)
     {
@@ -232,6 +242,24 @@ class PersonController extends Controller
         // トップページに返す↓
         return redirect('/people');
     }
+
+    public function showSelectedItems($people_id)
+{
+    $person = Person::findOrFail($people_id);
+    $selectedItems = json_decode($person->selected_items, true) ?? [];
+    // $selectedItems = $person->selected_items ?? []; // Retrieve selected items or use an empty array if null
+    return view('select_item', compact('person', 'selectedItems'));
+}
+
+public function updateSelectedItems(Request $request, $id)
+    {
+        $person = Person::findOrFail($id);
+        $selectedItems = $request->input('selected_items', []);
+        $person->selected_items = json_encode($selectedItems, JSON_UNESCAPED_UNICODE);
+        $person->save();
+        return redirect()->route('people.show', $person->id)->with('success', '記録項目が更新されました。');
+    }
+
 
 
 

@@ -51,9 +51,16 @@
         }
         </style>
         
-    <div style="display: flex; flex-direction: column; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
-      <!--<input type="datetime-local" name="created_at">-->
-      <h3>トイレに行った時間</h3>
+   
+    <div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">
+        <p class="text-gray-900 font-bold text-xl">尿</p>
+            <div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">
+                <select name="urine" class="mx-1 my-1.5" style="width: 6rem;">
+                    <option value="あり"{{ $lastToilets->urine === 'あり' ? ' selected' : '' }}>あり</option>
+                    <option value="なし"{{ $lastToilets->urine === 'なし' ? ' selected' : '' }}>なし</option>
+                    
+                </select>
+            </div>
     </div>
     <div style="display: flex; flex-direction: column; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
       <input type="datetime-local" name="created_at" id="scheduled-time" value="{{ $toilet->created_at }}">
@@ -139,6 +146,7 @@
         &:focus {
           box-shadow: 0 0 3px rgb(0, 161, 255);
         }
+      }
         /*// -webkit-向けのつまみ*/
         &::-webkit-slider-thumb {
           -webkit-appearance: none; 
@@ -183,17 +191,6 @@
             <option value="水様便">水様便</option>
           </select>
     </div>
- 
-    <style>
-      .checkbox-container {
-        display: flex;
-        align-items: center;
-      }
-      input[type="checkbox"] {
-        margin-right: 8px;
-      }
-    </style>
-    
     <div style="display: flex; flex-direction: column; align-items: center; margin: 10px 0;">
         <h3>便通処置</h3>
           <select name="bentsuu"  value="{{ $toilet->bentsuu }}" class="mx-1 my-1.5" style="width: 6rem;">

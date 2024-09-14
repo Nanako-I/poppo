@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Time;
 use App\Models\Temperature;
 use App\Models\Bloodpressure;
 use App\Models\Toilet;
@@ -12,7 +13,12 @@ use App\Models\Kyuuin;
 use App\Models\Tube;
 use App\Models\Hossa;
 use App\Models\Speech;
+use App\Models\Activity;
+use App\Models\Training;
+use App\Models\Lifestyle;
+use App\Models\Creative;
 use App\Models\Person;
+
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -85,73 +91,51 @@ public function show(Request $request, $people_id)
     $kyuuinsOnSelectedDate = $person->kyuuins ? $person->kyuuins->whereBetween('created_at', [$selectedDateStart, $selectedDateEnd]) : collect();
     $hossasOnSelectedDate = $person->hossas ? $person->hossas->whereBetween('created_at', [$selectedDateStart, $selectedDateEnd]) : collect();
     $speechesOnSelectedDate = $person->speeches ? $person->speeches->whereBetween('created_at', [$selectedDateStart, $selectedDateEnd]) : collect();
-    return view('recordedit', compact('person', 'selectedDate','foodsOnSelectedDate',  'watersOnSelectedDate' , 'medicinesOnSelectedDate', 'tubesOnSelectedDate',  'temperaturesOnSelectedDate', 'bloodpressuresOnSelectedDate','toiletsOnSelectedDate','kyuuinsOnSelectedDate', 'hossasOnSelectedDate', 'speechesOnSelectedDate'));
+
+    // hanamaruの項目↓
+    $lastTime = Time::where('people_id', $people_id)
+    ->whereDate('created_at', $selectedDate)
+    ->latest()
+    ->first();
+
+    $lastMorningActivity = Speech::where('people_id', $people_id)
+        ->whereDate('created_at', $selectedDate)
+        ->whereNotNull('morning_activity')
+        ->latest()
+        ->first();
+
+    $lastAfternoonActivity = Speech::where('people_id', $people_id)
+    ->whereDate('created_at', $selectedDate)
+    ->whereNotNull('afternoon_activity')
+    ->latest()
+    ->first();
+    
+    $lastActivity = Activity::where('people_id', $people_id)
+        ->whereDate('created_at', $selectedDate)
+        ->latest()
+        ->first();
+        
+    $lastTraining = Training::where('people_id', $people_id)
+        ->whereDate('created_at', $selectedDate)
+        ->latest()
+        ->first();
+        
+    $lastLifestyle = Lifestyle::where('people_id', $people_id)
+        ->whereDate('created_at', $selectedDate)
+        ->latest()
+        ->first();
+        
+    $lastCreative = Creative::where('people_id', $people_id)
+        ->whereDate('created_at', $selectedDate)
+        ->latest()
+        ->first();    
+        return view('recordedit', compact('person', 'lastTime', 'lastTemperature', 'lastBloodPressure', 'lastToilet', 'lastFood', 'lastMorningActivity', 'lastAfternoonActivity', 'lastActivity', 'lastTraining', 'lastLifestyle', 'lastCreative', 'selectedDate'));
+
+    return view('recordedit', compact('person', 'selectedDate','foodsOnSelectedDate',  'watersOnSelectedDate' , 'medicinesOnSelectedDate', 'tubesOnSelectedDate',  'temperaturesOnSelectedDate', 'bloodpressuresOnSelectedDate','toiletsOnSelectedDate','kyuuinsOnSelectedDate', 'hossasOnSelectedDate', 'speechesOnSelectedDate' , 'lastTime', 'lastMorningActivity', 'lastAfternoonActivity', 'lastActivity', 'lastTraining', 'lastLifestyle', 'lastCreative',));
 }
 
-// public function show($people_id, Request $request)
-// {
-//     $person = Person::findOrFail($people_id);
-//     $selectedDate = $request->input('selected_date', now()->format('Y-m-d')); // リクエストから日付を取得、デフォルトは今日
-    
-//     $lastFood = Food::where('people_id', $people_id)
-//         ->whereDate('created_at', $selectedDate)
-//         ->latest()
-//         ->first();
-    
-//     $lastTemperature = Temperature::where('people_id', $people_id)
-//         ->whereDate('created_at', $selectedDate)
-//         ->latest()
-//         ->first();
-        
-//     $lastBloodPressure = Bloodpressure::where('people_id', $people_id)
-//         ->whereDate('created_at', $selectedDate)
-//         ->latest()
-//         ->first();
-        
-//     $lastToilet = Toilet::where('people_id', $people_id)
-//         ->whereDate('created_at', $selectedDate)
-//         ->latest()
-//         ->first();
-        
-//     $lastWater = Water::where('people_id', $people_id)
-//         ->whereDate('created_at', $selectedDate)
-//         ->latest()
-//         ->first();
-    
-//     $lastMedicine = Medicine::where('people_id', $people_id)
-//         ->whereDate('created_at', $selectedDate)
-//         ->latest()
-//         ->first();
-        
-//     $lastKyuuin = Kyuuin::where('people_id', $people_id)
-//         ->whereDate('created_at', $selectedDate)
-//         ->latest()
-//         ->first();
-        
-//     $lastTube = Tube::where('people_id', $people_id)
-//         ->whereDate('created_at', $selectedDate)
-//         ->latest()
-//         ->first();
-        
-//     $lastHossa = Hossa::where('people_id', $people_id)
-//         ->whereDate('created_at', $selectedDate)
-//         ->latest()
-//         ->first();
-        
-//     $lastMorningActivity = Speech::where('people_id', $people_id)
-//     ->whereDate('created_at', $selectedDate)
-//     ->whereNotNull('morning_activity')
-//     ->latest()
-//     ->first();
 
-//     $lastAfternoonActivity = Speech::where('people_id', $people_id)
-//     ->whereDate('created_at', $selectedDate)
-//     ->whereNotNull('afternoon_activity')
-//     ->latest()
-//     ->first();
-        
-//         return view('recordedit', compact('person', 'lastTemperature', 'lastBloodPressure', 'lastToilet', 'lastFood', 'lastWater', 'lastMedicine', 'lastKyuuin', 'lastTube', 'lastHossa' ,'lastMorningActivity', 'lastAfternoonActivity', 'selectedDate'));
-// }
+
     /**
      * Show the form for editing the specified resource.
      *

@@ -66,7 +66,11 @@ class FoodController extends Controller
         
         $food = Food::create([
         'people_id' => $request->people_id,
-        // 'food' => $request->food,
+        'lunch' => $request->lunch,
+        'lunch_bikou' => $request->lunch_bikou,
+        'oyatsu' => $request->oyatsu,
+        'oyatsu_bikou' => $request->oyatsu_bikou,
+        'food' => $request->food,
         'staple_food' => $request->staple_food,
         'side_dish' => $request->side_dish,
         'medicine' => $request->medicine,
@@ -155,22 +159,12 @@ public function edit(Request $request, $people_id)
      public function update(Request $request, Food $food)
     {
         $person = Person::find($request->people_id);
+
     //データ更新
         $food = Food::find($request->id);
         $form = $request->all();
         $food->fill($form)->save();
         // dd($food);
-    
-        //データ更新
-        // $person = Person::find($request->people_id);
-        // // $food->people_id = $person->id;
-        // $food->staple_food = $request->staple_food;
-        // $food->side_dish = $request->side_dish;
-        // $food->medicine = $request->medicine;
-        // $food->medicine_name = $request->medicine_name;
-        // $food->bikou = $request->bikou;
-        // $food->save();
-        
         $people = Person::all();
         
         // セッショントークンを再生成

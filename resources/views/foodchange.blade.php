@@ -50,53 +50,7 @@
                               </span>
                             </div>
                         </div>
-                            <div style="max-width: 350px; margin: 1.5rem auto;">
-                                <input type="range" id ="rice_range" class="input-range" name="foo" min="0" max="10" oninput="oninput_rice()">
-                            </div>
-                                  
-                          <style>
-                          .input-range {
-                            -webkit-appearance: none;
-                            appearance: none;
-                            cursor: pointer;
-                            background: #8acdff;
-                            height: 14px;
-                            width: 100%; 
-                            border-radius: 10px; 
-                            border: solid 3px #dff1ff; 
-                            outline: 0; /* アウトラインを消して代わりにfocusのスタイルをあてる */
-                            &:focus {
-                              box-shadow: 0 0 3px rgb(0, 161, 255);
-                            }
-                            /*// -webkit-向けのつまみ*/
-                            &::-webkit-slider-thumb {
-                              -webkit-appearance: none; 
-                              background: #53aeff; 
-                              width: 24px; 
-                              height: 24px; 
-                              border-radius: 50%;
-                              box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.15);
-                            }
-                            /*// -moz-向けのつまみ*/
-                            &::-moz-range-thumb {
-                              background: #53aeff;
-                              width: 24px;
-                              height: 24px;
-                              border-radius: 50%;
-                              box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.15);
-                              border: none; 
-                            }
-                            /*// Firefoxで点線が周りに表示されてしまう問題の解消*/
-                            &::-moz-focus-outer {
-                              border: 0;
-                            }
-                            /*// つまみをドラッグしているときのスタイル*/
-                            &:active::-webkit-slider-thumb {
-                              box-shadow: 0px 5px 10px -2px rgba(0, 0, 0, 0.3);
-                            }
-                          }
-                          
-                          </style>
+                            
                                   
                               　<!--<div class="flex items-center justify-center">-->
                                     <div style="display: flex; flex-direction: column; align-items: center;">

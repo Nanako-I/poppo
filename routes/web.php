@@ -29,6 +29,13 @@ use App\Http\Controllers\BeforeInvitationController;//管理者が職員のIDを
 use App\Http\Controllers\CustomIDController;//管理者が職員のIDを登録するコントローラー
 use App\Http\Controllers\TimeController;//利用時間を登録するコントローラー
 use App\Http\Controllers\PhotoController;
+use App\Http\Middleware\Authenticate;//追記
+use App\Http\Middleware\RedirectIfNotAuthenticated;//追記
+
+use App\Http\Controllers\ActivityController;//追記
+use App\Http\Controllers\TrainingController;//追記
+use App\Http\Controllers\LifestyleController;//追記
+use App\Http\Controllers\CreativeController;//追記
 use App\Http\Controllers\TemperatureController;
 use App\Http\Controllers\BloodpressureController;
 use App\Http\Controllers\MedicineController;
@@ -75,6 +82,7 @@ use App\Http\Controllers\VideoController;
 |
 */
 Route::get('/', function () {
+
     // return view('auth.login');　//※ログイン画面にリダイレクトされないようここを削除
 })->middleware([Authenticate::class]); // Authenticate ミドルウェアを適用
 
@@ -112,6 +120,11 @@ Route::get('/reset-password/{token}', [NewPasswordController::class, 'create'])
 Route::post('reset-password-staff/{token}', [NewPasswordController::class, 'staffpasswordstore'])
                 ->name('password-staff.store');
                 
+
+    return view('auth.login');
+})->middleware([Authenticate::class]); 
+
+
 Route::middleware([RedirectIfNotAuthenticated::class])->group(function () {
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -211,11 +224,32 @@ Route::get('/passcodeform', function () {
 Route::post('/passcodeform', [RegistrationController::class, 'validatePasscode'])->name('passcode.validate');
 Route::get('/hogosharegister', [RegistrationController::class, 'showHogoshaRegisterForm'])->name('hogosharegister');
 
+// 職員の登録画面↓
+Route::get('/staffregister',[StaffUserController::class,'staffshow'])->name('staffregister');
+Route::post('/staffregister',[StaffUserController::class,'register']);
 
+// 利用者の登録↓
 Route::get('peopleregister', [PersonController::class, 'create']);
 Route::post('peopleregister', [PersonController::class, 'store']);
 
+// 利用時間↓
+Route::post('times/{people_id}', [TimeController::class, 'store'])->name('time.store');
+Route::get('times/{people_id}', [TimeController::class, 'show'])->name('time.show');
+Route::get('times/{people_id}/edit', [TimeController::class, 'edit'])->name('time.edit');
+
+// 利用時間編集↓
+Route::get('timechange/{people_id}/{id}', [TimeController::class, 'change'])->name('time.change');
+Route::post('timechange/{people_id}/{id}',[TimeController::class,'update'])->name('time_update');
+
+
+Route::resource('people', PersonController::class);
+
+// 登録項目選択
+Route::get('/selected-item/{people_id}', [PersonController::class, 'showSelectedItems'])->name('show.selected.items');
+Route::patch('/selected-item/{people_id}', [PersonController::class, 'updateSelectedItems'])->name('update.selected.items');
+
 Route::post('/logout', 'Auth\LoginController@logout')->name('logout');
+// Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -223,26 +257,15 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+
 // 保護者のuser登録画面↓
 Route::get('/hogosharegister',[HogoshaUserController::class,'showRegister']);
 Route::post('/hogosharegister',[HogoshaUserController::class,'register']);
-
-// Route::middleware('auth')->group(function (){
-//     Route::get('/hogosha',[HogoshaUserController::class,'hogosha'])->name('hogosha');
-// });
-
 Route::get('/hogosha', [HogoshaUserController::class, 'hogosha'])->name('hogosha');
 
 
 Route::get('hogoshanumber', [HogoshaUserController::class, 'create'])->name('hogoshanumber.show');
 Route::post('hogoshanumber', [HogoshaUserController::class, 'numberregister'])->name('hogoshanumber.store');
-
-
-// 職員の登録画面↓
-Route::get('/staffregister',[StaffUserController::class,'staffshow'])->name('staffregister');
-Route::post('/staffregister',[StaffUserController::class,'register']);
-
-
 
 // 利用時間↓
 Route::post('times/{people_id}', [TimeController::class, 'store'])->name('time.store');
@@ -251,8 +274,47 @@ Route::get('times/{people_id}', [TimeController::class, 'show'])->name('time.sho
 
 Route::get('times/{people_id}/edit', [TimeController::class, 'edit'])->name('time.edit');
 // 利用時間編集↓
-Route::get('timechange/{people_id}/{id}', [TimeController::class, 'change'])->name('time.change');
-Route::post('timechange/{people_id}/{id}',[TimeController::class,'update'])->name('time_update');
+Route::get('timechange/{people_id}', [TimeController::class, 'change'])->name('time.change');
+Route::post('timechange/{people_id}',[TimeController::class,'update'])->name('time_update');
+
+// トレーニング↓
+Route::post('trainings/{people_id}', [TrainingController::class, 'store'])->name('training.store');
+Route::get('trainings/{people_id}', [TrainingController::class, 'show'])->name('training.show');
+// Route::get('bloodpressure/{people_id}', [BloodpressureController::class, 'edit'])->name('bloodpressure.edit');
+
+Route::get('trainings/{people_id}/edit', [TrainingController::class, 'edit'])->name('training.edit');
+// トレーニング編集↓
+Route::get('trainingchange/{people_id}', [TrainingController::class, 'change'])->name('training.change');
+Route::post('trainingchange/{people_id}',[TrainingController::class,'update'])->name('training_update');
+
+
+// 生活習慣↓
+Route::post('lifestyles/{people_id}', [LifestyleController::class, 'store'])->name('lifestyle.store');
+Route::get('lifestyles/{people_id}', [LifestyleController::class, 'show'])->name('lifestyle.show');
+
+Route::get('lifestyles/{people_id}/edit', [LifestyleController::class, 'edit'])->name('lifestyle.edit');
+// 生活習慣編集↓
+Route::get('lifestylechange/{people_id}', [LifestyleController::class, 'change'])->name('lifestyle.change');
+Route::post('lifestylechange/{people_id}',[LifestyleController::class,'update'])->name('lifestyle_update');
+
+// 創作活動↓
+Route::post('creatives/{people_id}', [CreativeController::class, 'store'])->name('creative.store');
+Route::get('creatives/{people_id}', [CreativeController::class, 'show'])->name('creative.show');
+
+Route::get('creatives/{people_id}/edit', [CreativeController::class, 'edit'])->name('creative.edit');
+// 創作活動編集↓
+Route::get('creativechange/{people_id}', [CreativeController::class, 'change'])->name('creative.change');
+Route::post('creativechange/{people_id}',[CreativeController::class,'update'])->name('creative_update');
+
+// 個人・集団活動↓
+Route::post('activities/{people_id}', [ActivityController::class, 'store'])->name('activity.store');
+Route::get('activities/{people_id}', [ActivityController::class, 'show'])->name('activity.show');
+
+Route::get('activities/{people_id}/edit', [ActivityController::class, 'edit'])->name('activity.edit');
+// 個人・集団活動編集↓
+Route::get('activitychange/{people_id}', [ActivityController::class, 'change'])->name('activity.change');
+Route::post('activitychange/{people_id}',[ActivityController::class,'update'])->name('activity_update');
+
 
 
 // 体温↓
@@ -368,9 +430,6 @@ Route::post('notificationchange/{people_id}',[NotificationController::class,'upd
 
 // 子どもの体調について　親からの報告↓
 Route::get('hogosha', [HogoshaUserController::class, 'edit'])->name('condition.edit');
-// Route::get('hogosha', [ChildConditionController::class, 'edit'])->name('condition.edit');
-// Route::get('hogosha/{people_id}', [ChildConditionController::class, 'edit'])->name('condition.edit');
-// Route::get('hogosha/{people_id}/edit', [ChildConditionController::class, 'edit'])->name('condition.edit');
 Route::post('condition/{people_id}/edit', [ChildConditionController::class,'store'])->name('condition.post');
 
 // 編集↓
@@ -440,9 +499,11 @@ Route::get('/chartjs', function () {
 
 // PDFでダウンロードする↓
 Route::get('record/{id}/edit', [DompdfController::class, 'record'])->name('record');
+Route::post('record/{id}/edit', [DompdfController::class, 'store'])->name('record.store');
+
+// 押印後の遷移先URL↓
+Route::get('recorddownload/{people_id}/edit', [DompdfController::class, 'show'])->name('record.show');
 Route::get('pdf/{people_id}/edit', [DompdfController::class, 'pdf'])->name('pdf');
-
-
 
 // マニュアル動画↓
 Route::post('videos/{people_id}', [VideoController::class, 'store'])->name('videos.store');

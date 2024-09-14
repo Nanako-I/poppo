@@ -1,6 +1,8 @@
 StartFontMetrics 4.1
 Notice Converted by PHP-font-lib
-Comment https://github.com/PhenX/php-font-lib
+
+Comment https://github.com/dompdf/php-font-lib
+
 EncodingScheme FontSpecific
 Copyright Copyright (c) Font Awesome
 FontName Font Awesome 5 Brands Regular

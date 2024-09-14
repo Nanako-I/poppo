@@ -23,6 +23,7 @@
             <div class="flex ml-1">
                 <!-- Logo -->
                
+                @if (!request()->is('pdf/*/edit')) 
                 <div class="shrink-0 flex items-center">
                    @php
                         // ユーザーの情報を取得

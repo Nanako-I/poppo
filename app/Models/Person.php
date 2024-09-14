@@ -16,6 +16,7 @@ class Person extends Model
     use HasFactory;
     protected $table = 'people';
     protected $fillable = ['person_name','date_of_birth' , 'gender','jukyuusha_number', 'kubun_number','profile_image','filename','path'];
+
     
     
     //中間テーブルuser_rolesテーブルと紐づける↓
@@ -50,6 +51,11 @@ class Person extends Model
         
     }
 
+    protected $casts = [
+        'selected_items' => 'array',
+    ];
+    
+// 体温一覧リスト↓
     public function temperatures()
     {
         return $this->hasMany(Temperature::class,'people_id');
@@ -62,7 +68,14 @@ class Person extends Model
         //  return $this->hasMany(Temperature::class);
     }
 
-    public function foods()
+
+public function activities()
+    {
+        return $this->hasMany(Activity::class,'people_id');
+        //  return $this->hasMany(Temperature::class);
+    }
+    
+public function foods()
     {
         return $this->hasMany(Food::class,'people_id');
     }
@@ -150,9 +163,39 @@ class Person extends Model
         //  return $this->hasMany(Temperature::class);
     }
     
+
     public function videos()
     {
         return $this->hasMany(Video::class,'people_id');
         //  return $this->hasMany(Temperature::class);
     }
+    
+    public function trainings()
+    {
+        return $this->hasMany(Training::class,'people_id');
+        //  return $this->hasMany(Temperature::class);
+    }
+    public function lifestyles()
+    {
+        return $this->hasMany(Lifestyle::class,'people_id');
+        
+    }
+    public function creatives()
+    {
+        return $this->hasMany(Creative::class,'people_id');
+        
+    }
+    
+    public function times()
+    {
+        return $this->hasMany(Time::class,'people_id');
+        
+    }
+    
+    public function pdfs()
+    {
+        return $this->hasMany(Dompdf::class,'people_id');
+        
+    }
+    
 }
