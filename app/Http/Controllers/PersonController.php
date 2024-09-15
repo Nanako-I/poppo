@@ -207,10 +207,7 @@ class PersonController extends Controller
      * @param  \App\Models\Person  $person
      * @return \Illuminate\Http\Response
      */
-    public function show(Person $person)
-    {
-        return view('temperature.' . $person->id . '.edit'); //
-    }
+   
 
 
     /**

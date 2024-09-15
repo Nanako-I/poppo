@@ -13,9 +13,11 @@ class AddDateToTimesTable extends Migration
      */
     public function up()
     {
-        Schema::table('times', function (Blueprint $table) {
-            $table->date('date')->after('people_id')->default(now());
-        });
+        if (!Schema::hasColumn('times', 'date')) {
+            Schema::table('times', function (Blueprint $table) {
+                $table->date('date')->default(now())->after('people_id');
+            });
+        }
     }
 
     /**
@@ -25,8 +27,10 @@ class AddDateToTimesTable extends Migration
      */
     public function down()
     {
-        Schema::table('times', function (Blueprint $table) {
-            //
-        });
+        if (Schema::hasColumn('times', 'date')) {
+            Schema::table('times', function (Blueprint $table) {
+                $table->dropColumn('date');
+            });
+        }
     }
 };

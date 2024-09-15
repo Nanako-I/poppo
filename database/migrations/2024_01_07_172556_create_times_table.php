@@ -13,7 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('times', function (Blueprint $table) {
+        if (!Schema::hasTable('times')) {
+            Schema::create('times', function (Blueprint $table) {
+        
             $table->id();
             $table->unsignedBigInteger('people_id');
             // onDelete('cascade')は、外部キーの参照先のpeopleテーブルのidのレコードが削除された場合に、このレコードも一緒に削除されるようにする
@@ -26,7 +28,7 @@ return new class extends Migration
             $table->timestamps();
         });
     }
-
+}
     /**
      * Reverse the migrations.
      *

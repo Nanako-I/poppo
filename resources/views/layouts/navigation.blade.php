@@ -23,7 +23,7 @@
             <div class="flex ml-1">
                 <!-- Logo -->
                
-                @if (!request()->is('pdf/*/edit')) 
+                 
                 <div class="shrink-0 flex items-center">
                    @php
                         // ユーザーの情報を取得
@@ -44,14 +44,14 @@
                         }
                     @endphp
                 </div>
-                
-                <div class="shrink-0 flex items-center">
-                    <a href="{{ url($url) }}" >
-                       
-                        <img src="{{ asset('storage/sample/rainbow_heart_toumei.png') }}" width ="60" height="60">
-                    </a>
-                </div>
-                
+                @if (!request()->is('pdf/*/edit'))
+                    <div class="shrink-0 flex items-center">
+                        <a href="{{ url($url) }}" >
+                        
+                            <img src="{{ asset('storage/sample/rainbow_heart_toumei.png') }}" width ="60" height="60">
+                        </a>
+                    </div>
+                @endif
 
                 <!-- Navigation Links -->
                 <!--<div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">-->

@@ -25,7 +25,7 @@
                         <input type="hidden" name="people_id" value="{{ $person->id }}">
                     </div>
                     
-                    @foreach(['体温', '食事', 'トイレ', 'トレーニング', '生活習慣', '創作活動', '集団・個人活動'] as $item)
+                    @foreach(['体温', '食事', 'トイレ', 'トレーニング', '生活習慣', '創作活動', '集団・個人活動', '水分摂取', '内服', '注入', '内服', '血圧・脈・SpO2', '内服', '吸引', '発作'] as $item)
                         <div style="display: flex; flex-direction: row; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;" class="my-3">
                             <input type="checkbox" name="selected_items[]" value="{{ $item }}" {{ in_array($item, $selectedItems) ? 'checked' : '' }} class="w-6 h-6">
                             <p class="text-gray-900 font-bold text-xl px-1.5">{{ $item }}</p>

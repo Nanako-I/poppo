@@ -44,13 +44,6 @@ class Person extends Model
     ->withTimestamps();
     }
 
-   
-    public function times()
-    {
-        return $this->hasMany(Time::class,'people_id');
-        
-    }
-
     protected $casts = [
         'selected_items' => 'array',
     ];

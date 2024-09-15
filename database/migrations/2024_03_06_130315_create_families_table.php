@@ -13,18 +13,18 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('families', function (Blueprint $table) {
-            $table->id();
-            
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('person_id');
-            $table->string('relationship')->nullable();
-            // usersテーブルからレコード削除した場合には中間テーブル(familiesテーブル)からもレコード削除する
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('person_id')->references('id')->on('people')->onDelete('cascade');
-            
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('families')) {
+            Schema::create('families', function (Blueprint $table) {
+                $table->id();
+                $table->unsignedBigInteger('user_id');
+                $table->unsignedBigInteger('person_id');
+                $table->string('relationship')->nullable();
+                $table->timestamps();
+                
+                $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+                $table->foreign('person_id')->references('id')->on('people')->onDelete('cascade');
+            });
+        }
     }
 
     /**

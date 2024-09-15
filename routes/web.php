@@ -29,8 +29,6 @@ use App\Http\Controllers\BeforeInvitationController;//管理者が職員のIDを
 use App\Http\Controllers\CustomIDController;//管理者が職員のIDを登録するコントローラー
 use App\Http\Controllers\TimeController;//利用時間を登録するコントローラー
 use App\Http\Controllers\PhotoController;
-use App\Http\Middleware\Authenticate;//追記
-use App\Http\Middleware\RedirectIfNotAuthenticated;//追記
 
 use App\Http\Controllers\ActivityController;//追記
 use App\Http\Controllers\TrainingController;//追記
@@ -121,8 +119,6 @@ Route::post('reset-password-staff/{token}', [NewPasswordController::class, 'staf
                 ->name('password-staff.store');
                 
 
-    return view('auth.login');
-})->middleware([Authenticate::class]); 
 
 
 Route::middleware([RedirectIfNotAuthenticated::class])->group(function () {
@@ -339,7 +335,7 @@ Route::post('bloodpressuredestroy/{id}',[BloodpressureController::class,'destroy
 
 Route::get('foods/{id}', 'FoodController@show')->name('foods.show');
 Route::get('foodedit/{people_id}', [FoodController::class, 'edit'])->name('food.edit');
-Route::post('food/{people_id}', [FoodController::class,'store'])->name('food.post');
+Route::post('food/{people_id}', [FoodController::class,'store'])->name('food.store');
 Route::get('foodchange/{people_id}/{id}',[FoodController::class,'change'])->name('food.change'); 
 Route::post('foodchange/{people_id}/{id}',[FoodController::class,'update'])->name('food_update');
 Route::post('fooddestroy/{id}',[FoodController::class,'destroy'])->name('food.delete');

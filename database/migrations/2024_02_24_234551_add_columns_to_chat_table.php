@@ -15,10 +15,18 @@ class AddColumnsToChatTable extends Migration
     public function up()
     {
         Schema::table('chats', function (Blueprint $table) {
-            $table->string('send')->after('user_identifier')->nullable();
-            $table->string('receive')->after('send')->nullable();
-            $table->string('filename')->after('message')->nullable();
-            $table->string('path')->after('filename')->nullable();
+            if (!Schema::hasColumn('chats', 'send')) {
+                $table->string('send')->nullable()->after('user_identifier');
+            }
+            if (!Schema::hasColumn('chats', 'receive')) {
+                $table->string('receive')->nullable()->after('send');
+            }
+            if (!Schema::hasColumn('chats', 'filename')) {
+                $table->string('filename')->nullable()->after('message');
+            }
+            if (!Schema::hasColumn('chats', 'path')) {
+                $table->string('path')->nullable()->after('filename');
+            }
         });
     }
 
@@ -30,7 +38,18 @@ class AddColumnsToChatTable extends Migration
     public function down()
     {
         Schema::table('chats', function (Blueprint $table) {
-            //
+            if (Schema::hasColumn('chats', 'send')) {
+                $table->dropColumn('send');
+            }
+            if (Schema::hasColumn('chats', 'receive')) {
+                $table->dropColumn('receive');
+            }
+            if (Schema::hasColumn('chats', 'filename')) {
+                $table->dropColumn('filename');
+            }
+            if (Schema::hasColumn('chats', 'path')) {
+                $table->dropColumn('path');
+            }
         });
     }
 };
