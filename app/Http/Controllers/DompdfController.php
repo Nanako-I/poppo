@@ -9,6 +9,11 @@ use App\Models\Time;
 use App\Models\Temperature;
 use App\Models\Bloodpressure;
 use App\Models\Toilet;
+use App\Models\Water;
+use App\Models\Medicine;
+use App\Models\Tube;
+use App\Models\Kyuuin;
+use App\Models\Hossa;
 use App\Models\Food;
 use App\Models\Speech;
 use App\Models\Training;
@@ -118,40 +123,60 @@ class DompdfController extends Controller
     
     public function pdf($people_id,Request $request)
     {
-        // バリデーションルールを定義
-        // $rules = [
-        //     'input_field' => 'required|string|utf8',
-        // ];
-
-        // バリデータを作成
-        // $validator = Validator::make($request->all(), $rules);
         
     $person = Person::findOrFail($people_id);
         // $people_id は既にメソッドの引数として渡されているため、不要
     // $people_id = $request->input('people_id'); // これは不要
     $selectedDate = $request->input('selected_date');
         
-        $lastTemperature = Temperature::where('people_id', $people_id)
+        // その日に登録された全ての体温データを取得
+        $temperaturesOnSelectedDate = Temperature::where('people_id', $people_id)
         ->whereDate('created_at', $selectedDate)
-        ->latest()
-        ->first();
+        ->orderBy('created_at')
+        ->get();
         
-        
-        $lastToilet = Toilet::where('people_id', $people_id)
+        $bloodPressuresOnSelectedDate = Bloodpressure::where('people_id', $people_id)
         ->whereDate('created_at', $selectedDate)
-        ->latest()
-        ->first();
-     
-    
-        $lastFood = Food::where('people_id', $people_id)
+        ->orderBy('created_at')
+        ->get();
+
+        $watersOnSelectedDate = Water::where('people_id', $people_id)
         ->whereDate('created_at', $selectedDate)
-        ->latest()
-        ->first();
+        ->orderBy('created_at')
+        ->get();
+
+        $medicinesOnSelectedDate = Medicine::where('people_id', $people_id)
+        ->whereDate('created_at', $selectedDate)
+        ->orderBy('created_at')
+        ->get();
+
+        $tubesOnSelectedDate = Tube::where('people_id', $people_id)
+        ->whereDate('created_at', $selectedDate)
+        ->orderBy('created_at')
+        ->get();
+
+        $kyuuinsOnSelectedDate = Kyuuin::where('people_id', $people_id)
+        ->whereDate('created_at', $selectedDate)
+        ->orderBy('created_at')
+        ->get();
+
+        $hossasOnSelectedDate = Hossa::where('people_id', $people_id)
+        ->whereDate('created_at', $selectedDate)
+        ->orderBy('created_at')
+        ->get();
+
+        $toiletsOnSelectedDate = Toilet::where('people_id', $people_id)
+        ->whereDate('created_at', $selectedDate)
+        ->orderBy('created_at')
+        ->get();
+
+        $foodsOnSelectedDate = Food::where('people_id', $people_id)
+        ->whereDate('created_at', $selectedDate)
+        ->orderBy('created_at')
+        ->get();
      
-    
         $lastTraining = Training::where('people_id', $people_id)
         ->whereDate('created_at', $selectedDate)
-        // ->whereNotNull('morning_activity')
         ->latest()
         ->first();
  
@@ -159,183 +184,35 @@ class DompdfController extends Controller
     
         $lastLifestyle = Lifestyle::where('people_id', $people_id)
         ->whereDate('created_at', $selectedDate)
-        // ->whereNotNull('morning_activity')
         ->latest()
         ->first();
     
         $lastCreative = Creative::where('people_id', $people_id)
         ->whereDate('created_at', $selectedDate)
-        // ->whereNotNull('morning_activity')
         ->latest()
         ->first();
  
     
         $lastActivity = Activity::where('people_id', $people_id)
         ->whereDate('created_at', $selectedDate)
-        // ->whereNotNull('morning_activity')
         ->latest()
         ->first();
         // $lastActivityValue = $lastActivity ? json_decode($lastActivity->value) : null;
         $today = 'today';
-        //  $hankoName = $request->input('hanko_name');
         $hankoName = $person->pdfs->last();
 
         // レコードデータを使用してビューを読み込む
-    $pdf = PDF::loadView('record_pdf', compact('person', 'lastTemperature', 'lastToilet', 'lastFood', 'lastTraining', 'lastLifestyle', 'lastCreative', 'lastActivity', 'selectedDate', 'today', 'hankoName'));
+    $pdf = PDF::loadView('record_pdf', compact('person', 'temperaturesOnSelectedDate','bloodPressuresOnSelectedDate','watersOnSelectedDate','medicinesOnSelectedDate','tubesOnSelectedDate','kyuuinsOnSelectedDate','hossasOnSelectedDate','toiletsOnSelectedDate', 'foodsOnSelectedDate', 'lastTraining', 'lastLifestyle', 'lastCreative', 'lastActivity', 'selectedDate', 'today', 'hankoName'));
 
 
-        // PDFファイルをダウンロード
-        // return $pdf->download('recordfile.pdf');
-        return $pdf->stream('記録表.pdf');
-        // return view('record_pdf', compact('person', 'lastTemperature', 'lastToilet', 'lastFood', 'lastTraining', 'lastLifestyle', 'lastCreative', 'lastActivity', 'selectedDate', 'today', 'hankoName'));
-}
-    
-    public function show($people_id, Request $request)
-    {
-         
-    $person = Person::findOrFail($people_id);
-    $selectedDate = $request->input('selected_date');
-    
-    $lastTemperature = Temperature::where('people_id', $people_id)
-        ->whereDate('created_at', $selectedDate)
-        ->latest()
-        ->first();
-        
-        $lastToilet = Toilet::where('people_id', $people_id)
-        ->whereDate('created_at', $selectedDate)
-        ->latest()
-        ->first();
-        
-        $lastFood = Food::where('people_id', $people_id)
-        ->whereDate('created_at', $selectedDate)
-        ->latest()
-        ->first();
-        
-        $lastTraining = Training::where('people_id', $people_id)
-        ->whereDate('created_at', $selectedDate)
-        // ->whereNotNull('morning_activity')
-        ->latest()
-        ->first();
-    
-        $lastLifestyle = Lifestyle::where('people_id', $people_id)
-        ->whereDate('created_at', $selectedDate)
-        // ->whereNotNull('morning_activity')
-        ->latest()
-        ->first();
-        
-        $lastCreative = Creative::where('people_id', $people_id)
-        ->whereDate('created_at', $selectedDate)
-        // ->whereNotNull('morning_activity')
-        ->latest()
-        ->first();
-    
-    
-        $lastActivity = Activity::where('people_id', $people_id)
-        ->whereDate('created_at', $selectedDate)
-        // ->whereNotNull('morning_activity')
-        ->latest()
-        ->first();
-
-        return view('recorddownload', compact('person', 'lastTemperature', 'lastToilet', 'lastFood', 'lastTraining', 'lastLifestyle', 'lastCreative', 'lastActivity', 'selectedDate'));
-        
-        
-    }
-    public function record(){
-        return view('record');
-    }
-    // public function pdf(){
-    //     $records=Record::all();
-    //     $pdf=PDF::loadView('record_pdf', compact('records'));
-    //     return $pdf->download('recordfile.pdf');
-    // } 
-    
-    public function pdf($people_id,Request $request)
-    {
-    $person = Person::findOrFail($people_id);
-        // $people_id は既にメソッドの引数として渡されているため、不要
-    // $people_id = $request->input('people_id'); // これは不要
-    $selectedDate = $request->input('selected_date');
-    // dd($selectedDate);←日付は取れてる
-
-    // $person を取得する処理を追加
-    // $person = Person::findOrFail($people_id);
-
-        // 選択された日付と人物に基づくデータを取得
-        // 実際のデータ構造に基づいてこれを調整する必要があります
-        // $recordData = Record::where('people_id', $people_id)
-        //     ->whereDate('created_at', $selectedDate)
-        //     ->get();
-        $lastFood = Food::where('people_id', $people_id)
-        ->whereDate('created_at', $selectedDate)
-        ->latest()
-        ->first();
-    
-    $lastTemperature = Temperature::where('people_id', $people_id)
-        ->whereDate('created_at', $selectedDate)
-        ->latest()
-        ->first();
-        
-    $lastBloodPressure = Bloodpressure::where('people_id', $people_id)
-        ->whereDate('created_at', $selectedDate)
-        ->latest()
-        ->first();
-        
-    $lastToilet = Toilet::where('people_id', $people_id)
-        ->whereDate('created_at', $selectedDate)
-        ->latest()
-        ->first();
-    
-    $lastMorningActivity = Speech::where('people_id', $people_id)
-    ->whereDate('created_at', $selectedDate)
-    ->whereNotNull('morning_activity')
-    ->latest()
-    ->first();
-
-    $lastAfternoonActivity = Speech::where('people_id', $people_id)
-    ->whereDate('created_at', $selectedDate)
-    ->whereNotNull('afternoon_activity')
-    ->latest()
-    ->first();
-//         $recordData = [
-//     'lastFood' => Food::where('people_id', $people_id)
-//         ->whereDate('created_at', $selectedDate)
-//         ->latest()
-//         ->first(),
-//     'lastTemperature' => Temperature::where('people_id', $people_id)
-//         ->whereDate('created_at', $selectedDate)
-//         ->latest()
-//         ->first(),
-//     'lastBloodPressure' => Bloodpressure::where('people_id', $people_id)
-//         ->whereDate('created_at', $selectedDate)
-//         ->latest()
-//         ->first(),
-//     'lastToilet' => Toilet::where('people_id', $people_id)
-//         ->whereDate('created_at', $selectedDate)
-//         ->latest()
-//         ->first(),
-//     'lastMorningActivity' => Speech::where('people_id', $people_id)
-//         ->whereDate('created_at', $selectedDate)
-//         ->whereNotNull('morning_activity')
-//         ->latest()
-//         ->first(),
-//     'lastAfternoonActivity' => Speech::where('people_id', $people_id)
-//         ->whereDate('created_at', $selectedDate)
-//         ->whereNotNull('afternoon_activity')
-//         ->latest()
-//         ->first(),
-// ];
-
-
-        // レコードデータを使用してビューを読み込む
-    // $pdf = PDF::loadView('record_pdf', compact('recordData', 'person', 'selectedDate'));
-    $pdf = PDF::loadView('record_pdf', compact('person', 'lastTemperature', 'lastBloodPressure', 'lastToilet', 'lastFood', 'lastMorningActivity', 'lastAfternoonActivity', 'selectedDate'));
-
+        // PDFファイルをプレビュー
+        // return $pdf->stream('recordfile.pdf');
 
         // PDFファイルをダウンロード
-        return $pdf->download('recordfile.pdf');
-        //  return view('recordedit', compact('person', 'lastTemperature', 'lastBloodPressure', 'lastToilet', 'lastFood', 'lastMorningActivity', 'lastAfternoonActivity', 'selectedDate'));
+        return $pdf->download('記録表.pdf');
 }
     
+
     public function show($people_id, Request $request)
     {
         $person = Person::findOrFail($people_id);
@@ -373,7 +250,32 @@ class DompdfController extends Controller
     ->latest()
     ->first();
 
-        return view('recordedit', compact('person', 'lastTemperature', 'lastBloodPressure', 'lastToilet', 'lastFood', 'lastMorningActivity', 'lastAfternoonActivity', 'selectedDate'));
+    $lastTraining = Training::where('people_id', $people_id)
+        ->whereDate('created_at', $selectedDate)
+        // ->whereNotNull('morning_activity')
+        ->latest()
+        ->first();
+    
+        $lastLifestyle = Lifestyle::where('people_id', $people_id)
+        ->whereDate('created_at', $selectedDate)
+        // ->whereNotNull('morning_activity')
+        ->latest()
+        ->first();
+        
+        $lastCreative = Creative::where('people_id', $people_id)
+        ->whereDate('created_at', $selectedDate)
+        // ->whereNotNull('morning_activity')
+        ->latest()
+        ->first();
+    
+    
+        $lastActivity = Activity::where('people_id', $people_id)
+        ->whereDate('created_at', $selectedDate)
+        // ->whereNotNull('morning_activity')
+        ->latest()
+        ->first();
+
+        return view('recordedit', compact('person', 'lastTemperature', 'lastBloodPressure', 'lastToilet', 'lastFood', 'lastMorningActivity', 'lastAfternoonActivity',  'lastTraining', 'lastLifestyle', 'lastCreative', 'lastActivity', 'selectedDate'));
     }
 
 };

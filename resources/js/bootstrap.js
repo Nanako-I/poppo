@@ -1,50 +1,52 @@
-import _ from 'lodash';
-window._ = _;
-
-/**
- * We'll load the axios HTTP library which allows us to easily issue requests
- * to our Laravel back-end. This library automatically handles sending the
- * CSRF token as a header based on the value of the "XSRF" token cookie.
- */
-
-import axios from 'axios';
-window.axios = axios;
-
-window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-
-/**
- * Echo exposes an expressive API for subscribing to channels and listening
- * for events that are broadcast by Laravel. Echo and event broadcasting
- * allows your team to easily build robust real-time web applications.
- */
-
 // import Echo from 'laravel-echo';
 
-// import Pusher from 'pusher-js';
-// window.Pusher = Pusher;
+import Echo from 'laravel-echo';
 
-// window.Echo = new Echo({
-//     broadcaster: 'pusher',
-//     key: import.meta.env.VITE_PUSHER_APP_KEY,
-//     cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER ?? 'mt1',
-//     wsHost: import.meta.env.VITE_PUSHER_HOST ? import.meta.env.VITE_PUSHER_HOST : `ws-${import.meta.env.VITE_PUSHER_APP_CLUSTER}.pusher.com`,
-//     encrypted: true,
-//     wsPort: import.meta.env.VITE_PUSHER_PORT ?? 80,
-//     wssPort: import.meta.env.VITE_PUSHER_PORT ?? 443,
-//     forceTLS: (import.meta.env.VITE_PUSHER_SCHEME ?? 'https') === 'https',
-//     enabledTransports: ['ws', 'wss'],
-// });
+import Pusher from 'pusher-js';
+window.Pusher = Pusher;
 
-// import Echo from 'laravel-echo';
+window.Echo = new Echo({
+    broadcaster: 'pusher',
+    key: import.meta.env.VITE_PUSHER_APP_KEY,
+    cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER ?? 'mt1',
+    wsHost: import.meta.env.VITE_PUSHER_HOST ?? `ws-${import.meta.env.VITE_PUSHER_APP_CLUSTER}.pusher.com`,
+    wsPort: import.meta.env.VITE_PUSHER_PORT ?? 80,
+    wssPort: import.meta.env.VITE_PUSHER_PORT ?? 443,
+    forceTLS: (import.meta.env.VITE_PUSHER_SCHEME ?? 'https') === 'https',
+    enabledTransports: ['ws', 'wss'],
+});
 
-// window.Pusher = require('pusher-js');
+let people_id= window.peopleId;
+let User_id= window.UserId;
+console.log(people_id);
+// PrivateChannel('chat-'.$chat->people_id;
+// PrivateChannel('chat-'.$chat->people_id
+// window.Echo.private('chat-'+ people_id)
+//     .listen('.event-'+ people_id, (e) => {
+//         console.log('Message received:', e);
+//             if(!(User_id == e.chat.user_identifier)){
+//                 displayMessage(e.chat.message, e.chat.user_identifier, e.chat.user_name, e.chat.created_at, e.chat.filename);
+//             }
 
-// window.Echo = new Echo({
-//     broadcaster: 'pusher',
-//     key: process.env.MIX_PUSHER_APP_KEY,
-//     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
-//     forceTLS: false,
-//     wsHost: 'localhost',
-//     wsPort: 6001,
-// });
 
+
+//     });
+
+//     console.log('Bootstrap.js loaded successfully');
+
+
+
+window.peopleIds.forEach(function(personId) {
+    window.Echo.private('chat-' + personId)
+        .listen('.event-' + personId, (e) => {
+            console.log('Message received:', e);
+            if (UserId !== e.chat.user_identifier) {
+                let newIndicator = document.getElementById(`new-indicator-${personId}`);
+                if (newIndicator) {
+                    newIndicator.style.display = 'inline';
+                }
+            }
+        });
+});
+
+console.log('People blade JS loaded successfully');

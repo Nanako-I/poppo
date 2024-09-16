@@ -211,8 +211,12 @@ class ChatController extends Controller
                  ->limit($display)
                  ->get(['*', 'filename', 'path']);
 
+    $unreadMessages = Chat::where('people_id', $people_id)
+    ->where('is_read', false)
+    ->count();
+
     // ビューにデータを渡して表示
-    return view('chat', ['id' => $person->id], compact('person', 'user_name', 'chats'));
+    return view('chat', ['id' => $person->id], compact('person', 'user_name', 'chats', 'unreadMessages'));
 }
 
 

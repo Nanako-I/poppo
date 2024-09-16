@@ -70,7 +70,6 @@ class FoodController extends Controller
         'lunch_bikou' => $request->lunch_bikou,
         'oyatsu' => $request->oyatsu,
         'oyatsu_bikou' => $request->oyatsu_bikou,
-        'food' => $request->food,
         'staple_food' => $request->staple_food,
         'side_dish' => $request->side_dish,
         'medicine' => $request->medicine,

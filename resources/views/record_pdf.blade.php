@@ -159,196 +159,293 @@
     
      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
      <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
-     
+
+@if(isset($temperaturesOnSelectedDate))
 <body>
-<table>
+<table style="width: 100%; border-collapse: collapse; border: 1px solid #000;">
   <thead>
     <tr>
-      <th colspan="2" style="width: 180px;">体温</th>
+    <th colspan="3" style="border: 1px solid #000; text-align: left;">体温</th>
     </tr>
   </thead>
   <tbody>
+  @foreach($temperaturesOnSelectedDate as $temperature)
     <tr>
-      @if(isset($lastTemperature))
-      <td style="width: 20%">{{ $lastTemperature->created_at->format('H:i') }}</td>
-      <td style="width: 80%">{{ $lastTemperature->temperature }}℃</td>
-      @endif
+      <td style="width: 20%">{{ $temperature->created_at->format('H:i') }}</td>
+      <td style="width: 20%">{{ $temperature->temperature }}℃</td>
+      <td style="width: 60%">{{ optional($temperature)->bikou }}</td>
     </tr>
+  @endforeach
   </tbody>
 </table>
+@endif
 
-<table>
+@if($bloodPressuresOnSelectedDate->count() > 0)
+    @if($bloodPressuresOnSelectedDate->whereNotNull('max_blood')->whereNotNull('min_blood')->count() > 0)
+        <table style="width: 100%; border-collapse: collapse; border: 1px solid #000;">
+            <thead>
+                <tr>
+                    <th colspan="2" style="width: 180px;">血圧</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($bloodPressuresOnSelectedDate as $bloodpressure)
+                    @if($bloodpressure->max_blood && $bloodpressure->min_blood)
+                        <tr>
+                            <td style="width: 20%">{{ $bloodpressure->created_at->format('H:i') }}</td>
+                            <td style="width: 80%">{{ $bloodpressure->max_blood }}/{{ $bloodpressure->min_blood }}</td>
+                        </tr>
+                    @endif
+                @endforeach
+            </tbody>
+        </table>
+    @endif
+
+    @if($bloodPressuresOnSelectedDate->whereNotNull('pulse')->count() > 0)
+        <table style="width: 100%; border-collapse: collapse; border: 1px solid #000;">
+            <thead>
+                <tr>
+                    <th colspan="2" style="width: 180px;">脈拍</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($bloodPressuresOnSelectedDate as $bloodpressure)
+                    @if($bloodpressure->pulse)
+                        <tr>
+                            <td style="width: 20%">{{ $bloodpressure->created_at->format('H:i') }}</td>
+                            <td style="width: 80%">{{ $bloodpressure->pulse }}/分</td>
+                        </tr>
+                    @endif
+                @endforeach
+            </tbody>
+        </table>
+    @endif
+
+    @if($bloodPressuresOnSelectedDate->whereNotNull('spo2')->count() > 0)
+          <table style="width: 100%; border-collapse: collapse; border: 1px solid #000;">
+            <thead>
+                <tr>
+                    <th colspan="2" style="width: 180px;">SpO2</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($bloodPressuresOnSelectedDate as $bloodpressure)
+                    @if($bloodpressure->spo2)
+                        <tr>
+                            <td style="width: 20%">{{ $bloodpressure->created_at->format('H:i') }}</td>
+                            <td style="width: 80%">{{ $bloodpressure->spo2 }}％</td>
+                        </tr>
+                    @endif
+                @endforeach
+            </tbody>
+          </table>
+    @endif
+
+    @if($bloodPressuresOnSelectedDate->whereNotNull('bikou')->count() > 0)
+        <table style="width: 100%; border-collapse: collapse; border: 1px solid #000;">
+            <thead>
+                <tr>
+                <th colspan="2" style="width: 180px;">バイタル　備考</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($bloodPressuresOnSelectedDate as $bloodpressure)
+                    @if($bloodpressure->bikou)
+                        <tr>
+                            <td style="width: 20%">{{ $bloodpressure->created_at->format('H:i') }}</td>
+                            <td style="width: 80%">{{ $bloodpressure->bikou }}</td>
+                        </tr>
+                    @endif
+                @endforeach
+            </tbody>
+        </table>
+    @endif
+@endif
+
+
+@if($watersOnSelectedDate->count() > 0)
+<body>
+<table style="width: 100%; border-collapse: collapse; border: 1px solid #000;">
   <thead>
     <tr>
-      <th style="width: 180px;">体温　備考</th>
+    <th colspan="2" style="width: 180px;">水分摂取時間</th>
     </tr>
   </thead>
   <tbody>
+  @foreach($watersOnSelectedDate as $water)
     <tr>
-      @if(isset($lastTemperature))
-      <td>{{ optional($lastTemperature)->bikou }}</td>
-      @endif
+      <td style="width: 20%">{{ $water->created_at->format('H:i') }}</td>
+      <td style="width: 80%">{{ $water->bikou }}</td>
     </tr>
-    
+  @endforeach
   </tbody>
 </table>
+@endif
 
-<table>
-  <!--<thead>-->
-  <!--  <tr>-->
-      <!--<th>Date</th>-->
-  <!--    <th style="width: 180px;">バイタル<i class="fa-solid fa-heart-pulse text-gray-500 hover:text-white" style="font-size: 1.7em; padding: 0 7px; transition: transform 0.2s;"></i></th>-->
-  <!--  </tr>-->
-  <!--</thead>-->
-     <thead>
+
+@if($medicinesOnSelectedDate->count() > 0)
+<body>
+<table style="width: 100%; border-collapse: collapse; border: 1px solid #000;">
+  <thead>
     <tr>
-      <th colspan="2" style="width: 180px;">血圧</th>
+    <th colspan="3" style="border: 1px solid #000; text-align: left;">内服時間</th>
     </tr>
   </thead>
   <tbody>
+  @foreach($medicinesOnSelectedDate as $medicine)
     <tr>
-      @if(isset($lastBloodPressure))
-      <td style="width: 20%">{{ $lastBloodPressure->created_at->format('H:i') }}</td>
-      <td style="width: 80%">{{ $lastBloodPressure->max_blood }}/{{ $lastBloodPressure->min_blood }}</td>
+      <td style="width: 20%">{{ $medicine->created_at->format('H:i') }}</td>
+      <td style="width: 80%">{{ $medicine->medicine_bikou }}</td>
+    </tr>
+  @endforeach
+  </tbody>
+</table>
+@endif
+
+@if($tubesOnSelectedDate->count() > 0)
+<body>
+<table style="width: 100%; border-collapse: collapse; border: 1px solid #000;">
+  <thead>
+    <tr>
+    <th colspan="3" style="border: 1px solid #000; text-align: left;">注入時間</th>
+    </tr>
+  </thead>
+  <tbody>
+  @foreach($tubesOnSelectedDate as $tube)
+    <tr>
+      <td style="width: 20%">{{ $tube->created_at->format('H:i') }}</td>
+      <td style="width: 80%">{{ $tube->tube_bikou }}</td>
+      @if($tube->filename && $tube->path)
+        <!-- <img alt="team" class="w-80 h-64" src="{{ asset('storage/sample/tube_photo/' . $tube->filename) }}"> -->
       @endif
     </tr>
-   </tbody>
+  @endforeach
+  </tbody>
 </table>
+@endif
 
-<table>
+@if($kyuuinsOnSelectedDate->count() > 0)
+<body>
+<table style="width: 100%; border-collapse: collapse; border: 1px solid #000;">
+  <thead>
+    <tr>
+    <th colspan="3" style="border: 1px solid #000; text-align: left;">吸引</th>
+    </tr>
+  </thead>
   <tbody>
+  @foreach($kyuuinsOnSelectedDate as $kyuuin)
+    <tr>
+      <td style="width: 20%">{{ $kyuuin->created_at->format('H:i') }}</td>
+      <td style="width: 80%">{{ $kyuuin->bikou }}</td>
+      @if($kyuuin->filename && $kyuuin->path)
+        <!-- <img alt="team" class="w-80 h-64" src="{{ url('storage/sample/kyuuin_photo/' . $kyuuin->filename) }}"> -->
+      @endif
+    </tr>
+  @endforeach
+  </tbody>
+</table>
+@endif
+
+@if($hossasOnSelectedDate->count() > 0)
+<body>
+<table style="width: 100%; border-collapse: collapse; border: 1px solid #000;">
+  <thead>
+    <tr>
+    <th colspan="3" style="border: 1px solid #000; text-align: left;">発作が起きた時間</th>
+    </tr>
+  </thead>
+  <tbody>
+  @foreach($hossasOnSelectedDate as $hossa)
+    <tr>
+      <td style="width: 20%">{{ $hossa->created_at->format('H:i') }}</td>
+      <td style="width: 80%">{{ $hossa->hossa_bikou }}</td>
+    </tr>
+  @endforeach
+  </tbody>
+</table>
+@endif
+
+@if($foodsOnSelectedDate->count() > 0)
+  @if($foodsOnSelectedDate->whereNotNull('lunch_bikou')->count() > 0)
+    <table style="width: 100%; border-collapse: collapse; border: 1px solid #000;">
+      <thead>
+        <tr>
+          <!--<th>Date</th>-->
+          <th colspan="3" style="width: 180px;">昼食</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          @foreach($foodsOnSelectedDate as $food)
+            @if(is_object($food) && $food->lunch_bikou)
+              <td style="width: 20%">{{ $food->created_at->format('H:i') }}</td>
+              <td style="width: 80%">{{ $food->lunch_bikou }}</td>
+            @endif
+          @endforeach
+        </tr>
+      </tbody>
+    </table>
+  @endif
+  @if($foodsOnSelectedDate->whereNotNull('oyatsu_bikou')->count() > 0)
+  <table style="width: 100%; border-collapse: collapse; border: 1px solid #000;">
     <thead>
       <tr>
-        <th colspan="2" style="width: 180px;">脈拍</th>
+        <th style="width: 180px;">おやつ</th>
       </tr>
     </thead>
-    <tr>
-      @if(isset($lastBloodPressure))
-      <td style="width: 20%">{{ $lastBloodPressure->created_at->format('H:i') }}</td>
-      <td style="width: 80%">{{ $lastBloodPressure->pulse }}/分</td>
-      @endif
-    </tr>
-  </tbody>
-</table>
+    <tbody>
+        <tr>
+        @foreach($foodsOnSelectedDate as $food)
+          @if(is_object($food) && $food->oyatsu_bikou)
+            <td style="width: 20%">{{ $food->created_at->format('H:i') }}</td>
+            <td style="width: 80%">{{ $food->oyatsu_bikou }}</td>
+          @endif
+        @endforeach
+        </tr>
+    </tbody> 
+  </table>
+  @endif
+@endif
 
-<table>
-  <tbody>
+@if($toiletsOnSelectedDate->count() > 0)
+  <table style="width: 100%; border-collapse: collapse; border: 1px solid #000;">
     <thead>
       <tr>
-        <th colspan="2" style="width: 180px;">SpO2</th>
+        <th colspan="2" style="width: 180px;">トイレ</th>
       </tr>
     </thead>
-    <tr>
-      @if(isset($lastBloodPressure))
-      <td style="width: 20%">{{ $lastBloodPressure->created_at->format('H:i') }}</td>
-      <td style="width: 80%">{{ $lastBloodPressure->spo2 }}％</td>
-      @endif
-    </tr>
-  </tbody>
-</table>
-
-<table>
-  <tbody>
-    <thead>
-      <tr>
-        <th style="width: 180px;">バイタル　備考</th>
-      </tr>
-    </thead>
-    <tr>
-      @if(isset($lastBloodPressure))
-      <td>{{ optional($lastBloodPressure)->bikou }}</td>
-      @endif
-    </tr>
-  </tbody>
-</table>
-
-
-<table>
-  <thead>
-    <tr>
-      <!--<th>Date</th>-->
-      <th colspan="3" style="width: 180px;">昼食</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      @if(isset($lastFood))
-      <td style="width: 20%">{{ $lastFood->created_at->format('H:i') }}</td>
-      <td style="width: 60%">{{ $lastFood->lunch_bikou }}</td>
-      @endif
-    </tr>
-  </tbody>
-</table>
-
-<table>
-  <thead>
-    <tr>
-      <!--<th>Date</th>-->
-      <th style="width: 180px;">おやつ</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      @if(isset($lastFood))
-      <td>{{ optional($lastFood)->oyatsu_bikou }}</td>
-      @endif
-    </tr>
-  </tbody>
-</table>
+    <tbody>
+      @foreach($toiletsOnSelectedDate as $toilet)
+        @if(is_object($toilet))
+          <tr>
+            <td style="width: 20%">{{ $toilet->created_at->format('H:i') }}</td>
+            <td style="width: 80%">
+              @if($toilet->urine_amount)
+                <p>尿量：{{ $toilet->urine_amount }}</p>
+              @endif
+              @if($toilet->ben_amount)
+                <p>便量：{{ $toilet->ben_amount }}</p>
+              @endif
+              @if($toilet->ben_condition)
+                <p>性状：{{ $toilet->ben_condition }}</p>
+              @endif
+              @if($toilet->bentsuu)
+                <p>便通処置：{{ $toilet->bentsuu }}</p>
+              @endif
+              @if($toilet->bikou)
+                <p>備考：{{ optional($toilet)->bikou }}</p>
+              @endif
+            </td>
+          </tr>
+        @endif
+      @endforeach
+    </tbody>
+  </table>
+@endif
 
 
-<table>
-  <thead>
-    <tr>
-      <!--<th>Date</th>-->
-      <th colspan="2" style="width: 180px;">尿</th>
-    </tr>
-  </thead>
-  <tbody>
-   <tr>
-      @if(isset($lastToilet))
-      <td style="width: 20%">{{ $lastToilet->created_at->format('H:i') }}</td>
-      <td style="width: 80%">{{ $lastToilet->urine_amount }}</td>
-      @endif
-    </tr>
-   </tbody>
-</table>
-
-<table>
-  <thead>
-    <tr>
-      <!--<th>Date</th>-->
-      <th colspan="2" style="width: 180px;">便</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      @if(isset($lastToilet))
-      <td style="width: 20%">{{ $lastToilet->created_at->format('H:i') }}</td>
-      <td style="width: 80%">便量：{{ $lastToilet->ben_amount }}性状：{{ $lastToilet->ben_condition }}</td>
-      @endif
-    </tr>
-  </tbody>
-</table>
-
-<table>
-  <thead>
-    <tr>
-      <!--<th>Date</th>-->
-      <th style="width: 180px;">トイレ　備考</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      @if(isset($lastToilet))
-      <td>{{ optional($lastToilet)->bikou }}</td>
-      @endif
-    </tr>
-  </tbody>
-</table>
-
-
-<table>
+@if($lastTraining)
+<table style="width: 100%; border-collapse: collapse; border: 1px solid #000;">
   <thead>
     <tr>
       <th style="padding-bottom: 10px;">トレーニングの内容</th>
@@ -357,69 +454,55 @@
   <tbody>
     <tr>
       <td>
-    @if($lastTraining)
-              
-              @php
-                  $communicationData = json_decode($lastTraining->communication);
-                  $exerciseData = json_decode($lastTraining->exercise);
-                  $reading_writingData = json_decode($lastTraining->reading_writing);
-                  $calculationData = json_decode($lastTraining->calculation);
-                  $homeworkData = json_decode($lastTraining->homework);
-                  $shoppingData = json_decode($lastTraining->shopping);
-                  $training_otherData = json_decode($lastTraining->training_other);
-              @endphp
-              
-                @if(!empty($communicationData) && is_array($communicationData) && count($communicationData) > 0)
-                    <p>コミュニケーション</p>
-                @endif
-                
-                @if(!empty($exerciseData) && is_array($exerciseData) && count($exerciseData) > 0)
-                    <p>運動</p>
-                @endif
-                
-                @if(!empty($reading_writingData) && is_array($reading_writingData) && count($reading_writingData) > 0)
-                    <p>読み書き</p>
-                @endif
-                
-                @if(!empty($calculationData) && is_array($calculationData) && count($calculationData) > 0)
-                    <p>計算</p>
-                @endif
-                
-                @if(!empty($homeworkData) && is_array($homeworkData) && count($homeworkData) > 0)
-                    <p>宿題</p>
-                @endif
-                
-                @if(!empty($shoppingData) && is_array($shoppingData) && count($shoppingData) > 0)
-                    <p>買い物</p>
-                @endif
-                
-                @if(!empty($training_otherData) && is_array($training_otherData) && count($training_otherData) > 0)
-                    <p>その他</p>
-                @endif
+          @php
+              $communicationData = json_decode($lastTraining->communication);
+              $exerciseData = json_decode($lastTraining->exercise);
+              $reading_writingData = json_decode($lastTraining->reading_writing);
+              $calculationData = json_decode($lastTraining->calculation);
+              $homeworkData = json_decode($lastTraining->homework);
+              $shoppingData = json_decode($lastTraining->shopping);
+              $training_otherData = json_decode($lastTraining->training_other);
+          @endphp
+          
+            @if(!empty($communicationData) && is_array($communicationData) && count($communicationData) > 0)
+                <p>コミュニケーション</p>
+            @endif
+            
+            @if(!empty($exerciseData) && is_array($exerciseData) && count($exerciseData) > 0)
+                <p>運動</p>
+            @endif
+            
+            @if(!empty($reading_writingData) && is_array($reading_writingData) && count($reading_writingData) > 0)
+                <p>読み書き</p>
+            @endif
+            
+            @if(!empty($calculationData) && is_array($calculationData) && count($calculationData) > 0)
+                <p>計算</p>
+            @endif
+            
+            @if(!empty($homeworkData) && is_array($homeworkData) && count($homeworkData) > 0)
+                <p>宿題</p>
+            @endif
+            
+            @if(!empty($shoppingData) && is_array($shoppingData) && count($shoppingData) > 0)
+                <p>買い物</p>
+            @endif
+            
+            @if(!empty($training_otherData) && is_array($training_otherData) && count($training_otherData) > 0)
+                <p>その他</p>
+            @endif
+
+            @if($lastTraining->training_other_sentence)
+                <p>{{ optional($lastTraining)->training_other_sentence}}</p>
             @endif
       </td>
     </tr>
   </tbody>
 </table>
+@endif
 
-<table>
-  <thead>
-    <tr>
-      <!--<th>Date</th>-->
-      <th style="width: 180px;">トレーニング：備考</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      @if(isset($lastTraining))
-      <td>{{ optional($lastTraining)->training_other_sentence}}</td>
-      @endif
-    
-    </tr>
-  </tbody>
-</table>
-
-<table>
+@if($lastLifestyle)
+<table style="width: 100%; border-collapse: collapse; border: 1px solid #000;">
   <thead>
     <tr>
       <th style="padding-bottom: 10px;">生活習慣トレーニングの内容</th>
@@ -428,7 +511,6 @@
   <tbody>
     <tr>
       <td>
-        @if($lastLifestyle)
           @php
               $baggageData = json_decode($lastLifestyle->baggage);
               $cleanData = json_decode($lastLifestyle->clean);
@@ -446,29 +528,18 @@
             @if(!empty($otherData) && is_array($otherData) && count($otherData) > 0)
                 <p>その他</p>
             @endif
-        @endif
+
+            @if($lastLifestyle->bikou)
+                <p>{{ optional($lastLifestyle)->bikou}}</p>
+            @endif
       </td>
      </tr>
   </tbody>
 </table>
+@endif
 
-<table>
-  <thead>
-    <tr>
-      <!--<th>Date</th>-->
-      <th style="width: 180px;">生活習慣トレーニング：備考</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      @if(isset($lastLifestyle))
-      <td>{{ optional($lastLifestyle)->bikou}}</td>
-      @endif
-    </tr>
-  </tbody>
-</table>
-
-<table>
+@if($lastCreative)
+<table style="width: 100%; border-collapse: collapse; border: 1px solid #000;">
   <thead>
     <tr>
       <th style="padding-bottom: 10px;">創作活動の内容</th>
@@ -477,7 +548,6 @@
   <tbody>
     <tr>
       <td>
-       @if($lastCreative)
         @php
             $craftData = json_decode($lastCreative->craft);
             $cookingData = json_decode($lastCreative->cooking);
@@ -495,29 +565,18 @@
         @if(!empty($otherData) && is_array($otherData) && count($otherData) > 0)
             <p>その他</p>
         @endif
-      @endif
+
+        @if($lastCreative->bikou)
+            <p>{{ optional($lastCreative)->bikou}}</p>
+        @endif
       </td>
      </tr>
   </tbody>
 </table>
+@endif
 
-<table>
-  <thead>
-    <tr>
-      <!--<th>Date</th>-->
-      <th style="width: 180px;">創作活動の備考</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      @if(isset($lastCreative))
-      <td>{{ optional($lastCreative)->bikou}}</td>
-      @endif
-    </tr>
-  </tbody>
-</table>
-
-<table>
+@if($lastActivity) 
+<table style="width: 100%; border-collapse: collapse; border: 1px solid #000;">
   <thead>
     <tr>
       <th style="padding-bottom: 10px;">個人活動の内容</th>
@@ -526,7 +585,6 @@
   <tbody>
     <tr>
       <td>
-        @if($lastActivity)  
           @php
               $kadaiData = json_decode($lastActivity->kadai);
               $restData = json_decode($lastActivity->rest);
@@ -544,29 +602,17 @@
           @if(!empty($self_activity_otherData) && is_array($self_activity_otherData) && count($self_activity_otherData) > 0)
               <p>その他</p>
           @endif
-        @endif
+          @if($lastActivity->self_activity_bikou)
+              <p>{{ optional($lastActivity)->self_activity_bikou}}</p>
+          @endif
       </td>
      </tr>
   </tbody>
 </table>
+@endif
 
-<table>
-  <thead>
-    <tr>
-      <!--<th>Date</th>-->
-      <th style="width: 180px;">個人活動の備考</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      @if(isset($lastActivity))
-      <td>{{ optional($lastActivity)->self_activity_bikou}}</td>
-      @endif
-    </tr>
-  </tbody>
-</table>
-
-<table>
+@if($lastActivity)
+<table style="width: 100%; border-collapse: collapse; border: 1px solid #000;">
   <thead>
     <tr>
       <th style="padding-bottom: 10px;">集団活動の内容</th>
@@ -575,9 +621,7 @@
   <tbody>
     <tr>
       <td>
-        @if($lastActivity)
           @php
-              
               $recreationData = json_decode($lastActivity->recreation);
               $region_exchangeData = json_decode($lastActivity->region_exchange);
               $group_activity_otherData = json_decode($lastActivity->group_activity_other);
@@ -594,51 +638,36 @@
           @if(!empty($self_activity_otherData) && is_array($self_activity_otherData) && count($self_activity_otherData) > 0)
               <p>その他</p>
           @endif
-        @endif
+
+          @if($lastActivity->group_activity_bikou)
+              <p>{{ optional($lastActivity)->group_activity_bikou}}</p>
+          @endif
       </td>
      </tr>
   </tbody>
 </table>
+@endif
 
-<table>
-  <thead>
-    <tr>
-      <!--<th>Date</th>-->
-      <th style="width: 180px;">集団活動の備考</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      @if(isset($lastActivity))
-      <td>{{ optional($lastActivity)->group_activity_bikou}}</td>
-      @endif
-    </tr>
-  </tbody>
-</table>
-
-<table style="height: 100%;">
+<table style="width: 100%; border-collapse: collapse; border: 1px solid #000;">
   <thead>
     <tr>
        <th style="width: 180px;">印鑑</th>
     </tr>
   </thead>
 <tbody>
-  <tr>
-    <td>
-    <div class="oya-stamp-box">
-    <!--<div class="oya-stamp-box" style="display: flex; justify-content: flex-end;">-->
-      <div class="stamp-box mt-3">
-        <div id="hanko">
-          <span>確認済</span>
-          <hr noshade>
-          <span>{{ $today }}</span>
-          <hr noshade>
-          <span id="hanko_name">{{ $hankoName->hanko_name }}</span>
+  <div class="oya-stamp-box">
+      @if(isset($hankoName))
+        <div class="stamp-box mt-3">
+          <div id="hanko">
+            <span>確認済</span>
+            <hr noshade>
+            <span>{{ $today }}</span>
+            <hr noshade>
+            <span id="hanko_name">{{ $hankoName->hanko_name }}</span>
+          </div>
         </div>
+      @endif
       </div>
-    </div>
-    </td>
-  </tr>
   </tbody>
 </table>
 </body>

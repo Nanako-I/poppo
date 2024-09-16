@@ -17,7 +17,13 @@
         $user = Auth::user();
         $permissions = $user->getPermissionsViaRoles();
     @endphp 
-<body>
+
+    <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
+        <script>
+            window.peopleIds = @json($people->pluck('id'));
+            window.UserId = {{ Auth::id() }};
+        </script>
+    <body>
 <style>
   /* フォントを指定 */
   
@@ -103,7 +109,7 @@
                       
                       
                       <!--連絡事項↓ -->
-                        　    　<div class="border-2 p-2 rounded-lg bg-white m-2">
+                      　    　<div class="border-2 p-2 rounded-lg bg-white m-2">
                                     <div class="flex justify-start items-center">
                                         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
                                         <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
@@ -111,20 +117,24 @@
                                         <p class="font-bold text-xl ml-2">連絡</p>
                                     </div>
                                         <div class="flex items-center justify-center p-4">
-                                            
-                                            <!-- 登録していない場合 -->
-                                            <a href="{{ url('chat/'.$person->id) }}" class="relative ml-2" style="display: flex; align-items: center;">
-                                            <!-- 未読メッセージがある場合に new マークを表示 -->
-                                            @if($person->unreadMessages)
-                                            <span class="ml-2 text-red-500 font-bold text-lg pr-1">New</span>
-                                            @endif
 
-                                            <p class="font-bold text-xl">連絡する</p>
-                                            @csrf
-                                            <i class="fa-solid fa-plus text-gray-900" style="font-size: 1.5em; padding: 0 5px; transition: transform 0.2s;"></i>
+                                           
+                                            <!-- リアルタイムで新着メッセージが届いた場合にNewと表示 -->
+                                            <a href="{{ url('chat/'.$person->id) }}" id="person-{{ $person->id }}" class="relative ml-2" style="display: flex; align-items: center;">
+                                                <summary class="text-red-500 font-bold text-xl">連絡する</summary>
+                                                @csrf
+                                                <i class="fa-solid fa-plus text-gray-900" style="font-size: 1.5em; padding: 0 5px; transition: transform 0.2s;"></i>
+
+                                               <!-- 未読メッセージがある場合に new マークを表示 -->
+                                                @if($person->unreadMessages)
+                                                    <span id="new-indicator-{{ $person->id }}" class="ml-2 text-red-500 text-sm font-bold">New</span>
+                                                @else
+                                                    <span id="new-indicator-{{ $person->id }}" class="ml-2 text-red-500 text-sm font-bold" style="display: none;">New</span>
+                                                @endif
                                             </a>
                                         </div>
                                     </div>
+
 
                                     <!-- 利用時間など↓ -->
                                  <div class="border-2 p-2 rounded-lg bg-white m-2">

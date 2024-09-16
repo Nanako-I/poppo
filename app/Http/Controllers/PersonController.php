@@ -31,19 +31,50 @@ class PersonController extends Controller
     
      public function index(User $user)
      {
-         $people = Person::all();
-         
-         // Initialize an array to store selected items for each person
-         $selectedItems = [];
-         
-         // Loop through each person and decode their selected items
-         foreach ($people as $person) {
-             $selectedItems[$person->id] = json_decode($person->selected_items, true) ?? [];
-         }
+         // ログインしているユーザーの情報↓
+        $user = auth()->user();
+
+        $user->facility_staffs()->first();
+
+        // facility_staffsメソッドからuserの情報をゲットする↓
+        $facilities = $user->facility_staffs()->get();
+
+        $roles = $user->user_roles()->get(); // これでロールが取得できる
+
+        $rolename = $user->getRoleNames(); // ロールの名前を取得
+        $isSuperAdmin = $user->hasRole(RoleType::FacilityStaffAdministrator);
+
+        // ロールのIDを取得する場合
+        $roleIds = $user->roles->pluck('id');
+
+        $firstFacility = $facilities->first();
+        if ($firstFacility) {
+            $people = $firstFacility->people_facilities()->get();
+        } else {
+            $people = []; // まだpeople（利用者が登録されていない時もエラーが出ないようにする）
+        }
+
+        foreach ($people as $person) {
+            $unreadMessages = Chat::where('people_id', $person->id)
+                                  ->where('is_read', false)
+                                  ->where('user_identifier', '!=', $user->id)
+                                  ->exists();
+        
+            $person->unreadMessages = $unreadMessages;
+            \Log::info("Person {$person->id} unread messages: " . ($unreadMessages ? 'true' : 'false'));
+        }
+
+        $selectedItems = [];
+        
+        // Loop through each person and decode their selected items
+        foreach ($people as $person) {
+            $selectedItems[$person->id] = json_decode($person->selected_items, true) ?? [];
+        }
+    
+        return view('people', compact('people', 'selectedItems'));
+    }
      
-         return view('people', compact('people', 'selectedItems'));
-     }
-    // }
+  
 
     public function show(User $user)
     {
@@ -69,7 +100,6 @@ class PersonController extends Controller
 
         // $isSuperAdmin = $user->hasRole(RoleType::SuperAdministrator);
 
-        // dd($rolename);
 
         $isSuperAdmin = $user->hasRole(RoleType::FacilityStaffAdministrator);
         // dd($isSuperAdmin);
@@ -89,8 +119,9 @@ class PersonController extends Controller
                                   ->where('is_read', false)
                                   ->where('user_identifier', '!=', $user->id)
                                   ->exists();
-
+        
             $person->unreadMessages = $unreadMessages;
+            \Log::info("Person {$person->id} unread messages: " . ($unreadMessages ? 'true' : 'false'));
         }
 
         $selectedItems = [];

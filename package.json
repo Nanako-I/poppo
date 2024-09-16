@@ -23,6 +23,7 @@
         "chart.js": "^4.4.0",
         "dayjs": "^1.11.10",
         "fullcalendar": "^6.1.15",
-        "laravel-echo": "^1.15.3"
+        "laravel-echo": "^1.15.3",
+        "pusher-js": "^8.4.0-rc2"
     }
 }

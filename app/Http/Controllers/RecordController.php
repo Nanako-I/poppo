@@ -129,7 +129,7 @@ public function show(Request $request, $people_id)
         ->whereDate('created_at', $selectedDate)
         ->latest()
         ->first();    
-        return view('recordedit', compact('person', 'lastTime', 'lastTemperature', 'lastBloodPressure', 'lastToilet', 'lastFood', 'lastMorningActivity', 'lastAfternoonActivity', 'lastActivity', 'lastTraining', 'lastLifestyle', 'lastCreative', 'selectedDate'));
+        // return view('recordedit', compact('person', 'lastTime', 'lastTemperature', 'lastBloodPressure', 'lastToilet', 'lastFood', 'lastMorningActivity', 'lastAfternoonActivity', 'lastActivity', 'lastTraining', 'lastLifestyle', 'lastCreative', 'selectedDate'));
 
     return view('recordedit', compact('person', 'selectedDate','foodsOnSelectedDate',  'watersOnSelectedDate' , 'medicinesOnSelectedDate', 'tubesOnSelectedDate',  'temperaturesOnSelectedDate', 'bloodpressuresOnSelectedDate','toiletsOnSelectedDate','kyuuinsOnSelectedDate', 'hossasOnSelectedDate', 'speechesOnSelectedDate' , 'lastTime', 'lastMorningActivity', 'lastAfternoonActivity', 'lastActivity', 'lastTraining', 'lastLifestyle', 'lastCreative',));
 }
