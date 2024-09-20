@@ -13,6 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
+        if (!Schema::hasTable('times')) {
         Schema::create('times', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('people_id');
@@ -27,6 +28,7 @@ return new class extends Migration
             $table->timestamps();
         });
     }
+    }
 
     /**
      * Reverse the migrations.
@@ -35,6 +37,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('times');
+        if (Schema::hasTable('times')) {
+            Schema::dropIfExists('times');
+        }
     }
 };

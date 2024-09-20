@@ -172,6 +172,11 @@ Route::get('/registration-confirmation', function () {
 //管理者が職員のIDを入力するためにfacility_idを取得し画面遷移させる↓
 Route::get('custom_id_entryform/{facilityId}', [BeforeInvitationController::class, 'beforeInvitation'])->name('beforeInvitation');
 
+// 施設に医療的ケアの利用者がいるか選択する↓
+Route::patch('/medical_care_needs', [FacilityController::class, 'updateMedicalCareNeeds'])->name('update.medical.care.needs');
+// Route::get('/medical_care_needs', [PersonController::class, 'showMedicalCare'])->name('show.medical.care.needs');
+// Route::patch('/medical_care_needs', [PersonController::class, 'storeMedicalCare'])->name('store.medical.care.needs');
+
 //管理者が職員を招待する前に職員IDを入力・確認する↓
 Route::get('custom_id_entryform/{facilityId}', [CustomIDController::class, 'entryForm'])->name('custom_id.entryform');
 Route::post('custom_id_entryform/{facilityId}', [CustomIDController::class, 'store'])->name('custom_id.store');

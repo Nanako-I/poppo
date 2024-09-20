@@ -10,6 +10,8 @@ use App\Models\Role;
 use App\Models\Permission;
 use App\Models\User;
 use App\Models\Person;
+use App\Models\MedicalCareNeed;
+
 
 class RolesAndPermissionsSeeder extends Seeder
 {
@@ -90,7 +92,12 @@ class RolesAndPermissionsSeeder extends Seeder
         $facility->bikou = 'テスト施設の備考';
         $facility->save();
         $facility->facility_staffs()->attach($facilityAdminUser->id);
-        
+        $medicalCareMajority = MedicalCareNeed::where('name', 'medical_care_majority')->first();
+
+        // もし存在するなら、テスト施設にmedical_care_majorityを紐づけ
+        // if ($medicalCareMajority && $facility) {
+            $facility->medicalCareNeeds()->attach($medicalCareMajority->id);
+        // }
 
         // 家族編集権限のユーザーを作成
         if (!User::where('email', 'admin_family@boocare.co.jp')->exists()) {

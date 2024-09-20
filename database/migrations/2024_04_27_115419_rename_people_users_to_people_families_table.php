@@ -13,7 +13,10 @@ class RenamePeopleUsersToPeopleFamiliesTable extends Migration
      */
     public function up()
     {
-        Schema::rename('people_users', 'people_families');
+        // 'people_users' テーブルが存在し、'people_families' テーブルが存在しない場合にリネーム
+        if (Schema::hasTable('people_users') && !Schema::hasTable('people_families')) {
+            Schema::rename('people_users', 'people_families');
+        }
     }
 
     /**
@@ -23,8 +26,9 @@ class RenamePeopleUsersToPeopleFamiliesTable extends Migration
      */
     public function down()
     {
-        Schema::table('people_families', function (Blueprint $table) {
-            //
-        });
+        // 'people_families' テーブルが存在し、'people_users' テーブルが存在しない場合にリネーム
+        if (Schema::hasTable('people_families') && !Schema::hasTable('people_users')) {
+            Schema::rename('people_families', 'people_users');
+        };
     }
 };

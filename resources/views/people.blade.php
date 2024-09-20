@@ -219,6 +219,7 @@
                                                 @else
                                                 
                                                 <div class="flex justify-evenly">
+                                                @if ($person && $lastTime)
                                                 <a href="{{ url('timechange/'.$person->id . '/'.$lastTime->id) }}" class="relative ml-2 flex items-center">
                                                      @csrf
                                                 <div class="flex items-center justify-around">
@@ -264,11 +265,15 @@
                                                     <script src="https://kit.fontawesome.com/de653d534a.js" crossorigin="anonymous"></script>
                                                     <i class="fa-solid fa-pencil text-stone-500" style="font-size: 2em; padding: 0 5px; transition: transform 0.2s;"></i>
                                                 </a>
+                                                @else
+                                                    <!-- $person または $lastTime が null の場合のエラーメッセージ -->
+                                                    <p>データが見つかりません。</p>
+                                                @endif
                                                 </div>
                                                </div>
                                                @endif
                                             </div>
-                                         </div>
+                                         <!-- </div> -->
 
                                     <!-- 送迎の要否↓ -->
                                  <div class="border-2 p-2 rounded-lg bg-white m-2">

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Facility;
+use App\Models\MedicalCareNeed;
 use App\Models\User;
 use App\Models\Role;
 use Illuminate\Http\Request;
@@ -63,6 +64,21 @@ class FacilityController extends Controller
      * @param  \App\Models\Food  $food
      * @return \Illuminate\Http\Response
      */
+
+     public function updateMedicalCareNeeds(Request $request)
+    {
+        $facilityId = $request->input('facility_id');
+        $selectedItems = $request->input('selected_items', []);
+
+        // MedicalCareNeedモデルから対応するIDを取得
+        $medicalCareNeeds = MedicalCareNeed::whereIn('name', $selectedItems)->pluck('id')->toArray();
+
+        // 中間テーブルに登録（多対多のリレーションを使う）
+        $facility = Facility::findOrFail($facilityId);
+        $facility->medicalCareNeeds()->sync($medicalCareNeeds); // 選択されたものだけを登録
+
+        return redirect()->back()->with('success', '医療的ケアの情報が更新されました。');
+    }
 
 
 

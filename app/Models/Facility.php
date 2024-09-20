@@ -35,5 +35,10 @@ class Facility extends Model
     return $this->belongsToMany(Person::class, 'people_facilities', 'facility_id', 'people_id')
     ->withTimestamps();
     }
+
+    public function medicalCareNeeds()
+{
+    return $this->belongsToMany(MedicalCareNeed::class, 'medical_care_facilities', 'facility_id', 'medical_care_need_id');
+}
     
 }

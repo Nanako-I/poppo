@@ -13,6 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
+        if (!Schema::hasTable('child_foods')) {
         Schema::create('child_foods', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('people_id');
@@ -23,7 +24,7 @@ return new class extends Migration
             $table->timestamps();
         });
     }
-
+}
     /**
      * Reverse the migrations.
      *
