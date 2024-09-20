@@ -97,12 +97,7 @@ class PersonController extends Controller
 
         $rolename = $user->getRoleNames(); // ロールの名前を取得
 
-
-        // $isSuperAdmin = $user->hasRole(RoleType::SuperAdministrator);
-
-
         $isSuperAdmin = $user->hasRole(RoleType::FacilityStaffAdministrator);
-        // dd($isSuperAdmin);
 
         // ロールのIDを取得する場合
         $roleIds = $user->roles->pluck('id');
@@ -208,13 +203,7 @@ class PersonController extends Controller
 
         ]);
         
-        
 
-        // $user = auth()->user();
-
-        // facility_staffsメソッドからuserの情報をゲットする↓
-        // $facilities = $user->facility_staffs()->get();
-        // $firstFacility = $facilities->first();
 
         // 現在ログインしているユーザーが属する施設にpeople（利用者）を紐づける↓
         // syncWithoutDetaching＝完全重複以外は、重複OK

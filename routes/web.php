@@ -280,10 +280,6 @@ Route::post('timechange/{people_id}',[TimeController::class,'update'])->name('ti
 
 // トレーニング↓
 Route::post('trainings/{people_id}', [TrainingController::class, 'store'])->name('training.store');
-Route::get('trainings/{people_id}', [TrainingController::class, 'show'])->name('training.show');
-// Route::get('bloodpressure/{people_id}', [BloodpressureController::class, 'edit'])->name('bloodpressure.edit');
-
-Route::get('trainings/{people_id}/edit', [TrainingController::class, 'edit'])->name('training.edit');
 // トレーニング編集↓
 Route::get('trainingchange/{people_id}', [TrainingController::class, 'change'])->name('training.change');
 Route::post('trainingchange/{people_id}',[TrainingController::class,'update'])->name('training_update');

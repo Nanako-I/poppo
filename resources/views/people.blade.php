@@ -626,7 +626,7 @@
                                         @endif
 
                                 <!-- 生活習慣登録↓ -->
-                                @if(isset($selectedItems[$person->id]) && in_array('トレーニング', $selectedItems[$person->id]))
+                                @if(isset($selectedItems[$person->id]) && in_array('生活習慣', $selectedItems[$person->id]))
                         　    　　  <div class="border-2 p-2 rounded-lg bg-white m-2">
                                     <div class="flex justify-start items-center">
                                         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />

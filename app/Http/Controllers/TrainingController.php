@@ -5,46 +5,21 @@ namespace App\Http\Controllers;
 use App\Models\Training;
 use App\Models\Person;
 use Illuminate\Http\Request;
+use App\Models\Role;
+use App\Models\Permission;
+use App\Models\Chat;
+
+use Spatie\Permission\Models\Role as SpatieRole;
+use App\Enums\RoleType;
+use Spatie\Permission\Traits\HasRoles;
+use Carbon\Carbon;
+use App\Enums\PermissionType;
+use App\Enums\RoleType as RoleEnums;
+use App\Enums\Role as RoleEnum;
 
 class TrainingController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        $trainings = Training::all();
-        // $people = Person::with('trainings')->findOrFail($people_id);
-    //   $trainings = Training::all();
-    // Controller などで Eager Loading を行う
-// $people = Person::with('trainings')->get();
-
-
-        // ('people')に$peopleが代入される
-        
-        // 'people'はpeople.blade.phpの省略↓　// compact('people')で合っている↓
-        return view('people',compact('trainings'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create(Request $request)
-{
-    $person = Training::findOrFail($request->people_id);
-    return redirect()->route('training.edit', ['people_id' => $person->id]);
-}
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+    
     public function store(Request $request)
 {
     $storeData = $request->validate([
@@ -72,41 +47,50 @@ class TrainingController extends Controller
         'training_other_sentence' => $request->training_other_sentence,
     ]);
 
-    // 他の処理
-$people = Person::all();
-    return view('people', compact('training', 'people'));
-}
+     // ログインしているユーザーの情報↓
+     $user = auth()->user();
 
+     $user->facility_staffs()->first();
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\training  $training
-     * @return \Illuminate\Http\Response
-     */
-    public function show($people_id)
-{
-    // $person = Person::with('trainings')->findOrFail($people_id);
-    // $trainings = $person->trainings;
-    
-    $person = Person::findOrFail($people_id);
-    $training = $person->trainings;
+     // facility_staffsメソッドからuserの情報をゲットする↓
+     $facilities = $user->facility_staffs()->get();
 
+     $roles = $user->user_roles()->get(); // これでロールが取得できる
+
+     $rolename = $user->getRoleNames(); // ロールの名前を取得
+     $isSuperAdmin = $user->hasRole(RoleType::FacilityStaffAdministrator);
+
+     // ロールのIDを取得する場合
+     $roleIds = $user->roles->pluck('id');
+
+     $firstFacility = $facilities->first();
+     if ($firstFacility) {
+         $people = $firstFacility->people_facilities()->get();
+     } else {
+         $people = []; // まだpeople（利用者が登録されていない時もエラーが出ないようにする）
+     }
+
+     foreach ($people as $person) {
+         $unreadMessages = Chat::where('people_id', $person->id)
+                               ->where('is_read', false)
+                               ->where('user_identifier', '!=', $user->id)
+                               ->exists();
+     
+         $person->unreadMessages = $unreadMessages;
+         \Log::info("Person {$person->id} unread messages: " . ($unreadMessages ? 'true' : 'false'));
+     }
+
+     $selectedItems = [];
+     
+     // Loop through each person and decode their selected items
+     foreach ($people as $person) {
+         $selectedItems[$person->id] = json_decode($person->selected_items, true) ?? [];
+     }
  
-    return view('people',compact('training'));
-}
+     return view('people', compact('people', 'selectedItems'));
+ }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\training  $training
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Request $request, $people_id)
-{
-    $person = Person::findOrFail($people_id);
-    return view('trainingedit', ['id' => $person->id],compact('person'));
-}
+
 
     /**
      * Update the specified resource in storage.
@@ -119,16 +103,12 @@ $people = Person::all();
     {
         $person = Person::findOrFail($people_id);
         $lastTraining = $person->trainings->last();
-        // $food = Food::all();
-      
-        // return view('foodchange', ['id' => $person->id, 'foods' => $foods], compact('person'));
         return view('trainingchange', compact('person', 'lastTraining'));
     }
     
+    // 登録したトレーニング内容変更
     public function update(Request $request, Training $training)
     {
-    //  public function update(PostRequest $request, Post $post)
-    // {
     
      // チェックボックスのデータをJSON形式に変換
     $communication = json_encode($request->input('communication', []));
@@ -151,20 +131,47 @@ $people = Person::all();
         'training_other_sentence' => $request->training_other_sentence,
     ]);
     
-        
-        $people = Person::all();
-        
-        return view('people', compact('training', 'people'));
-    }
+         // ログインしているユーザーの情報↓
+     $user = auth()->user();
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\training  $training
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(training $training)
-    {
-        //
-    }
+     $user->facility_staffs()->first();
+
+     // facility_staffsメソッドからuserの情報をゲットする↓
+     $facilities = $user->facility_staffs()->get();
+
+     $roles = $user->user_roles()->get(); // これでロールが取得できる
+
+     $rolename = $user->getRoleNames(); // ロールの名前を取得
+     $isSuperAdmin = $user->hasRole(RoleType::FacilityStaffAdministrator);
+
+     // ロールのIDを取得する場合
+     $roleIds = $user->roles->pluck('id');
+
+     $firstFacility = $facilities->first();
+     if ($firstFacility) {
+         $people = $firstFacility->people_facilities()->get();
+     } else {
+         $people = []; // まだpeople（利用者が登録されていない時もエラーが出ないようにする）
+     }
+
+     foreach ($people as $person) {
+         $unreadMessages = Chat::where('people_id', $person->id)
+                               ->where('is_read', false)
+                               ->where('user_identifier', '!=', $user->id)
+                               ->exists();
+     
+         $person->unreadMessages = $unreadMessages;
+         \Log::info("Person {$person->id} unread messages: " . ($unreadMessages ? 'true' : 'false'));
+     }
+
+     $selectedItems = [];
+     
+     // Loop through each person and decode their selected items
+     foreach ($people as $person) {
+         $selectedItems[$person->id] = json_decode($person->selected_items, true) ?? [];
+     }
+ 
+     return view('people', compact('people', 'selectedItems'));
+ }
+    
 }
